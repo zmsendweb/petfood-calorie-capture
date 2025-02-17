@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -87,6 +86,111 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1400, max: 2000 },
     mealsPerDay: 2,
     notes: "High energy needs, especially in cold weather"
+  },
+  {
+    breed: "Rottweiler",
+    size: "Large",
+    dailyCalories: { min: 1800, max: 2500 },
+    mealsPerDay: 2,
+    notes: "Requires high protein diet, prone to weight gain if inactive"
+  },
+  {
+    breed: "Shih Tzu",
+    size: "Small",
+    dailyCalories: { min: 400, max: 700 },
+    mealsPerDay: 3,
+    notes: "Low exercise needs, watch for overfeeding"
+  },
+  {
+    breed: "Border Collie",
+    size: "Medium",
+    dailyCalories: { min: 900, max: 1400 },
+    mealsPerDay: 2,
+    notes: "Very active breed, may need more calories if working"
+  },
+  {
+    breed: "Great Dane",
+    size: "Large",
+    dailyCalories: { min: 2000, max: 3000 },
+    mealsPerDay: 2,
+    notes: "Multiple smaller meals recommended to prevent bloat"
+  },
+  {
+    breed: "Pomeranian",
+    size: "Small",
+    dailyCalories: { min: 200, max: 500 },
+    mealsPerDay: 3,
+    notes: "Small portions to prevent hypoglycemia"
+  },
+  {
+    breed: "Australian Shepherd",
+    size: "Medium",
+    dailyCalories: { min: 1000, max: 1600 },
+    mealsPerDay: 2,
+    notes: "High energy breed, adjust based on activity level"
+  },
+  {
+    breed: "Saint Bernard",
+    size: "Large",
+    dailyCalories: { min: 1800, max: 2800 },
+    mealsPerDay: 2,
+    notes: "Watch for rapid growth in puppies"
+  },
+  {
+    breed: "Dachshund",
+    size: "Small",
+    dailyCalories: { min: 300, max: 600 },
+    mealsPerDay: 2,
+    notes: "Prone to obesity, careful portion control needed"
+  },
+  {
+    breed: "Boxer",
+    size: "Large",
+    dailyCalories: { min: 1500, max: 2200 },
+    mealsPerDay: 2,
+    notes: "Athletic breed, needs protein-rich diet"
+  },
+  {
+    breed: "Shetland Sheepdog",
+    size: "Medium",
+    dailyCalories: { min: 600, max: 1000 },
+    mealsPerDay: 2,
+    notes: "Active breed with moderate caloric needs"
+  },
+  {
+    breed: "Maltese",
+    size: "Small",
+    dailyCalories: { min: 200, max: 400 },
+    mealsPerDay: 3,
+    notes: "Small, frequent meals recommended"
+  },
+  {
+    breed: "Doberman Pinscher",
+    size: "Large",
+    dailyCalories: { min: 1600, max: 2400 },
+    mealsPerDay: 2,
+    notes: "Athletic breed, needs balanced protein and fat"
+  },
+  {
+    breed: "Cavalier King Charles Spaniel",
+    size: "Small",
+    dailyCalories: { min: 400, max: 650 },
+    mealsPerDay: 2,
+    notes: "Moderate energy needs, watch for weight gain"
+  },
+  {
+    breed: "Bernese Mountain Dog",
+    size: "Large",
+    dailyCalories: { min: 1700, max: 2500 },
+    mealsPerDay: 2,
+    notes: "Large breed, careful feeding during growth"
+  },
+  {
+    breed: "Corgi",
+    size: "Medium",
+    dailyCalories: { min: 700, max: 1100 },
+    mealsPerDay: 2,
+    notes: "Prone to obesity, monitor portions carefully"
   }
 ];
 

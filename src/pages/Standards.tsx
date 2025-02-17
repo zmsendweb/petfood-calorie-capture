@@ -191,6 +191,181 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 700, max: 1100 },
     mealsPerDay: 2,
     notes: "Prone to obesity, monitor portions carefully"
+  },
+  {
+    breed: "Pit Bull",
+    size: "Medium",
+    dailyCalories: { min: 800, max: 1400 },
+    mealsPerDay: 2,
+    notes: "High protein needs, active breed requires careful portion control"
+  },
+  {
+    breed: "English Bulldog",
+    size: "Medium",
+    dailyCalories: { min: 800, max: 1200 },
+    mealsPerDay: 2,
+    notes: "Prone to obesity, monitor food intake closely"
+  },
+  {
+    breed: "Cocker Spaniel",
+    size: "Medium",
+    dailyCalories: { min: 700, max: 1000 },
+    mealsPerDay: 2,
+    notes: "Moderate exercise needs, watch for weight gain"
+  },
+  {
+    breed: "Miniature Schnauzer",
+    size: "Small",
+    dailyCalories: { min: 400, max: 600 },
+    mealsPerDay: 2,
+    notes: "Active small breed, needs balanced nutrition"
+  },
+  {
+    breed: "Boston Terrier",
+    size: "Small",
+    dailyCalories: { min: 500, max: 800 },
+    mealsPerDay: 2,
+    notes: "Energetic breed, monitor portion sizes"
+  },
+  {
+    breed: "Newfoundland",
+    size: "Large",
+    dailyCalories: { min: 2000, max: 3000 },
+    mealsPerDay: 2,
+    notes: "Giant breed, needs careful feeding during growth"
+  },
+  {
+    breed: "Rhodesian Ridgeback",
+    size: "Large",
+    dailyCalories: { min: 1800, max: 2400 },
+    mealsPerDay: 2,
+    notes: "Athletic breed, adjust based on activity level"
+  },
+  {
+    breed: "Havanese",
+    size: "Small",
+    dailyCalories: { min: 300, max: 500 },
+    mealsPerDay: 2,
+    notes: "Small but active, needs quality nutrition"
+  },
+  {
+    breed: "Vizsla",
+    size: "Medium",
+    dailyCalories: { min: 1200, max: 1800 },
+    mealsPerDay: 2,
+    notes: "High energy breed, needs substantial nutrition"
+  },
+  {
+    breed: "Mastiff",
+    size: "Large",
+    dailyCalories: { min: 2200, max: 3200 },
+    mealsPerDay: 2,
+    notes: "Giant breed, careful feeding to prevent growth issues"
+  },
+  {
+    breed: "Belgian Malinois",
+    size: "Large",
+    dailyCalories: { min: 1600, max: 2400 },
+    mealsPerDay: 2,
+    notes: "Working breed, high energy needs"
+  },
+  {
+    breed: "Bichon Frise",
+    size: "Small",
+    dailyCalories: { min: 300, max: 500 },
+    mealsPerDay: 2,
+    notes: "Low shedding breed, moderate energy needs"
+  },
+  {
+    breed: "Chow Chow",
+    size: "Medium",
+    dailyCalories: { min: 1000, max: 1500 },
+    mealsPerDay: 2,
+    notes: "Watch for food allergies, moderate exercise needs"
+  },
+  {
+    breed: "Basset Hound",
+    size: "Medium",
+    dailyCalories: { min: 800, max: 1200 },
+    mealsPerDay: 2,
+    notes: "Prone to obesity, careful portion control needed"
+  },
+  {
+    breed: "Akita",
+    size: "Large",
+    dailyCalories: { min: 1800, max: 2500 },
+    mealsPerDay: 2,
+    notes: "Strong food drive, needs measured portions"
+  },
+  {
+    breed: "Weimaraner",
+    size: "Large",
+    dailyCalories: { min: 1600, max: 2400 },
+    mealsPerDay: 2,
+    notes: "Very active, high energy requirements"
+  },
+  {
+    breed: "Papillon",
+    size: "Small",
+    dailyCalories: { min: 200, max: 400 },
+    mealsPerDay: 2,
+    notes: "Small but active, needs quality small breed food"
+  },
+  {
+    breed: "Irish Setter",
+    size: "Large",
+    dailyCalories: { min: 1400, max: 2200 },
+    mealsPerDay: 2,
+    notes: "Active sporting breed, needs energy-rich diet"
+  },
+  {
+    breed: "Pug",
+    size: "Small",
+    dailyCalories: { min: 400, max: 600 },
+    mealsPerDay: 2,
+    notes: "Prone to obesity, strict portion control needed"
+  },
+  {
+    breed: "Standard Schnauzer",
+    size: "Medium",
+    dailyCalories: { min: 900, max: 1300 },
+    mealsPerDay: 2,
+    notes: "Active breed, needs balanced nutrition"
+  },
+  {
+    breed: "English Setter",
+    size: "Large",
+    dailyCalories: { min: 1300, max: 2000 },
+    mealsPerDay: 2,
+    notes: "Sporting breed, adjust for activity level"
+  },
+  {
+    breed: "Brussels Griffon",
+    size: "Small",
+    dailyCalories: { min: 250, max: 400 },
+    mealsPerDay: 2,
+    notes: "Small portions, quality small breed food recommended"
+  },
+  {
+    breed: "Bull Terrier",
+    size: "Medium",
+    dailyCalories: { min: 1000, max: 1500 },
+    mealsPerDay: 2,
+    notes: "Muscular breed, needs protein-rich diet"
+  },
+  {
+    breed: "Afghan Hound",
+    size: "Large",
+    dailyCalories: { min: 1400, max: 2000 },
+    mealsPerDay: 2,
+    notes: "Lean breed, needs quality nutrition"
+  },
+  {
+    breed: "Chinese Crested",
+    size: "Small",
+    dailyCalories: { min: 200, max: 400 },
+    mealsPerDay: 2,
+    notes: "Small appetite, regular small meals"
   }
 ];
 

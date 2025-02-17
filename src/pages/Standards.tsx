@@ -92,11 +92,15 @@ const dogStandards: DogStandard[] = [
 
 const Standards = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const filteredStandards = dogStandards.filter(dog =>
-    dog.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    dog.size.toLowerCase().includes(searchTerm.toLowerCase())
+    (selectedSize ? dog.size === selectedSize : true) &&
+    (dog.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    dog.size.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const sizes = ["Small", "Medium", "Large"];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
@@ -110,14 +114,36 @@ const Standards = () => {
           <h1 className="text-3xl font-bold">Dog Breed Feeding Standards</h1>
         </div>
 
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          <Input
-            className="pl-10"
-            placeholder="Search by breed or size..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="space-y-6 mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+            <Input
+              className="pl-10"
+              placeholder="Search by breed..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={selectedSize === null ? "default" : "outline"}
+              onClick={() => setSelectedSize(null)}
+              className="rounded-full"
+            >
+              All Sizes
+            </Button>
+            {sizes.map((size) => (
+              <Button
+                key={size}
+                variant={selectedSize === size ? "default" : "outline"}
+                onClick={() => setSelectedSize(size)}
+                className="rounded-full"
+              >
+                {size} Dogs
+              </Button>
+            ))}
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -126,7 +152,11 @@ const Standards = () => {
               <CardHeader>
                 <CardTitle className="flex justify-between items-start">
                   <span>{standard.breed}</span>
-                  <span className="text-sm font-normal px-2 py-1 bg-primary/10 rounded-full">
+                  <span className={`text-sm font-normal px-2 py-1 rounded-full ${
+                    standard.size === "Small" ? "bg-secondary/20" :
+                    standard.size === "Medium" ? "bg-primary/20" :
+                    "bg-accent/20"
+                  }`}>
                     {standard.size}
                   </span>
                 </CardTitle>

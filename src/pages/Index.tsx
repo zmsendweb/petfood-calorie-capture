@@ -3,6 +3,9 @@ import { useState } from "react";
 import { MealEntryForm, MealCard } from "@/components/MealEntry";
 import { Dashboard } from "@/components/Dashboard";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { BookOpen } from "lucide-react";
 
 interface MealEntry {
   id: string;
@@ -26,6 +29,12 @@ const Index = () => {
         <header className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-gray-800">Pet Food Tracker</h1>
           <p className="text-gray-600">Track your pet's food intake with photos</p>
+          <Link to="/standards">
+            <Button variant="outline" className="mt-4">
+              <BookOpen className="w-4 h-4 mr-2" />
+              View Breed Standards
+            </Button>
+          </Link>
         </header>
 
         <div className="grid lg:grid-cols-2 gap-8">

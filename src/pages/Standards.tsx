@@ -14,6 +14,7 @@ interface DogStandard {
   };
   mealsPerDay: number;
   notes: string;
+  imageUrl: string;
 }
 
 const dogStandards: DogStandard[] = [
@@ -22,350 +23,400 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 1500, max: 2200 },
     mealsPerDay: 2,
-    notes: "Active breed, adjust based on activity level"
+    notes: "Active breed, adjust based on activity level",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "German Shepherd",
     size: "Large",
     dailyCalories: { min: 1700, max: 2400 },
     mealsPerDay: 2,
-    notes: "High energy breed, needs protein-rich diet"
+    notes: "High energy breed, needs protein-rich diet",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "French Bulldog",
     size: "Small",
     dailyCalories: { min: 700, max: 1000 },
     mealsPerDay: 3,
-    notes: "Prone to obesity, monitor intake carefully"
+    notes: "Prone to obesity, monitor intake carefully",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Chihuahua",
     size: "Small",
     dailyCalories: { min: 200, max: 400 },
     mealsPerDay: 3,
-    notes: "Small portions, frequent meals recommended"
+    notes: "Small portions, frequent meals recommended",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Golden Retriever",
     size: "Large",
     dailyCalories: { min: 1300, max: 2100 },
     mealsPerDay: 2,
-    notes: "Adjust based on age and activity"
+    notes: "Adjust based on age and activity",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Poodle (Standard)",
     size: "Medium",
     dailyCalories: { min: 1000, max: 1500 },
     mealsPerDay: 2,
-    notes: "Highly active, needs balanced nutrition"
+    notes: "Highly active, needs balanced nutrition",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Yorkshire Terrier",
     size: "Small",
     dailyCalories: { min: 150, max: 300 },
     mealsPerDay: 3,
-    notes: "Small frequent meals, avoid overfeeding"
+    notes: "Small frequent meals, avoid overfeeding",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Bulldog",
     size: "Medium",
     dailyCalories: { min: 800, max: 1200 },
     mealsPerDay: 2,
-    notes: "Prone to weight gain, monitor carefully"
+    notes: "Prone to weight gain, monitor carefully",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Beagle",
     size: "Medium",
     dailyCalories: { min: 700, max: 1100 },
     mealsPerDay: 2,
-    notes: "Tendency to overeat, portion control important"
+    notes: "Tendency to overeat, portion control important",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Siberian Husky",
     size: "Large",
     dailyCalories: { min: 1400, max: 2000 },
     mealsPerDay: 2,
-    notes: "High energy needs, especially in cold weather"
+    notes: "High energy needs, especially in cold weather",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Rottweiler",
     size: "Large",
     dailyCalories: { min: 1800, max: 2500 },
     mealsPerDay: 2,
-    notes: "Requires high protein diet, prone to weight gain if inactive"
+    notes: "Requires high protein diet, prone to weight gain if inactive",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Shih Tzu",
     size: "Small",
     dailyCalories: { min: 400, max: 700 },
     mealsPerDay: 3,
-    notes: "Low exercise needs, watch for overfeeding"
+    notes: "Low exercise needs, watch for overfeeding",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Border Collie",
     size: "Medium",
     dailyCalories: { min: 900, max: 1400 },
     mealsPerDay: 2,
-    notes: "Very active breed, may need more calories if working"
+    notes: "Very active breed, may need more calories if working",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Great Dane",
     size: "Large",
     dailyCalories: { min: 2000, max: 3000 },
     mealsPerDay: 2,
-    notes: "Multiple smaller meals recommended to prevent bloat"
+    notes: "Multiple smaller meals recommended to prevent bloat",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Pomeranian",
     size: "Small",
     dailyCalories: { min: 200, max: 500 },
     mealsPerDay: 3,
-    notes: "Small portions to prevent hypoglycemia"
+    notes: "Small portions to prevent hypoglycemia",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Australian Shepherd",
     size: "Medium",
     dailyCalories: { min: 1000, max: 1600 },
     mealsPerDay: 2,
-    notes: "High energy breed, adjust based on activity level"
+    notes: "High energy breed, adjust based on activity level",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Saint Bernard",
     size: "Large",
     dailyCalories: { min: 1800, max: 2800 },
     mealsPerDay: 2,
-    notes: "Watch for rapid growth in puppies"
+    notes: "Watch for rapid growth in puppies",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Dachshund",
     size: "Small",
     dailyCalories: { min: 300, max: 600 },
     mealsPerDay: 2,
-    notes: "Prone to obesity, careful portion control needed"
+    notes: "Prone to obesity, careful portion control needed",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Boxer",
     size: "Large",
     dailyCalories: { min: 1500, max: 2200 },
     mealsPerDay: 2,
-    notes: "Athletic breed, needs protein-rich diet"
+    notes: "Athletic breed, needs protein-rich diet",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Shetland Sheepdog",
     size: "Medium",
     dailyCalories: { min: 600, max: 1000 },
     mealsPerDay: 2,
-    notes: "Active breed with moderate caloric needs"
+    notes: "Active breed with moderate caloric needs",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Maltese",
     size: "Small",
     dailyCalories: { min: 200, max: 400 },
     mealsPerDay: 3,
-    notes: "Small, frequent meals recommended"
+    notes: "Small, frequent meals recommended",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Doberman Pinscher",
     size: "Large",
     dailyCalories: { min: 1600, max: 2400 },
     mealsPerDay: 2,
-    notes: "Athletic breed, needs balanced protein and fat"
+    notes: "Athletic breed, needs balanced protein and fat",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Cavalier King Charles Spaniel",
     size: "Small",
     dailyCalories: { min: 400, max: 650 },
     mealsPerDay: 2,
-    notes: "Moderate energy needs, watch for weight gain"
+    notes: "Moderate energy needs, watch for weight gain",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Bernese Mountain Dog",
     size: "Large",
     dailyCalories: { min: 1700, max: 2500 },
     mealsPerDay: 2,
-    notes: "Large breed, careful feeding during growth"
+    notes: "Large breed, careful feeding during growth",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Corgi",
     size: "Medium",
     dailyCalories: { min: 700, max: 1100 },
     mealsPerDay: 2,
-    notes: "Prone to obesity, monitor portions carefully"
+    notes: "Prone to obesity, monitor portions carefully",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Pit Bull",
     size: "Medium",
     dailyCalories: { min: 800, max: 1400 },
     mealsPerDay: 2,
-    notes: "High protein needs, active breed requires careful portion control"
+    notes: "High protein needs, active breed requires careful portion control",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "English Bulldog",
     size: "Medium",
     dailyCalories: { min: 800, max: 1200 },
     mealsPerDay: 2,
-    notes: "Prone to obesity, monitor food intake closely"
+    notes: "Prone to obesity, monitor food intake closely",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Cocker Spaniel",
     size: "Medium",
     dailyCalories: { min: 700, max: 1000 },
     mealsPerDay: 2,
-    notes: "Moderate exercise needs, watch for weight gain"
+    notes: "Moderate exercise needs, watch for weight gain",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Miniature Schnauzer",
     size: "Small",
     dailyCalories: { min: 400, max: 600 },
     mealsPerDay: 2,
-    notes: "Active small breed, needs balanced nutrition"
+    notes: "Active small breed, needs balanced nutrition",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Boston Terrier",
     size: "Small",
     dailyCalories: { min: 500, max: 800 },
     mealsPerDay: 2,
-    notes: "Energetic breed, monitor portion sizes"
+    notes: "Energetic breed, monitor portion sizes",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Newfoundland",
     size: "Large",
     dailyCalories: { min: 2000, max: 3000 },
     mealsPerDay: 2,
-    notes: "Giant breed, needs careful feeding during growth"
+    notes: "Giant breed, needs careful feeding during growth",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Rhodesian Ridgeback",
     size: "Large",
     dailyCalories: { min: 1800, max: 2400 },
     mealsPerDay: 2,
-    notes: "Athletic breed, adjust based on activity level"
+    notes: "Athletic breed, adjust based on activity level",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Havanese",
     size: "Small",
     dailyCalories: { min: 300, max: 500 },
     mealsPerDay: 2,
-    notes: "Small but active, needs quality nutrition"
+    notes: "Small but active, needs quality nutrition",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Vizsla",
     size: "Medium",
     dailyCalories: { min: 1200, max: 1800 },
     mealsPerDay: 2,
-    notes: "High energy breed, needs substantial nutrition"
+    notes: "High energy breed, needs substantial nutrition",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Mastiff",
     size: "Large",
     dailyCalories: { min: 2200, max: 3200 },
     mealsPerDay: 2,
-    notes: "Giant breed, careful feeding to prevent growth issues"
+    notes: "Giant breed, careful feeding to prevent growth issues",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Belgian Malinois",
     size: "Large",
     dailyCalories: { min: 1600, max: 2400 },
     mealsPerDay: 2,
-    notes: "Working breed, high energy needs"
+    notes: "Working breed, high energy needs",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Bichon Frise",
     size: "Small",
     dailyCalories: { min: 300, max: 500 },
     mealsPerDay: 2,
-    notes: "Low shedding breed, moderate energy needs"
+    notes: "Low shedding breed, moderate energy needs",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Chow Chow",
     size: "Medium",
     dailyCalories: { min: 1000, max: 1500 },
     mealsPerDay: 2,
-    notes: "Watch for food allergies, moderate exercise needs"
+    notes: "Watch for food allergies, moderate exercise needs",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Basset Hound",
     size: "Medium",
     dailyCalories: { min: 800, max: 1200 },
     mealsPerDay: 2,
-    notes: "Prone to obesity, careful portion control needed"
+    notes: "Prone to obesity, careful portion control needed",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Akita",
     size: "Large",
     dailyCalories: { min: 1800, max: 2500 },
     mealsPerDay: 2,
-    notes: "Strong food drive, needs measured portions"
+    notes: "Strong food drive, needs measured portions",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Weimaraner",
     size: "Large",
     dailyCalories: { min: 1600, max: 2400 },
     mealsPerDay: 2,
-    notes: "Very active, high energy requirements"
+    notes: "Very active, high energy requirements",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Papillon",
     size: "Small",
     dailyCalories: { min: 200, max: 400 },
     mealsPerDay: 2,
-    notes: "Small but active, needs quality small breed food"
+    notes: "Small but active, needs quality small breed food",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Irish Setter",
     size: "Large",
     dailyCalories: { min: 1400, max: 2200 },
     mealsPerDay: 2,
-    notes: "Active sporting breed, needs energy-rich diet"
+    notes: "Active sporting breed, needs energy-rich diet",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Pug",
     size: "Small",
     dailyCalories: { min: 400, max: 600 },
     mealsPerDay: 2,
-    notes: "Prone to obesity, strict portion control needed"
+    notes: "Prone to obesity, strict portion control needed",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Standard Schnauzer",
     size: "Medium",
     dailyCalories: { min: 900, max: 1300 },
     mealsPerDay: 2,
-    notes: "Active breed, needs balanced nutrition"
+    notes: "Active breed, needs balanced nutrition",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "English Setter",
     size: "Large",
     dailyCalories: { min: 1300, max: 2000 },
     mealsPerDay: 2,
-    notes: "Sporting breed, adjust for activity level"
+    notes: "Sporting breed, adjust for activity level",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Brussels Griffon",
     size: "Small",
     dailyCalories: { min: 250, max: 400 },
     mealsPerDay: 2,
-    notes: "Small portions, quality small breed food recommended"
+    notes: "Small portions, quality small breed food recommended",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Bull Terrier",
     size: "Medium",
     dailyCalories: { min: 1000, max: 1500 },
     mealsPerDay: 2,
-    notes: "Muscular breed, needs protein-rich diet"
+    notes: "Muscular breed, needs protein-rich diet",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Afghan Hound",
     size: "Large",
     dailyCalories: { min: 1400, max: 2000 },
     mealsPerDay: 2,
-    notes: "Lean breed, needs quality nutrition"
+    notes: "Lean breed, needs quality nutrition",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   },
   {
     breed: "Chinese Crested",
     size: "Small",
     dailyCalories: { min: 200, max: 400 },
     mealsPerDay: 2,
-    notes: "Small appetite, regular small meals"
+    notes: "Small appetite, regular small meals",
+    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
   }
 ];
 
@@ -427,7 +478,14 @@ const Standards = () => {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredStandards.map((standard) => (
-            <Card key={standard.breed} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
+            <Card key={standard.breed} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow overflow-hidden">
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={standard.imageUrl}
+                  alt={standard.breed}
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <CardHeader>
                 <CardTitle className="flex justify-between items-start">
                   <span>{standard.breed}</span>

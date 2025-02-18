@@ -24,7 +24,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1500, max: 2200 },
     mealsPerDay: 2,
     notes: "Active breed, adjust based on activity level",
-    imageUrl: "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95"
+    imageUrl: "https://images.unsplash.com/photo-1554692918-08fa0fdc9db3"
   },
   {
     breed: "German Shepherd",
@@ -32,7 +32,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1700, max: 2400 },
     mealsPerDay: 2,
     notes: "High energy breed, needs protein-rich diet",
-    imageUrl: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e"
+    imageUrl: "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95"
   },
   {
     breed: "French Bulldog",
@@ -40,7 +40,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 700, max: 1000 },
     mealsPerDay: 3,
     notes: "Prone to obesity, monitor intake carefully",
-    imageUrl: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e"
+    imageUrl: "https://images.unsplash.com/photo-1583511655826-05700442b31b"
   },
   {
     breed: "Chihuahua",
@@ -48,7 +48,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 200, max: 400 },
     mealsPerDay: 3,
     notes: "Small portions, frequent meals recommended",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee"
   },
   {
     breed: "Golden Retriever",
@@ -56,7 +56,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1300, max: 2100 },
     mealsPerDay: 2,
     notes: "Adjust based on age and activity",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1633722715463-d30f4f325e24"
   },
   {
     breed: "Poodle (Standard)",
@@ -64,7 +64,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1000, max: 1500 },
     mealsPerDay: 2,
     notes: "Highly active, needs balanced nutrition",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1591768575198-88dac53fbd0a"
   },
   {
     breed: "Yorkshire Terrier",
@@ -72,7 +72,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 150, max: 300 },
     mealsPerDay: 3,
     notes: "Small frequent meals, avoid overfeeding",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1591946614720-90a587da4a36"
   },
   {
     breed: "Bulldog",
@@ -80,7 +80,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 800, max: 1200 },
     mealsPerDay: 2,
     notes: "Prone to weight gain, monitor carefully",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee"
   },
   {
     breed: "Beagle",
@@ -88,7 +88,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 700, max: 1100 },
     mealsPerDay: 2,
     notes: "Tendency to overeat, portion control important",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1505628346881-b72b27e84530"
   },
   {
     breed: "Siberian Husky",
@@ -96,7 +96,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1400, max: 2000 },
     mealsPerDay: 2,
     notes: "High energy needs, especially in cold weather",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1605568427561-40dd23c2acea"
   },
   {
     breed: "Rottweiler",
@@ -104,7 +104,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1800, max: 2500 },
     mealsPerDay: 2,
     notes: "Requires high protein diet, prone to weight gain if inactive",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1567752881298-894bb81f9379"
   },
   {
     breed: "Shih Tzu",
@@ -112,7 +112,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 400, max: 700 },
     mealsPerDay: 3,
     notes: "Low exercise needs, watch for overfeeding",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1591769225440-811ad7d6eab3"
   },
   {
     breed: "Border Collie",
@@ -120,7 +120,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 900, max: 1400 },
     mealsPerDay: 2,
     notes: "Very active breed, may need more calories if working",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1503256207526-0d5d80fa2f47"
   },
   {
     breed: "Great Dane",
@@ -128,7 +128,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 2000, max: 3000 },
     mealsPerDay: 2,
     notes: "Multiple smaller meals recommended to prevent bloat",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1588943211346-0908a1fb0b01"
   },
   {
     breed: "Pomeranian",
@@ -136,7 +136,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 200, max: 500 },
     mealsPerDay: 3,
     notes: "Small portions to prevent hypoglycemia",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+    imageUrl: "https://images.unsplash.com/photo-1587583530933-ed5d3485d220"
   },
   {
     breed: "Australian Shepherd",

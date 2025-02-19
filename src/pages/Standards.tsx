@@ -176,7 +176,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 600, max: 1000 },
     mealsPerDay: 2,
     notes: "Active breed with moderate caloric needs",
-    imageUrl: "https://images.unsplash.com/photo-1589210043112-f9be45206827?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1548767196-f54c1781c54d?q=80"
   },
   {
     breed: "Maltese",
@@ -208,7 +208,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1700, max: 2500 },
     mealsPerDay: 2,
     notes: "Large breed, careful feeding during growth",
-    imageUrl: "https://images.unsplash.com/photo-1582828470841-f822d98dc4b1?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1568572933382-74d440642117?q=80"
   },
   {
     breed: "Corgi",
@@ -240,7 +240,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 700, max: 1000 },
     mealsPerDay: 2,
     notes: "Moderate exercise needs, watch for weight gain",
-    imageUrl: "https://images.unsplash.com/photo-1616147344047-2e66b54ff1cc?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1591769198715-6c1149559028?q=80"
   },
   {
     breed: "Miniature Schnauzer",
@@ -256,7 +256,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 500, max: 800 },
     mealsPerDay: 2,
     notes: "Energetic breed, monitor portion sizes",
-    imageUrl: "https://images.unsplash.com/photo-1596494237755-62476dd65865?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1543071220-6ee5bf71a54e?q=80"
   },
   {
     breed: "Newfoundland",
@@ -264,7 +264,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 2000, max: 3000 },
     mealsPerDay: 2,
     notes: "Giant breed, needs careful feeding during growth",
-    imageUrl: "https://images.unsplash.com/photo-1592754862813-f94cf56bd887?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1590419690008-905895e8fe0d?q=80"
   },
   {
     breed: "Rhodesian Ridgeback",
@@ -288,7 +288,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1200, max: 1800 },
     mealsPerDay: 2,
     notes: "High energy breed, needs substantial nutrition",
-    imageUrl: "https://images.unsplash.com/photo-1648467837071-6e89ea3f08fc?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1523997359283-6fc87d5f0d88?q=80"
   },
   {
     breed: "Mastiff",
@@ -296,7 +296,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 2200, max: 3200 },
     mealsPerDay: 2,
     notes: "Giant breed, careful feeding to prevent growth issues",
-    imageUrl: "https://images.unsplash.com/photo-1577447310651-9223a116e0c8?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1552053831-71594a27632d?q=80"
   },
   {
     breed: "Belgian Malinois",
@@ -304,7 +304,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1600, max: 2400 },
     mealsPerDay: 2,
     notes: "Working breed, high energy needs",
-    imageUrl: "https://images.unsplash.com/photo-1553882052-ea8026aa9e37?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1622227056993-6e7f88420855?q=80"
   },
   {
     breed: "Bichon Frise",
@@ -320,7 +320,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1000, max: 1500 },
     mealsPerDay: 2,
     notes: "Watch for food allergies, moderate exercise needs",
-    imageUrl: "https://images.unsplash.com/photo-1579085198493-b83f06c1160b?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1530041127323-12726bd7a526?q=80"
   },
   {
     breed: "Basset Hound",
@@ -328,7 +328,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 800, max: 1200 },
     mealsPerDay: 2,
     notes: "Prone to obesity, careful portion control needed",
-    imageUrl: "https://images.unsplash.com/photo-1577447310723-b21be6bd4495?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1514517604298-cf80e0fb7f1e?q=80"
   },
   {
     breed: "Akita",
@@ -352,7 +352,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 200, max: 400 },
     mealsPerDay: 2,
     notes: "Small but active, needs quality small breed food",
-    imageUrl: "https://images.unsplash.com/photo-1583512603766-a3f23c03a507?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1583336663277-620dc1996580?q=80"
   },
   {
     breed: "Irish Setter",
@@ -400,7 +400,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1000, max: 1500 },
     mealsPerDay: 2,
     notes: "Muscular breed, needs protein-rich diet",
-    imageUrl: "https://images.unsplash.com/photo-1594118356-02e25fd5ac36?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1535506573827-d4518e05cc8e?q=80"
   },
   {
     breed: "Afghan Hound",

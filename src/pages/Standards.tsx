@@ -40,7 +40,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 700, max: 1000 },
     mealsPerDay: 3,
     notes: "Prone to obesity, monitor intake carefully",
-    imageUrl: "https://images.unsplash.com/photo-1583511655826-05700442b31b?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1593351799227-75df2026356b?q=80"
   },
   {
     breed: "Chihuahua",
@@ -136,7 +136,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 200, max: 500 },
     mealsPerDay: 3,
     notes: "Small portions to prevent hypoglycemia",
-    imageUrl: "https://images.unsplash.com/photo-1587583530933-ed5d3485d220?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1577598888374-d7645cd5410b?q=80"
   },
   {
     breed: "Australian Shepherd",
@@ -152,7 +152,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1800, max: 2800 },
     mealsPerDay: 2,
     notes: "Watch for rapid growth in puppies",
-    imageUrl: "https://images.unsplash.com/photo-1592754888953-4cc99c0b4d3f?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1561984142-7f4937dda866?q=80"
   },
   {
     breed: "Dachshund",
@@ -192,7 +192,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 1600, max: 2400 },
     mealsPerDay: 2,
     notes: "Athletic breed, needs balanced protein and fat",
-    imageUrl: "https://images.unsplash.com/photo-1595792463990-93d4dec2dfc8?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1608096299210-88316c441275?q=80"
   },
   {
     breed: "Cavalier King Charles Spaniel",

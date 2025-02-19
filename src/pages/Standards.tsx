@@ -21,81 +21,81 @@ const dogStandards: DogStandard[] = [
   {
     breed: "Labrador Retriever",
     size: "Large",
-    dailyCalories: { min: 1500, max: 2200 },
+    dailyCalories: { min: 1800, max: 2600 },
     mealsPerDay: 2,
-    notes: "Active breed, adjust based on activity level",
+    notes: "Adjust calories based on activity level. Prone to obesity - monitor body condition score. Adult maintenance energy requirement varies significantly with activity.",
     imageUrl: "https://images.unsplash.com/photo-1554692918-08fa0fdc9db3?q=80"
   },
   {
     breed: "German Shepherd",
     size: "Large",
-    dailyCalories: { min: 1700, max: 2400 },
+    dailyCalories: { min: 1740, max: 2400 },
     mealsPerDay: 2,
-    notes: "High energy breed, needs protein-rich diet",
+    notes: "Higher protein requirements (min 25%). Consider joint health supplements. Feed multiple smaller meals to prevent bloat.",
     imageUrl: "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?q=80"
   },
   {
     breed: "French Bulldog",
     size: "Small",
-    dailyCalories: { min: 700, max: 1000 },
+    dailyCalories: { min: 650, max: 1000 },
     mealsPerDay: 3,
-    notes: "Prone to obesity, monitor intake carefully",
+    notes: "Prone to obesity and respiratory issues. Feed measured portions. Avoid high-fat diets. Consider breed-specific formulas.",
     imageUrl: "https://images.unsplash.com/photo-1593351799227-75df2026356b?q=80"
   },
   {
     breed: "Chihuahua",
     size: "Small",
-    dailyCalories: { min: 200, max: 400 },
+    dailyCalories: { min: 180, max: 380 },
     mealsPerDay: 3,
-    notes: "Small portions, frequent meals recommended",
+    notes: "High metabolism rate per body weight. Risk of hypoglycemia - frequent small meals recommended. Energy dense food advised.",
     imageUrl: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80"
   },
   {
     breed: "Golden Retriever",
     size: "Large",
-    dailyCalories: { min: 1300, max: 2100 },
+    dailyCalories: { min: 1350, max: 2200 },
     mealsPerDay: 2,
-    notes: "Adjust based on age and activity",
+    notes: "Monitor weight closely. Prone to food allergies. Consider omega fatty acids for coat health. Active adults may need upper calorie range.",
     imageUrl: "https://images.unsplash.com/photo-1633722715463-d30f4f325e24?q=80"
   },
   {
     breed: "Poodle (Standard)",
     size: "Medium",
-    dailyCalories: { min: 1000, max: 1500 },
+    dailyCalories: { min: 1000, max: 1600 },
     mealsPerDay: 2,
-    notes: "Highly active, needs balanced nutrition",
+    notes: "High energy requirements. Consider coat maintenance needs. Moderate protein (23-28%) recommended. Watch for food sensitivities.",
     imageUrl: "https://images.unsplash.com/photo-1591768575198-88dac53fbd0a?q=80"
   },
   {
     breed: "Yorkshire Terrier",
     size: "Small",
-    dailyCalories: { min: 150, max: 300 },
+    dailyCalories: { min: 150, max: 250 },
     mealsPerDay: 3,
-    notes: "Small frequent meals, avoid overfeeding",
+    notes: "Prone to dental issues - consider kibble size. High quality protein essential. Risk of hypoglycemia in small specimens.",
     imageUrl: "https://images.unsplash.com/photo-1591946614720-90a587da4a36?q=80"
   },
   {
     breed: "Bulldog",
     size: "Medium",
-    dailyCalories: { min: 800, max: 1200 },
+    dailyCalories: { min: 850, max: 1250 },
     mealsPerDay: 2,
-    notes: "Prone to weight gain, monitor carefully",
+    notes: "Moderate exercise needs. High risk of obesity. Consider low-fat diets. Feed elevated to reduce respiratory stress.",
     imageUrl: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80"
   },
   {
     breed: "Beagle",
     size: "Medium",
-    dailyCalories: { min: 700, max: 1100 },
+    dailyCalories: { min: 740, max: 1300 },
     mealsPerDay: 2,
-    notes: "Tendency to overeat, portion control important",
+    notes: "Strong food drive - strict portion control needed. Consider puzzle feeders to slow consumption. Watch for food scavenging.",
     imageUrl: "https://images.unsplash.com/photo-1505628346881-b72b27e84530?q=80"
   },
   {
     breed: "Siberian Husky",
     size: "Large",
-    dailyCalories: { min: 1400, max: 2000 },
+    dailyCalories: { min: 1200, max: 2100 },
     mealsPerDay: 2,
-    notes: "High energy needs, especially in cold weather",
+    notes: "High protein and fat requirements for active dogs. Seasonal variation in needs. Consider working vs. companion activity levels.",
     imageUrl: "https://images.unsplash.com/photo-1605568427561-40dd23c2acea?q=80"
   },
   {

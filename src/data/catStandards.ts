@@ -104,7 +104,7 @@ export const catStandards: CatStandard[] = [
     size: "Small",
     dailyCalories: { min: 180, max: 280 },
     mealsPerDay: 3,
-    notes: "High metabolism - needs calorie-dense food. Quality protein (33-38%). Consider skin health supplements. Monitor temperature during meals.",
+    notes: "High metabolism needs calorie-dense food. Quality protein (33-38%). Consider skin health supplements. Monitor temperature during meals.",
     imageUrl: "https://images.unsplash.com/photo-1576280314498-31e7c48361c9?q=80"
   },
   {
@@ -298,5 +298,165 @@ export const catStandards: CatStandard[] = [
     mealsPerDay: 2,
     notes: "Ancient breed needs quality protein (32-37%). Consider coat health. Watch for deafness-related feeding issues. Monitor heart health.",
     imageUrl: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?q=80"
+  },
+  {
+    breed: "Chartreux",
+    size: "Medium",
+    dailyCalories: { min: 210, max: 310 },
+    mealsPerDay: 2,
+    notes: "French breed needs quality protein (32-37%). Consider joint health. Watch for obesity in indoor cats. Monitor muscle tone.",
+    imageUrl: "https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?q=80"
+  },
+  {
+    breed: "European Shorthair",
+    size: "Medium",
+    dailyCalories: { min: 200, max: 300 },
+    mealsPerDay: 2,
+    notes: "Robust breed needs balanced protein (30-35%). Consider dental health. Watch for weight gain. Monitor outdoor activity level.",
+    imageUrl: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80"
+  },
+  {
+    breed: "Siberian",
+    size: "Large",
+    dailyCalories: { min: 250, max: 380 },
+    mealsPerDay: 2,
+    notes: "Cold-adapted breed needs high protein (35-40%). Consider omega fatty acids for coat. Watch joint health. Monitor seasonal appetite changes.",
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+  },
+  {
+    breed: "Bambino",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    mealsPerDay: 3,
+    notes: "Hybrid breed needs concentrated nutrition. Quality protein (33-38%). Consider skin health. Monitor body temperature carefully.",
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
+  },
+  {
+    breed: "Chantilly-Tiffany",
+    size: "Medium",
+    dailyCalories: { min: 220, max: 320 },
+    mealsPerDay: 2,
+    notes: "Quality protein (32-37%) for coat maintenance. Consider taurine levels. Watch for hairballs. Monitor hydration levels.",
+    imageUrl: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80"
+  },
+  {
+    breed: "Cymric",
+    size: "Medium",
+    dailyCalories: { min: 210, max: 310 },
+    mealsPerDay: 2,
+    notes: "Long-haired Manx variant needs quality protein (32-37%). Consider digestive health. Watch spine health. Monitor portion sizes.",
+    imageUrl: "https://images.unsplash.com/photo-1548366086-7f1b76106622?q=80"
+  },
+  {
+    breed: "German Rex",
+    size: "Medium",
+    dailyCalories: { min: 200, max: 300 },
+    mealsPerDay: 2,
+    notes: "Rex breed needs quality protein (32-37%). Consider skin health supplements. Watch for temperature sensitivity. Monitor weight.",
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+  },
+  {
+    breed: "Highlander",
+    size: "Large",
+    dailyCalories: { min: 240, max: 360 },
+    mealsPerDay: 2,
+    notes: "Large breed needs quality protein (33-38%). Consider joint supplements. Watch for growth rate. Monitor muscle development.",
+    imageUrl: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80"
+  },
+  {
+    breed: "Kurilian Bobtail",
+    size: "Medium",
+    dailyCalories: { min: 220, max: 320 },
+    mealsPerDay: 2,
+    notes: "Natural breed needs quality protein (32-37%). Consider omega fatty acids. Watch for food allergies. Monitor activity level.",
+    imageUrl: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?q=80"
+  },
+  {
+    breed: "Lykoi",
+    size: "Medium",
+    dailyCalories: { min: 210, max: 310 },
+    mealsPerDay: 2,
+    notes: "Werewolf cat needs high protein (33-38%). Consider skin health supplements. Watch for temperature sensitivity. Monitor coat condition.",
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
+  },
+  {
+    breed: "Minuet",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    mealsPerDay: 3,
+    notes: "Napoleon cat needs quality protein (32-37%). Consider joint health. Watch for mobility issues. Monitor weight carefully.",
+    imageUrl: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80"
+  },
+  {
+    breed: "Peterbald",
+    size: "Medium",
+    dailyCalories: { min: 220, max: 320 },
+    mealsPerDay: 2,
+    notes: "Hairless breed needs high calories. Quality protein (35-40%). Consider skin health. Monitor body temperature. Watch hydration.",
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+  },
+  {
+    breed: "Pixie-bob",
+    size: "Large",
+    dailyCalories: { min: 240, max: 360 },
+    mealsPerDay: 2,
+    notes: "Bobcat-like breed needs quality protein (33-38%). Consider joint health. Watch for dental issues. Monitor muscle condition.",
+    imageUrl: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80"
+  },
+  {
+    breed: "Savannah",
+    size: "Large",
+    dailyCalories: { min: 250, max: 380 },
+    mealsPerDay: 2,
+    notes: "Active hybrid needs high protein (35-40%). Consider enrichment during feeding. Watch for food sensitivities. Monitor energy levels.",
+    imageUrl: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?q=80"
+  },
+  {
+    breed: "Serengeti",
+    size: "Medium",
+    dailyCalories: { min: 220, max: 320 },
+    mealsPerDay: 2,
+    notes: "Athletic breed needs quality protein (33-38%). Consider activity level in portions. Watch for food allergies. Monitor weight.",
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
+  },
+  {
+    breed: "Thai",
+    size: "Medium",
+    dailyCalories: { min: 200, max: 300 },
+    mealsPerDay: 2,
+    notes: "Traditional Siamese needs quality protein (32-37%). Consider dental health. Watch for obesity. Monitor food temperature preferences.",
+    imageUrl: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80"
+  },
+  {
+    breed: "Ukrainian Levkoy",
+    size: "Medium",
+    dailyCalories: { min: 210, max: 310 },
+    mealsPerDay: 2,
+    notes: "Hairless breed needs higher calories. Quality protein (35-40%). Consider skin health. Monitor temperature sensitivity.",
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+  },
+  {
+    breed: "York Chocolate",
+    size: "Medium",
+    dailyCalories: { min: 220, max: 320 },
+    mealsPerDay: 2,
+    notes: "Rare breed needs quality protein (32-37%). Consider coat health. Watch for hairballs. Monitor hydration levels.",
+    imageUrl: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80"
+  },
+  {
+    breed: "Australian Mist",
+    size: "Medium",
+    dailyCalories: { min: 200, max: 300 },
+    mealsPerDay: 2,
+    notes: "Moderate energy breed needs quality protein (30-35%). Consider indoor formula. Watch for weight gain. Monitor portion sizes.",
+    imageUrl: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?q=80"
+  },
+  {
+    breed: "California Spangled",
+    size: "Medium",
+    dailyCalories: { min: 220, max: 320 },
+    mealsPerDay: 2,
+    notes: "Active breed needs quality protein (33-38%). Consider muscle maintenance. Watch for food allergies. Monitor activity level.",
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
   }
 ];

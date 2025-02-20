@@ -223,7 +223,7 @@ const dogStandards: DogStandard[] = [
     size: "Medium",
     dailyCalories: { min: 800, max: 1400 },
     mealsPerDay: 2,
-    notes: "High protein needs, active breed requires careful portion control",
+    notes: "High protein needs (25-30%). Athletic breed requires balanced amino acids. Monitor weight and muscle condition. Consider joint supplements for active dogs.",
     imageUrl: "https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?q=80"
   },
   {
@@ -231,7 +231,7 @@ const dogStandards: DogStandard[] = [
     size: "Medium",
     dailyCalories: { min: 800, max: 1200 },
     mealsPerDay: 2,
-    notes: "Prone to obesity, monitor food intake closely",
+    notes: "High risk of obesity - strict portion control essential. Moderate protein (22-25%). Feed elevated to reduce respiratory stress. Consider probiotic supplements.",
     imageUrl: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80"
   },
   {
@@ -239,7 +239,7 @@ const dogStandards: DogStandard[] = [
     size: "Medium",
     dailyCalories: { min: 700, max: 1000 },
     mealsPerDay: 2,
-    notes: "Moderate exercise needs, watch for weight gain",
+    notes: "Watch for food allergies. Omega fatty acids for coat health. Moderate protein (22-24%). Consider dental health in kibble selection.",
     imageUrl: "https://images.unsplash.com/photo-1591769198715-6c1149559028?q=80"
   },
   {
@@ -247,7 +247,7 @@ const dogStandards: DogStandard[] = [
     size: "Small",
     dailyCalories: { min: 400, max: 600 },
     mealsPerDay: 2,
-    notes: "Active small breed, needs balanced nutrition",
+    notes: "Prone to pancreatitis - low-fat diet recommended. Moderate protein (22-25%). Consider urinary health in diet selection.",
     imageUrl: "https://images.unsplash.com/photo-1530041539828-114de669390e?q=80"
   },
   {
@@ -255,7 +255,7 @@ const dogStandards: DogStandard[] = [
     size: "Small",
     dailyCalories: { min: 500, max: 800 },
     mealsPerDay: 2,
-    notes: "Energetic breed, monitor portion sizes",
+    notes: "Feed high-quality, easily digestible proteins (23-25%). Consider respiratory needs - elevated feeding position. Monitor for food allergies.",
     imageUrl: "https://images.unsplash.com/photo-1543071220-6ee5bf71a54e?q=80"
   },
   {
@@ -263,7 +263,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 2000, max: 3000 },
     mealsPerDay: 2,
-    notes: "Giant breed, needs careful feeding during growth",
+    notes: "Monitor calcium-phosphorus ratio. Joint supplements recommended. Moderate protein (23-26%). Feed elevated to prevent bloat. Watch growth rate in puppies.",
     imageUrl: "https://images.unsplash.com/photo-1590419690008-905895e8fe0d?q=80"
   },
   {
@@ -271,7 +271,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 1800, max: 2400 },
     mealsPerDay: 2,
-    notes: "Athletic breed, adjust based on activity level",
+    notes: "High protein needs for athletic build (25-30%). Consider hip health supplements. Feed quality protein sources. Adjust for activity level.",
     imageUrl: "https://images.unsplash.com/photo-1553882809-a4f57e59501d?q=80"
   },
   {
@@ -279,7 +279,7 @@ const dogStandards: DogStandard[] = [
     size: "Small",
     dailyCalories: { min: 300, max: 500 },
     mealsPerDay: 2,
-    notes: "Small but active, needs quality nutrition",
+    notes: "Quality protein for coat health (22-24%). Watch for dental issues. Consider omega fatty acids. Small breed-specific formula recommended.",
     imageUrl: "https://images.unsplash.com/photo-1611611158876-41699b77a059?q=80"
   },
   {
@@ -287,7 +287,7 @@ const dogStandards: DogStandard[] = [
     size: "Medium",
     dailyCalories: { min: 1200, max: 1800 },
     mealsPerDay: 2,
-    notes: "High energy breed, needs substantial nutrition",
+    notes: "High energy needs - quality protein (25-30%). Consider joint supplements for active lifestyle. Monitor weight for optimal performance.",
     imageUrl: "https://images.unsplash.com/photo-1523997359283-6fc87d5f0d88?q=80"
   },
   {
@@ -295,7 +295,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 2200, max: 3200 },
     mealsPerDay: 2,
-    notes: "Giant breed, careful feeding to prevent growth issues",
+    notes: "Controlled growth essential. Moderate protein (23-26%). Joint supplements recommended. Multiple smaller meals to prevent bloat.",
     imageUrl: "https://images.unsplash.com/photo-1552053831-71594a27632d?q=80"
   },
   {
@@ -303,7 +303,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 1600, max: 2400 },
     mealsPerDay: 2,
-    notes: "Working breed, high energy needs",
+    notes: "High protein needs for working breed (26-32%). Joint supplements beneficial. Consider mental stimulation during feeding. Adjust for activity level.",
     imageUrl: "https://images.unsplash.com/photo-1622227056993-6e7f88420855?q=80"
   },
   {
@@ -311,7 +311,7 @@ const dogStandards: DogStandard[] = [
     size: "Small",
     dailyCalories: { min: 300, max: 500 },
     mealsPerDay: 2,
-    notes: "Low shedding breed, moderate energy needs",
+    notes: "Hypoallergenic breed - watch for food sensitivities. Quality protein (22-24%) for coat health. Consider dental-friendly kibble size.",
     imageUrl: "https://images.unsplash.com/photo-1585559700398-1385b3a8aeb6?q=80"
   },
   {
@@ -319,7 +319,7 @@ const dogStandards: DogStandard[] = [
     size: "Medium",
     dailyCalories: { min: 1000, max: 1500 },
     mealsPerDay: 2,
-    notes: "Watch for food allergies, moderate exercise needs",
+    notes: "Prone to hip dysplasia - joint supplements beneficial. Moderate protein (23-26%). Watch for food allergies. Consider coat health in nutrition.",
     imageUrl: "https://images.unsplash.com/photo-1530041127323-12726bd7a526?q=80"
   },
   {
@@ -327,7 +327,7 @@ const dogStandards: DogStandard[] = [
     size: "Medium",
     dailyCalories: { min: 800, max: 1200 },
     mealsPerDay: 2,
-    notes: "Prone to obesity, careful portion control needed",
+    notes: "High obesity risk - strict portion control. Moderate protein (22-25%). Consider joint health supplements. Watch for food scavenging.",
     imageUrl: "https://images.unsplash.com/photo-1514517604298-cf80e0fb7f1e?q=80"
   },
   {
@@ -335,7 +335,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 1800, max: 2500 },
     mealsPerDay: 2,
-    notes: "Strong food drive, needs measured portions",
+    notes: "Watch for food sensitivities. High-quality protein (24-28%). Consider immune system support. Monitor portion sizes carefully.",
     imageUrl: "https://images.unsplash.com/photo-1617895153857-82fe79adfcd4?q=80"
   },
   {
@@ -343,7 +343,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 1600, max: 2400 },
     mealsPerDay: 2,
-    notes: "Very active, high energy requirements",
+    notes: "High energy needs - quality protein (25-30%). Consider bloat prevention. Athletic breed needs balanced nutrition. Monitor weight closely.",
     imageUrl: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?q=80"
   },
   {
@@ -351,7 +351,7 @@ const dogStandards: DogStandard[] = [
     size: "Small",
     dailyCalories: { min: 200, max: 400 },
     mealsPerDay: 2,
-    notes: "Small but active, needs quality small breed food",
+    notes: "Small but active - quality protein (22-24%). Watch dental health. Consider energy-dense food. Monitor blood sugar levels.",
     imageUrl: "https://images.unsplash.com/photo-1583336663277-620dc1996580?q=80"
   },
   {
@@ -359,7 +359,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 1400, max: 2200 },
     mealsPerDay: 2,
-    notes: "Active sporting breed, needs energy-rich diet",
+    notes: "Active sporting breed - high protein (24-28%). Consider joint supplements. Watch for bloat. Adjust calories based on activity.",
     imageUrl: "https://images.unsplash.com/photo-1588269845464-8993565cac3a?q=80"
   },
   {
@@ -367,7 +367,7 @@ const dogStandards: DogStandard[] = [
     size: "Small",
     dailyCalories: { min: 400, max: 600 },
     mealsPerDay: 2,
-    notes: "Prone to obesity, strict portion control needed",
+    notes: "High obesity risk - portion control essential. Moderate protein (21-24%). Consider respiratory needs in feeding position. Watch dental health.",
     imageUrl: "https://images.unsplash.com/photo-1517423568366-8b83523034fd?q=80"
   },
   {
@@ -375,7 +375,7 @@ const dogStandards: DogStandard[] = [
     size: "Medium",
     dailyCalories: { min: 900, max: 1300 },
     mealsPerDay: 2,
-    notes: "Active breed, needs balanced nutrition",
+    notes: "Quality protein (23-26%) for coat health. Watch for pancreatitis risk. Consider dental health. Monitor portion sizes.",
     imageUrl: "https://images.unsplash.com/photo-1530041539828-114de669390e?q=80"
   },
   {
@@ -383,7 +383,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 1300, max: 2000 },
     mealsPerDay: 2,
-    notes: "Sporting breed, adjust for activity level",
+    notes: "Sporting breed needs quality protein (24-28%). Consider joint health. Adjust for activity level. Watch for food sensitivities.",
     imageUrl: "https://images.unsplash.com/photo-1562317305-58a17fe2c09e?q=80"
   },
   {
@@ -391,7 +391,7 @@ const dogStandards: DogStandard[] = [
     size: "Small",
     dailyCalories: { min: 250, max: 400 },
     mealsPerDay: 2,
-    notes: "Small portions, quality small breed food recommended",
+    notes: "Small breed specific formula recommended. Quality protein (22-24%). Watch dental health. Consider respiratory needs in kibble size.",
     imageUrl: "https://images.unsplash.com/photo-1597633425046-08f5110420b5?q=80"
   },
   {
@@ -399,7 +399,7 @@ const dogStandards: DogStandard[] = [
     size: "Medium",
     dailyCalories: { min: 1000, max: 1500 },
     mealsPerDay: 2,
-    notes: "Muscular breed, needs protein-rich diet",
+    notes: "Athletic breed needs quality protein (24-28%). Watch for food allergies. Consider heart health. Monitor muscle condition.",
     imageUrl: "https://images.unsplash.com/photo-1535506573827-d4518e05cc8e?q=80"
   },
   {
@@ -407,7 +407,7 @@ const dogStandards: DogStandard[] = [
     size: "Large",
     dailyCalories: { min: 1400, max: 2000 },
     mealsPerDay: 2,
-    notes: "Lean breed, needs quality nutrition",
+    notes: "Quality protein (23-26%) for coat health. Consider joint supplements. Watch for food sensitivities. Adjust for activity level.",
     imageUrl: "https://images.unsplash.com/photo-1588269845464-8993565cac3a?q=80"
   },
   {
@@ -415,7 +415,7 @@ const dogStandards: DogStandard[] = [
     size: "Small",
     dailyCalories: { min: 200, max: 400 },
     mealsPerDay: 2,
-    notes: "Small appetite, regular small meals",
+    notes: "Quality protein (22-24%) for skin health. Consider dental issues. Small, frequent meals may be beneficial. Monitor weight carefully.",
     imageUrl: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80"
   }
 ];

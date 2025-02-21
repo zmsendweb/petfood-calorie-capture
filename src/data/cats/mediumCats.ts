@@ -1,3 +1,4 @@
+
 import { CatStandard } from "../types/catTypes";
 
 export const mediumCats: CatStandard[] = [
@@ -225,7 +226,7 @@ export const mediumCats: CatStandard[] = [
     notes: "Active breed needs quality protein (33-38%). Consider muscle maintenance. Watch for food allergies. Monitor activity level.",
     imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
   },
-    {
+  {
     breed: "Chartreux",
     size: "Medium",
     dailyCalories: { min: 210, max: 310 },
@@ -288,5 +289,5 @@ export const mediumCats: CatStandard[] = [
     mealsPerDay: 2,
     notes: "Ancient breed needs quality protein (32-37%). Consider coat health. Watch for deafness-related feeding issues. Monitor heart health.",
     imageUrl: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?q=80"
-  },
+  }
 ];

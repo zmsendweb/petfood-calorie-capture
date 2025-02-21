@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { PawPrint, Cat } from "lucide-react";
+import { PawPrint, Cat, LineChart } from "lucide-react";
 
 export default function Index() {
   return (
@@ -22,6 +22,12 @@ export default function Index() {
             <Button className="w-full sm:w-auto" size="lg" variant="secondary">
               <Cat className="mr-2" />
               Cat Standards
+            </Button>
+          </Link>
+          <Link to="/dashboard">
+            <Button className="w-full sm:w-auto" size="lg" variant="outline">
+              <LineChart className="mr-2" />
+              Calorie Tracker
             </Button>
           </Link>
         </div>

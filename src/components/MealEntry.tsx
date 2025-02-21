@@ -4,7 +4,6 @@ import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { CameraComponent } from "./Camera";
 import { Image } from "lucide-react";
 
 interface MealEntry {
@@ -30,20 +29,21 @@ export const MealEntryForm = ({
       id: Date.now().toString(),
       type: mealType,
       calories: Number(calories),
-      photo,
+      photo: photo || "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80", // Default photo if none provided
       timestamp: new Date(),
     };
     onSave(meal);
     setCalories("");
     setPhoto("");
+    setMealType("breakfast");
   };
 
   return (
-    <Card className="p-6 max-w-md mx-auto bg-white/80 backdrop-blur-sm shadow-lg animate-slide-up">
+    <Card className="p-6 max-w-md mx-auto bg-white/80 backdrop-blur-sm shadow-lg">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <Label>Meal Type</Label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {["breakfast", "lunch", "dinner", "snack"].map((type) => (
               <Button
                 key={type}
@@ -72,32 +72,20 @@ export const MealEntryForm = ({
         </div>
 
         <div className="space-y-2">
-          <Label>Photo</Label>
-          {photo ? (
-            <div className="relative group">
-              <img
-                src={photo}
-                alt="Meal"
-                className="w-full h-40 object-cover rounded-lg"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => setPhoto("")}
-              >
-                Change Photo
-              </Button>
-            </div>
-          ) : (
-            <CameraComponent onCapture={setPhoto} />
-          )}
+          <Label>Photo URL (Optional)</Label>
+          <Input
+            type="url"
+            value={photo}
+            onChange={(e) => setPhoto(e.target.value)}
+            placeholder="Enter photo URL"
+            className="transition-all duration-300"
+          />
         </div>
 
         <Button
           type="submit"
           className="w-full bg-primary hover:bg-primary/90 transition-colors"
-          disabled={!calories || !photo}
+          disabled={!calories}
         >
           Save Meal
         </Button>

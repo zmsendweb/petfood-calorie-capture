@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { format } from "date-fns";
+import { MealEntryForm } from "./MealEntry";
 
 interface MealEntry {
   id: string;
@@ -21,8 +22,13 @@ interface MealEntry {
   timestamp: Date;
 }
 
-export const Dashboard = ({ meals }: { meals: MealEntry[] }) => {
+export const Dashboard = ({ meals: initialMeals }: { meals: MealEntry[] }) => {
+  const [meals, setMeals] = useState<MealEntry[]>(initialMeals);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const handleAddMeal = (meal: MealEntry) => {
+    setMeals(prevMeals => [...prevMeals, meal]);
+  };
 
   const dailyCalories = useMemo(() => {
     return meals
@@ -51,7 +57,6 @@ export const Dashboard = ({ meals }: { meals: MealEntry[] }) => {
     return dailyTotals;
   }, [meals]);
 
-  // Custom calendar day render
   const modifiers = {
     hasMeals: (date: Date) => {
       const dateKey = format(date, 'yyyy-MM-dd');
@@ -67,7 +72,9 @@ export const Dashboard = ({ meals }: { meals: MealEntry[] }) => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="container mx-auto p-4 space-y-6">
+      <MealEntryForm onSave={handleAddMeal} />
+      
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="p-6 bg-white/80 backdrop-blur-sm">
           <h2 className="text-2xl font-semibold mb-4">Daily Summary</h2>

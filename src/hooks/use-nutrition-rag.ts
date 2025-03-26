@@ -2,28 +2,21 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { RAGResponse } from "@/data/types/ragTypes";
 
-interface NutritionSource {
-  title: string;
-  source: string;
-}
-
-interface RAGResponse {
-  answer: string;
-  sources: NutritionSource[];
-}
+export type PetType = "dog" | "cat" | null;
 
 export function useNutritionRAG() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<RAGResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const getAnswer = async (query: string) => {
+  const getAnswer = async (query: string, petType: PetType = null) => {
     setIsLoading(true);
     setError(null);
     try {
       const { data, error } = await supabase.functions.invoke('pet-nutrition-rag', {
-        body: { query }
+        body: { query, petType }
       });
 
       if (error) {

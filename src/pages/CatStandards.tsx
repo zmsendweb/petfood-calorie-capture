@@ -55,7 +55,7 @@ const CatStandards = () => {
 
           {showNutritionQuery && (
             <div className="mb-6">
-              <NutritionQuery />
+              <NutritionQuery defaultPetType="cat" />
             </div>
           )}
 

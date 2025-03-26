@@ -34,7 +34,7 @@ export default function Index() {
         <div className="mt-8">
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/80 shadow-sm text-sm">
             <Search className="w-4 h-4 mr-2 text-primary" />
-            <span>New: AI Nutrition Assistant available in Cat Standards</span>
+            <span>New: AI Nutrition Assistant available for both cats and dogs!</span>
           </div>
         </div>
       </div>

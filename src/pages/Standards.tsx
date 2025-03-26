@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowLeft } from "lucide-react";
+import { NutritionQuery } from "@/components/NutritionQuery";
 
 interface DogStandard {
   breed: string;
@@ -40,7 +41,7 @@ const dogStandards: DogStandard[] = [
     dailyCalories: { min: 650, max: 1000 },
     mealsPerDay: 3,
     notes: "Prone to obesity and respiratory issues. Feed measured portions. Avoid high-fat diets. Consider breed-specific formulas.",
-    imageUrl: "https://images.unsplash.com/photo-1593351799227-75df2026356b?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1593351799227-3346a1be7dee?q=80"
   },
   {
     breed: "Chihuahua",
@@ -423,6 +424,7 @@ const dogStandards: DogStandard[] = [
 const Standards = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [showNutritionQuery, setShowNutritionQuery] = useState(false);
 
   const filteredStandards = dogStandards.filter(dog =>
     (selectedSize ? dog.size === selectedSize : true) &&
@@ -445,15 +447,30 @@ const Standards = () => {
         </div>
 
         <div className="space-y-6 mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-            <Input
-              className="pl-10"
-              placeholder="Search by breed..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <Input
+                className="pl-10"
+                placeholder="Search by breed..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <Button 
+              onClick={() => setShowNutritionQuery(!showNutritionQuery)}
+              variant="outline"
+              className="whitespace-nowrap"
+            >
+              {showNutritionQuery ? "Hide Nutrition Assistant" : "Show Nutrition Assistant"}
+            </Button>
           </div>
+
+          {showNutritionQuery && (
+            <div className="mb-6">
+              <NutritionQuery defaultPetType="dog" />
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-2">
             <Button
@@ -540,3 +557,4 @@ const Standards = () => {
 };
 
 export default Standards;
+

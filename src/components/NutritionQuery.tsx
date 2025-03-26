@@ -1,19 +1,25 @@
 
 import { useState } from "react";
-import { useNutritionRAG } from "@/hooks/use-nutrition-rag";
+import { useNutritionRAG, PetType } from "@/hooks/use-nutrition-rag";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { SearchIcon, RefreshCw } from "lucide-react";
+import { SearchIcon, RefreshCw, Cat, Dog } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-export function NutritionQuery() {
+interface NutritionQueryProps {
+  defaultPetType?: PetType;
+}
+
+export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
   const [query, setQuery] = useState("");
+  const [petType, setPetType] = useState<PetType>(defaultPetType);
   const { getAnswer, isLoading, result } = useNutritionRAG();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      await getAnswer(query);
+      await getAnswer(query, petType);
     }
   };
 
@@ -26,10 +32,30 @@ export function NutritionQuery() {
             Ask any question about pet nutrition and get answers based on veterinary standards
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <div className="flex justify-center">
+            <ToggleGroup type="single" value={petType || ""} onValueChange={(value) => setPetType(value as PetType || null)}>
+              <ToggleGroupItem value="cat" aria-label="Cat nutrition">
+                <Cat className="mr-2 h-4 w-4" />
+                Cat
+              </ToggleGroupItem>
+              <ToggleGroupItem value="dog" aria-label="Dog nutrition">
+                <Dog className="mr-2 h-4 w-4" />
+                Dog
+              </ToggleGroupItem>
+              <ToggleGroupItem value="" aria-label="Both pets">
+                Both
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+          
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
             <Input
-              placeholder="What nutritional needs do Maine Coons have?"
+              placeholder={petType === "dog" 
+                ? "What nutritional needs do Labradors have?" 
+                : petType === "cat" 
+                  ? "What nutritional needs do Maine Coons have?"
+                  : "Ask about pet nutrition..."}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="flex-1"

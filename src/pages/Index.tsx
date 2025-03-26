@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { PawPrint, Cat, LineChart } from "lucide-react";
+import { PawPrint, Cat, LineChart, Search } from "lucide-react";
 
 export default function Index() {
   return (
@@ -9,7 +9,7 @@ export default function Index() {
       <div className="text-center space-y-8">
         <h1 className="text-4xl font-bold">Pet Nutrition Guide</h1>
         <p className="text-lg text-gray-700 max-w-md mx-auto">
-          Access comprehensive feeding guidelines for different dog and cat breeds, including calorie requirements and special considerations.
+          Access comprehensive feeding guidelines for different dog and cat breeds, including calorie requirements and special considerations. Now with AI-powered nutrition assistance!
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link to="/standards">
@@ -30,6 +30,12 @@ export default function Index() {
               Calorie Tracker
             </Button>
           </Link>
+        </div>
+        <div className="mt-8">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/80 shadow-sm text-sm">
+            <Search className="w-4 h-4 mr-2 text-primary" />
+            <span>New: AI Nutrition Assistant available in Cat Standards</span>
+          </div>
         </div>
       </div>
     </div>

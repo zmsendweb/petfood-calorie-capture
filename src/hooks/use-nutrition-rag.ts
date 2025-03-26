@@ -1,0 +1,55 @@
+
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+
+interface NutritionSource {
+  title: string;
+  source: string;
+}
+
+interface RAGResponse {
+  answer: string;
+  sources: NutritionSource[];
+}
+
+export function useNutritionRAG() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<RAGResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const getAnswer = async (query: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('pet-nutrition-rag', {
+        body: { query }
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      setResult(data as RAGResponse);
+      return data as RAGResponse;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get nutrition information';
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    getAnswer,
+    isLoading,
+    result,
+    error,
+  };
+}

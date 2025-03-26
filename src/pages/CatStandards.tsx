@@ -6,10 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowLeft } from "lucide-react";
 import { catStandards } from "@/data/catStandards";
+import { NutritionQuery } from "@/components/NutritionQuery";
 
 const CatStandards = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [showNutritionQuery, setShowNutritionQuery] = useState(false);
 
   const filteredStandards = catStandards.filter(cat =>
     (selectedSize ? cat.size === selectedSize : true) &&
@@ -32,15 +34,30 @@ const CatStandards = () => {
         </div>
 
         <div className="space-y-6 mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-            <Input
-              className="pl-10"
-              placeholder="Search by breed..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <Input
+                className="pl-10"
+                placeholder="Search by breed..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <Button 
+              onClick={() => setShowNutritionQuery(!showNutritionQuery)}
+              variant="outline"
+              className="whitespace-nowrap"
+            >
+              {showNutritionQuery ? "Hide Nutrition Assistant" : "Show Nutrition Assistant"}
+            </Button>
           </div>
+
+          {showNutritionQuery && (
+            <div className="mb-6">
+              <NutritionQuery />
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-2">
             <Button
@@ -115,7 +132,7 @@ const CatStandards = () => {
 
         <footer className="mt-12 border-t pt-6 text-xs text-gray-500">
           <p className="mb-2">
-            Nutritional information provided is based on general guidelines. Sources include veterinary nutritional standards and guidelines.
+            Nutritional information provided is based on general guidelines. Sources include American College of Veterinary Nutrition (ACVN) and European Society of Veterinary and Comparative Nutrition (ESVCN).
           </p>
           <p>
             Please consult with your veterinarian for personalized feeding recommendations based on your cat's age, weight, activity level, and health conditions.

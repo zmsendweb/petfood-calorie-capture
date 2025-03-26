@@ -1,4 +1,3 @@
-
 import { CatStandard } from "../../types/catTypes";
 
 export const specialtyMediumBreeds: CatStandard[] = [
@@ -6,17 +5,49 @@ export const specialtyMediumBreeds: CatStandard[] = [
     breed: "Sphynx",
     size: "Medium",
     dailyCalories: { min: 230, max: 350 },
+    ageSpecificCalories: {
+      kitten: { min: 260, max: 380 },
+      adult: { min: 230, max: 350 },
+      senior: { min: 210, max: 320 }
+    },
     mealsPerDay: 3,
+    mealsByAge: {
+      kitten: 4,
+      adult: 3,
+      senior: 3
+    },
     notes: "Higher caloric needs due to lack of fur. High protein (35-40%) required. Consider skin health supplements. Frequent small meals recommended.",
-    imageUrl: "https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?q=80"
+    nutritionNotes: {
+      kitten: "Growth period with very high caloric needs. Higher fat (18-20%) and protein (38-42%) than furred kittens. Multiple small meals essential.",
+      adult: "Metabolic rate 15-20% higher than furred cats. High fat content (16-18%) provides energy. Skin health supplements (omega oils) beneficial.",
+      senior: "Maintain higher calories than other senior cats. Moderate protein (34-38%) from high-quality sources. Maintain skin support supplements."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?q=80",
+    source: "European Society of Veterinary and Comparative Nutrition (ESVCN)"
   },
   {
     breed: "Scottish Fold",
     size: "Medium",
     dailyCalories: { min: 200, max: 300 },
+    ageSpecificCalories: {
+      kitten: { min: 240, max: 340 },
+      adult: { min: 200, max: 300 },
+      senior: { min: 180, max: 270 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "Joint health supplements recommended. Moderate protein (30-35%). Watch for obesity. Consider cartilage support in diet.",
-    imageUrl: "https://images.unsplash.com/photo-1574158622682-e40e69881006?q=80"
+    nutritionNotes: {
+      kitten: "Critical cartilage support needed from early age. Glucosamine/chondroitin supplementation. Moderate protein (34-36%) prevents rapid growth.",
+      adult: "Lifelong joint support essential. Moderate protein (30-35%) with antioxidants. Weight management critical to prevent joint strain.",
+      senior: "Increased joint support with age. Moderate protein (28-32%) with anti-inflammatory nutrients. Pain management through diet important."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1574158622682-e40e69881006?q=80",
+    source: "American College of Veterinary Nutrition (ACVN)"
   },
   {
     breed: "Manx",

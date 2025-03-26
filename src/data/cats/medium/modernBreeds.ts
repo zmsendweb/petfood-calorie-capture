@@ -1,4 +1,3 @@
-
 import { CatStandard } from "../../types/catTypes";
 
 export const modernMediumBreeds: CatStandard[] = [
@@ -6,17 +5,49 @@ export const modernMediumBreeds: CatStandard[] = [
     breed: "Bengal",
     size: "Medium",
     dailyCalories: { min: 250, max: 400 },
+    ageSpecificCalories: {
+      kitten: { min: 280, max: 450 },
+      adult: { min: 250, max: 400 },
+      senior: { min: 220, max: 350 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "High energy breed needs quality protein (35-40%). May prefer running water with meals. Consider enrichment during feeding. Watch for food allergies.",
-    imageUrl: "https://images.unsplash.com/photo-1682180193588-a4e41b4d5cc1?q=80"
+    nutritionNotes: {
+      kitten: "Rapid development requires high protein (38-42%). Extended kitten formula (14-16 months). Multiple meals support high energy needs.",
+      adult: "Extremely active breed - higher calories than most cats. Very high protein (35-40%) maintains muscle. Consider feeding puzzles for enrichment.",
+      senior: "Aging begins later (8-10 years). Maintain higher protein (32-36%) than most senior cats. Mental stimulation through feeding remains important."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1682180193588-a4e41b4d5cc1?q=80",
+    source: "European Society of Veterinary and Comparative Nutrition (ESVCN)"
   },
   {
     breed: "Oriental Shorthair",
     size: "Medium",
     dailyCalories: { min: 220, max: 320 },
+    ageSpecificCalories: {
+      kitten: { min: 250, max: 360 },
+      adult: { min: 220, max: 320 },
+      senior: { min: 200, max: 290 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 3
+    },
     notes: "High energy needs - quality protein (35%). Watch for food sensitivity. Consider breed-specific formulas. Monitor hydration.",
-    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+    nutritionNotes: {
+      kitten: "Similar to Siamese needs - high protein (38-40%). Frequent small meals prevent hypoglycemia. DHA supports brain development.",
+      adult: "Higher metabolism than average cats. High protein (35-38%) maintains lean muscle. Dental care critical through appropriate diet.",
+      senior: "Prone to dental issues with age. Moderate protein (30-35%) with quality sources. May need softer food options in later years."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80",
+    source: "American College of Veterinary Nutrition (ACVN)"
   },
   {
     breed: "Tonkinese",

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, ArrowLeft } from "lucide-react";
 import { catStandards } from "@/data/catStandards";
 import { NutritionQuery } from "@/components/NutritionQuery";
@@ -12,6 +13,7 @@ const CatStandards = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [showNutritionQuery, setShowNutritionQuery] = useState(false);
+  const [ageFilter, setAgeFilter] = useState("adult");
 
   const filteredStandards = catStandards.filter(cat =>
     (selectedSize ? cat.size === selectedSize : true) &&
@@ -20,6 +22,11 @@ const CatStandards = () => {
   );
 
   const sizes = ["Small", "Medium", "Large"];
+  const ageGroups = [
+    { id: "kitten", label: "Kitten" },
+    { id: "adult", label: "Adult" },
+    { id: "senior", label: "Senior" }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
@@ -59,24 +66,34 @@ const CatStandards = () => {
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant={selectedSize === null ? "default" : "outline"}
-              onClick={() => setSelectedSize(null)}
-              className="rounded-full"
-            >
-              All Sizes
-            </Button>
-            {sizes.map((size) => (
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap gap-2">
               <Button
-                key={size}
-                variant={selectedSize === size ? "default" : "outline"}
-                onClick={() => setSelectedSize(size)}
+                variant={selectedSize === null ? "default" : "outline"}
+                onClick={() => setSelectedSize(null)}
                 className="rounded-full"
               >
-                {size} Cats
+                All Sizes
               </Button>
-            ))}
+              {sizes.map((size) => (
+                <Button
+                  key={size}
+                  variant={selectedSize === size ? "default" : "outline"}
+                  onClick={() => setSelectedSize(size)}
+                  className="rounded-full"
+                >
+                  {size} Cats
+                </Button>
+              ))}
+            </div>
+            
+            <Tabs defaultValue="adult" className="w-full sm:w-auto" onValueChange={setAgeFilter}>
+              <TabsList className="grid grid-cols-3 w-full sm:w-[300px]">
+                <TabsTrigger value="kitten">Kitten</TabsTrigger>
+                <TabsTrigger value="adult">Adult</TabsTrigger>
+                <TabsTrigger value="senior">Senior</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
         </div>
 
@@ -105,18 +122,29 @@ const CatStandards = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-500">Daily Calorie Range</p>
+                    <p className="text-sm text-gray-500">
+                      {ageFilter === "kitten" ? "Kitten" : ageFilter === "adult" ? "Adult" : "Senior"} Daily Calorie Range
+                    </p>
                     <p className="font-semibold">
-                      {standard.dailyCalories.min} - {standard.dailyCalories.max} calories
+                      {standard.ageSpecificCalories[ageFilter as keyof typeof standard.ageSpecificCalories].min} - {standard.ageSpecificCalories[ageFilter as keyof typeof standard.ageSpecificCalories].max} calories
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Recommended Meals</p>
-                    <p className="font-semibold">{standard.mealsPerDay} times per day</p>
+                    <p className="text-sm text-gray-500">
+                      Recommended Meals
+                    </p>
+                    <p className="font-semibold">
+                      {standard.mealsByAge[ageFilter as keyof typeof standard.mealsByAge]} times per day
+                    </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Notes</p>
-                    <p className="text-sm">{standard.notes}</p>
+                    <p className="text-sm text-gray-500">Nutrition Notes</p>
+                    <p className="text-sm">
+                      {standard.nutritionNotes[ageFilter as keyof typeof standard.nutritionNotes]}
+                    </p>
+                  </div>
+                  <div className="pt-2 text-xs text-gray-500 italic">
+                    Source: {standard.source}
                   </div>
                 </div>
               </CardContent>

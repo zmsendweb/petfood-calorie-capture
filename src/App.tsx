@@ -8,6 +8,7 @@ import CatStandards from "./pages/CatStandards";
 import NotFound from "./pages/NotFound";
 import { Dashboard } from "./components/Dashboard";
 import PetProfiles from "./pages/PetProfiles";
+import PlanningDashboard from "./pages/PlanningDashboard";
 
 const initialMeals = [
   {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/cat-standards" element={<CatStandards />} />
             <Route path="/dashboard" element={<Dashboard meals={initialMeals} />} />
             <Route path="/pet-profiles" element={<PetProfiles />} />
+            <Route path="/planning" element={<PlanningDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

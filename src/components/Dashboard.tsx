@@ -17,7 +17,7 @@ import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { NutritionQuery } from "./NutritionQuery";
 import { Link } from "react-router-dom";
-import { Cat, Dog, Plus } from "lucide-react";
+import { Cat, Dog, Plus, TrendingUp } from "lucide-react";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
 
 interface MealEntry {
@@ -100,6 +100,17 @@ export const Dashboard = ({ meals: initialMeals }: { meals: MealEntry[] }) => {
         </TabsList>
         
         <TabsContent value="meals" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-semibold">Meal Tracker</h2>
+            <Link to="/planning">
+              <Button variant="outline" className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                <span className="hidden sm:inline">View Progress & Planning</span>
+                <span className="sm:hidden">Planning</span>
+              </Button>
+            </Link>
+          </div>
+          
           <EnhancedMealEntryForm onSave={handleAddMeal} />
           
           <div className="grid md:grid-cols-2 gap-6">

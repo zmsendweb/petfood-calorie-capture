@@ -4,18 +4,21 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Edit, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { PetProfileForm } from "@/components/PetProfileForm";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
 import { PetProfile } from "@/data/types/petTypes";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { PetOnboarding } from "@/components/PetOnboarding";
+import { PetProfileDisplay } from "@/components/PetProfileDisplay";
 
 const PetProfiles = () => {
   const { petProfiles, addPetProfile, updatePetProfile, deletePetProfile } = usePetProfiles();
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [editingPet, setEditingPet] = useState<PetProfile | null>(null);
   const [selectedType, setSelectedType] = useState<'all' | 'dog' | 'cat'>('all');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const filteredProfiles = selectedType === 'all' 
     ? petProfiles 
@@ -23,7 +26,7 @@ const PetProfiles = () => {
 
   const handleSaveNewPet = (petData: Omit<PetProfile, "id" | "createdAt" | "updatedAt">) => {
     addPetProfile(petData);
-    setShowAddForm(false);
+    setShowOnboarding(false);
     toast.success("Pet profile created successfully!");
   };
 
@@ -37,6 +40,7 @@ const PetProfiles = () => {
 
   const handleDeletePet = (id: string) => {
     deletePetProfile(id);
+    setConfirmDeleteId(null);
     toast.success("Pet profile deleted successfully!");
   };
 
@@ -59,16 +63,18 @@ const PetProfiles = () => {
               <TabsTrigger value="dog">Dogs</TabsTrigger>
               <TabsTrigger value="cat">Cats</TabsTrigger>
             </TabsList>
-            <Button onClick={() => setShowAddForm(true)}>
+            <Button onClick={() => setShowOnboarding(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add Pet
             </Button>
           </div>
 
           <TabsContent value="all" className="mt-0">
-            {showAddForm && (
+            {showOnboarding && (
               <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                <PetProfileForm onSave={handleSaveNewPet} />
+                <PetOnboarding 
+                  onComplete={handleSaveNewPet} 
+                />
               </div>
             )}
             
@@ -85,77 +91,17 @@ const PetProfiles = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProfiles.length > 0 ? (
                 filteredProfiles.map(pet => (
-                  <Card key={pet.id} className="overflow-hidden bg-white/90 backdrop-blur-sm hover:shadow-md transition-shadow">
-                    <div className="h-40 relative">
-                      <img 
-                        src={pet.photo || `https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80`} 
-                        alt={pet.name} 
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded-full text-xs backdrop-blur-sm">
-                        {pet.type.charAt(0).toUpperCase() + pet.type.slice(1)}
-                      </div>
-                    </div>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex justify-between items-start">
-                        <span>{pet.name}</span>
-                        <span className="text-sm font-normal">
-                          {pet.age} {pet.ageUnit}
-                        </span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pb-3">
-                      <p className="text-sm text-gray-600">
-                        {pet.breed ? pet.breed : "Mixed breed"}
-                      </p>
-                      <div className="flex gap-4 mt-2 text-sm">
-                        <div>
-                          <p className="text-gray-500">Weight</p>
-                          <p>{pet.weight} {pet.weightUnit}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-500">Activity</p>
-                          <p className="capitalize">{pet.activityLevel}</p>
-                        </div>
-                      </div>
-                      {pet.notes && (
-                        <p className="mt-2 text-sm text-gray-600 line-clamp-2">{pet.notes}</p>
-                      )}
-                    </CardContent>
-                    <CardFooter className="flex justify-end gap-2 pt-0">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => setEditingPet(pet)}
-                      >
-                        <Edit className="h-4 w-4 mr-1" /> Edit
-                      </Button>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="destructive" size="sm">
-                            <Trash2 className="h-4 w-4 mr-1" /> Delete
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Delete Pet Profile</DialogTitle>
-                            <DialogDescription>
-                              Are you sure you want to delete {pet.name}'s profile? This action cannot be undone.
-                            </DialogDescription>
-                          </DialogHeader>
-                          <DialogFooter>
-                            <Button variant="outline" onClick={() => {}}>Cancel</Button>
-                            <Button variant="destructive" onClick={() => handleDeletePet(pet.id)}>Delete</Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    </CardFooter>
-                  </Card>
+                  <PetProfileDisplay 
+                    key={pet.id}
+                    pet={pet}
+                    onEdit={() => setEditingPet(pet)}
+                    onDelete={() => setConfirmDeleteId(pet.id)}
+                  />
                 ))
               ) : (
                 <div className="col-span-full text-center py-10">
                   <p className="text-gray-500 mb-4">No pet profiles found.</p>
-                  <Button onClick={() => setShowAddForm(true)}>
+                  <Button onClick={() => setShowOnboarding(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Your First Pet
                   </Button>
@@ -166,24 +112,40 @@ const PetProfiles = () => {
 
           <TabsContent value="dog" className="mt-0">
             {/* Dog-specific content will be shown via the filtered profiles */}
-            {showAddForm && <PetProfileForm onSave={handleSaveNewPet} initialValues={{ type: "dog" }} />}
+            {showOnboarding && <PetOnboarding onComplete={handleSaveNewPet} initialValues={{ type: "dog" }} />}
           </TabsContent>
 
           <TabsContent value="cat" className="mt-0">
             {/* Cat-specific content will be shown via the filtered profiles */}
-            {showAddForm && <PetProfileForm onSave={handleSaveNewPet} initialValues={{ type: "cat" }} />}
+            {showOnboarding && <PetOnboarding onComplete={handleSaveNewPet} initialValues={{ type: "cat" }} />}
           </TabsContent>
         </Tabs>
 
         <footer className="mt-12 border-t pt-6 text-xs text-gray-500">
           <p className="mb-2">
-            Manage profiles for all your pets in one place. Track their age, weight, and dietary needs.
+            Create personalized profiles for all your pets. Track their preferences, health conditions, and set aspirational goals.
           </p>
           <p>
-            Update your pet's information regularly as they grow to ensure accurate nutritional recommendations.
+            Update your pet's information regularly to ensure the most accurate nutritional recommendations and progress tracking.
           </p>
         </footer>
       </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!confirmDeleteId} onOpenChange={(open) => !open && setConfirmDeleteId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Pet Profile</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this pet's profile? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDeleteId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => confirmDeleteId && handleDeletePet(confirmDeleteId)}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -20,6 +20,12 @@ const initialPetProfiles: PetProfile[] = [
     dailyCalorieTarget: 1800,
     preferredFoods: ["Chicken", "Beef"],
     dietaryRestrictions: [],
+    personality: ["Playful", "Loyal", "Affectionate"],
+    temperament: "energetic",
+    likesAndPreferences: ["Tennis balls", "Swimming", "Car rides"],
+    dislikesAndAversions: ["Vacuum cleaner", "Being alone", "Thunderstorms"],
+    shortTermGoals: ["Improve recall command", "Reduce pulling on leash"],
+    longTermGoals: ["Achieve ideal weight", "Complete basic obedience training"],
     createdAt: new Date(),
     updatedAt: new Date()
   }

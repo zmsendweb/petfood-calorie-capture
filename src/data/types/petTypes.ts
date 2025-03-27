@@ -16,6 +16,19 @@ export interface PetProfile {
   preferredFoods?: string[];
   dietaryRestrictions?: string[];
   lastFed?: Date;
+  
+  // New personality fields
+  personality?: string[];
+  temperament?: 'calm' | 'balanced' | 'energetic';
+  likesAndPreferences?: string[];
+  dislikesAndAversions?: string[];
+  healthConditions?: string[];
+  
+  // New aspirational goals
+  shortTermGoals?: string[];
+  longTermGoals?: string[];
+  progressNotes?: string;
+  
   createdAt: Date;
   updatedAt: Date;
 }

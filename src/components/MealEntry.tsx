@@ -1,18 +1,10 @@
-
 import { useState } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Image } from "lucide-react";
-
-interface MealEntry {
-  id: string;
-  type: string;
-  calories: number;
-  photo: string;
-  timestamp: Date;
-}
+import { MealEntry } from "@/types/mealTypes";
 
 export const MealEntryForm = ({
   onSave,

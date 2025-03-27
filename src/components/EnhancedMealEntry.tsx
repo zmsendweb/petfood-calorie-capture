@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
@@ -12,18 +11,7 @@ import { CameraComponent } from "./Camera";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { toast } from "sonner";
-
-interface MealEntry {
-  id: string;
-  type: string;
-  calories: number;
-  photo: string;
-  foodName?: string;
-  brandName?: string;
-  serving?: string;
-  timestamp: Date;
-  petId?: string;
-}
+import { MealEntry } from "@/types/mealTypes";
 
 export const EnhancedMealEntryForm = ({
   onSave,

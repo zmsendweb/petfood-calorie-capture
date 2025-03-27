@@ -23,8 +23,7 @@ export const smallCats: CatStandard[] = [
       adult: "Higher calories per pound than most cats. High quality protein (35-38%) maintains muscle. Skin and coat support nutrients essential.",
       senior: "Maintain higher calories than other senior cats. Moderate protein (33-36%) with quality sources. Omega fatty acids for skin health."
     },
-    imageUrl: "https://images.unsplash.com/photo-1576280314498-31e7c48361c9?q=80",
-    source: "European Society of Veterinary and Comparative Nutrition (ESVCN)"
+    imageUrl: "https://images.unsplash.com/photo-1576280314498-31e7c48361c9?q=80"
   },
   {
     breed: "Cornish Rex",
@@ -47,8 +46,7 @@ export const smallCats: CatStandard[] = [
       adult: "Higher caloric needs than most cats of similar size. High fat (15-18%) and protein (35-38%) diet. Skin support critical.",
       senior: "Maintain higher calories than typical senior cats. Moderate protein (32-36%) with quality sources. Continue skin support."
     },
-    imageUrl: "https://images.unsplash.com/photo-1577590835286-1cdd24c08fd5?q=80",
-    source: "American College of Veterinary Nutrition (ACVN)"
+    imageUrl: "https://images.unsplash.com/photo-1577590835286-1cdd24c08fd5?q=80"
   },
   {
     breed: "Munchkin",
@@ -71,8 +69,7 @@ export const smallCats: CatStandard[] = [
       adult: "Joint support supplements recommended. Maintain lean weight to reduce stress on joints. Monitor mobility during mealtimes.",
       senior: "Increased joint support needed with age. Lower calorie density to prevent weight gain. Consider raised feeding stations."
     },
-    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80",
-    source: "American College of Veterinary Nutrition (ACVN)"
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
   },
   {
     breed: "Singapura",
@@ -95,8 +92,7 @@ export const smallCats: CatStandard[] = [
       adult: "High metabolism requires quality nutrition. Small, frequent meals may benefit energy levels. Consider high-protein formulas.",
       senior: "Maintain smaller portions but nutrient-rich foods. Watch for dental issues that may affect eating. Monitor weight carefully."
     },
-    imageUrl: "https://images.unsplash.com/photo-1596854372407-baba7fef6e51?q=80",
-    source: "European Society of Veterinary and Comparative Nutrition (ESVCN)"
+    imageUrl: "https://images.unsplash.com/photo-1596854372407-baba7fef6e51?q=80"
   },
   {
     breed: "Bambino",
@@ -119,7 +115,6 @@ export const smallCats: CatStandard[] = [
       adult: "Higher metabolic rate than furred cats. High fat content (16-18%) provides energy. Skin supplements beneficial for hairless breed.",
       senior: "Maintain higher calories than other senior cats. Moderate protein (33-36%) with quality sources. Continue skin support supplements."
     },
-    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80",
-    source: "American College of Veterinary Nutrition (ACVN)"
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
   }
 ];

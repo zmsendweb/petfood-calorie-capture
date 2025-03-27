@@ -24,5 +24,5 @@ export interface CatStandard {
     senior: string;
   };
   imageUrl: string;
-  source: string;
+  source?: string; // Make source optional
 }

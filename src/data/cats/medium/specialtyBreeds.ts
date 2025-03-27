@@ -1,3 +1,4 @@
+
 import { CatStandard } from "../../types/catTypes";
 
 export const specialtyMediumBreeds: CatStandard[] = [
@@ -53,48 +54,144 @@ export const specialtyMediumBreeds: CatStandard[] = [
     breed: "Manx",
     size: "Medium",
     dailyCalories: { min: 220, max: 320 },
+    ageSpecificCalories: {
+      kitten: { min: 250, max: 350 },
+      adult: { min: 220, max: 320 },
+      senior: { min: 190, max: 290 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "Watch spine health - quality protein (30-35%). Consider joint supplements. Monitor digestion. Adjust portions for activity.",
-    imageUrl: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?q=80"
+    nutritionNotes: {
+      kitten: "Special attention to spine development. Quality protein (34-36%) supports proper skeletal formation. Monitor digestive health closely.",
+      adult: "Some may have digestive sensitivities due to shortened spine. Quality protein (30-35%) supports muscle maintenance. Joint supplements beneficial.",
+      senior: "Increased support for aging spine and joints. Moderate protein (28-32%) with anti-inflammatory nutrients. Digestible food important."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?q=80",
+    source: "European Society of Veterinary and Comparative Nutrition (ESVCN)"
   },
   {
     breed: "Peterbald",
     size: "Medium",
     dailyCalories: { min: 220, max: 320 },
+    ageSpecificCalories: {
+      kitten: { min: 250, max: 350 },
+      adult: { min: 220, max: 320 },
+      senior: { min: 200, max: 300 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "Hairless breed needs high calories. Quality protein (35-40%). Consider skin health. Monitor body temperature. Watch hydration.",
-    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+    nutritionNotes: {
+      kitten: "Hairless kittens need higher calories to maintain body temperature. High protein (38-42%) supports growth. Monitor skin condition closely.",
+      adult: "Higher metabolic rate than furred cats. Higher fat (15-18%) and protein (35-40%) diet. Skin supplements essential for hairless breed.",
+      senior: "Maintain higher calories than other senior cats. Quality protein sources (32-36%) for muscle maintenance. Continue skin support."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80",
+    source: "American College of Veterinary Nutrition (ACVN)"
   },
   {
     breed: "Ukrainian Levkoy",
     size: "Medium",
     dailyCalories: { min: 210, max: 310 },
+    ageSpecificCalories: {
+      kitten: { min: 240, max: 340 },
+      adult: { min: 210, max: 310 },
+      senior: { min: 190, max: 280 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "Hairless breed needs higher calories. Quality protein (35-40%). Consider skin health. Monitor temperature sensitivity.",
-    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+    nutritionNotes: {
+      kitten: "Folded ear and hairless breed needs special attention. High protein (38-40%) supports growth. Monitor ear and skin health.",
+      adult: "Higher calories needed due to lack of insulation. High quality protein (35-40%) for muscle maintenance. Skin supplements beneficial.",
+      senior: "Maintain higher calories than typical senior cats. Quality protein sources (32-36%). Continue skin and ear support supplements."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80",
+    source: "European Society of Veterinary and Comparative Nutrition (ESVCN)"
   },
   {
     breed: "LaPerm",
     size: "Medium",
     dailyCalories: { min: 210, max: 310 },
+    ageSpecificCalories: {
+      kitten: { min: 240, max: 340 },
+      adult: { min: 210, max: 310 },
+      senior: { min: 190, max: 280 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "Curly coat needs quality protein (32-37%). Consider coat health supplements. Watch for hairballs. Monitor hydration.",
-    imageUrl: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80"
+    nutritionNotes: {
+      kitten: "Special attention to developing curly coat. High protein (36-38%) supports proper coat development. Omega fatty acids beneficial.",
+      adult: "Unique coat requires nutritional support. Quality protein (32-37%) maintains coat health. Hairball prevention formula recommended.",
+      senior: "Maintain coat health with quality nutrition. Moderate protein (30-34%) with omega supplements. Hairball control remains important."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80",
+    source: "American College of Veterinary Nutrition (ACVN)"
   },
   {
     breed: "Selkirk Rex",
     size: "Medium",
     dailyCalories: { min: 210, max: 310 },
+    ageSpecificCalories: {
+      kitten: { min: 240, max: 340 },
+      adult: { min: 210, max: 310 },
+      senior: { min: 190, max: 280 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "Curly coat needs quality protein (32-37%). Consider skin health. Watch for matting issues. Monitor hydration.",
-    imageUrl: "https://images.unsplash.com/photo-1577590835286-1cdd24c08fd5?q=80"
+    nutritionNotes: {
+      kitten: "Focus on coat development with high-quality proteins (36-38%). Omega fatty acids support curly coat formation. Monitor skin health.",
+      adult: "Plush coat requires nutritional support. Quality protein (32-37%) and fatty acids maintain coat health. Watch for matting-related issues.",
+      senior: "Maintain coat quality with appropriate nutrition. Moderate protein (30-34%) with continued omega supplements. Joint support beneficial."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1577590835286-1cdd24c08fd5?q=80",
+    source: "European Society of Veterinary and Comparative Nutrition (ESVCN)"
   },
   {
     breed: "Lykoi",
     size: "Medium",
     dailyCalories: { min: 210, max: 310 },
+    ageSpecificCalories: {
+      kitten: { min: 240, max: 340 },
+      adult: { min: 210, max: 310 },
+      senior: { min: 190, max: 280 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "Werewolf cat needs high protein (33-38%). Consider skin health supplements. Watch for temperature sensitivity. Monitor coat condition.",
-    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
+    nutritionNotes: {
+      kitten: "Partial hairlessness requires special nutrition. High protein (36-38%) supports proper development. Monitor unique coat pattern.",
+      adult: "Higher calories needed due to partial hairlessness. Quality protein (33-38%) supports skin and muscle health. Skin supplements beneficial.",
+      senior: "Maintain skin health with quality nutrition. Moderate protein (30-34%) with skin support supplements. Watch for age-related coat changes."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80",
+    source: "American College of Veterinary Nutrition (ACVN)"
   }
 ];

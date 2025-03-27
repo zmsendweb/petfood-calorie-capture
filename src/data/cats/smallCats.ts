@@ -1,3 +1,4 @@
+
 import { CatStandard } from "../types/catTypes";
 
 export const smallCats: CatStandard[] = [
@@ -53,24 +54,72 @@ export const smallCats: CatStandard[] = [
     breed: "Munchkin",
     size: "Small",
     dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
     mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
     notes: "Short legs need joint support. Moderate protein (30-35%). Consider mobility in feeding setup. Watch weight carefully.",
-    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
+    nutritionNotes: {
+      kitten: "Focus on controlled growth to support developing joints. Quality protein (34-36%) supports proper musculoskeletal development.",
+      adult: "Joint support supplements recommended. Maintain lean weight to reduce stress on joints. Monitor mobility during mealtimes.",
+      senior: "Increased joint support needed with age. Lower calorie density to prevent weight gain. Consider raised feeding stations."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80",
+    source: "American College of Veterinary Nutrition (ACVN)"
   },
   {
     breed: "Singapura",
     size: "Small",
     dailyCalories: { min: 170, max: 270 },
+    ageSpecificCalories: {
+      kitten: { min: 190, max: 290 },
+      adult: { min: 170, max: 270 },
+      senior: { min: 150, max: 240 }
+    },
     mealsPerDay: 3,
+    mealsByAge: {
+      kitten: 4,
+      adult: 3,
+      senior: 3
+    },
     notes: "Smallest breed needs concentrated nutrition. Quality protein (33-38%). Consider small portions. Monitor blood sugar.",
-    imageUrl: "https://images.unsplash.com/photo-1596854372407-baba7fef6e51?q=80"
+    nutritionNotes: {
+      kitten: "Smallest cat breed requires nutrient-dense food. Multiple small meals prevent hypoglycemia. High protein (38-40%) supports growth.",
+      adult: "High metabolism requires quality nutrition. Small, frequent meals may benefit energy levels. Consider high-protein formulas.",
+      senior: "Maintain smaller portions but nutrient-rich foods. Watch for dental issues that may affect eating. Monitor weight carefully."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1596854372407-baba7fef6e51?q=80",
+    source: "European Society of Veterinary and Comparative Nutrition (ESVCN)"
   },
   {
     breed: "Bambino",
     size: "Small",
     dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
     mealsPerDay: 3,
+    mealsByAge: {
+      kitten: 4,
+      adult: 3,
+      senior: 3
+    },
     notes: "Hybrid breed needs concentrated nutrition. Quality protein (33-38%). Consider skin health. Monitor body temperature carefully.",
-    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
+    nutritionNotes: {
+      kitten: "Hairless kittens need extra calories to maintain body heat. High protein (38-42%) supports growth. Monitor skin condition.",
+      adult: "Higher metabolic rate than furred cats. High fat content (16-18%) provides energy. Skin supplements beneficial for hairless breed.",
+      senior: "Maintain higher calories than other senior cats. Moderate protein (33-36%) with quality sources. Continue skin support supplements."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80",
+    source: "American College of Veterinary Nutrition (ACVN)"
   }
 ];

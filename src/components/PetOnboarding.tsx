@@ -1,644 +1,834 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Checkbox } from "./ui/checkbox";
-import { ArrowLeft, ArrowRight, Camera, Check, Heart, Paw, Shield, Star, X } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Dog, Cat, Heart, Zap, Brain, ArrowRight, ArrowLeft, Camera, Check } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { PetProfile } from "@/data/types/petTypes";
-import { CameraComponent } from "./Camera";
-import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
-interface PetOnboardingProps {
-  onComplete: (petData: Omit<PetProfile, "id" | "createdAt" | "updatedAt">) => void;
-  initialValues?: Partial<PetProfile>;
-}
+// Define the form schema for the basic information step
+const basicInfoSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  type: z.enum(["dog", "cat", "other"]),
+  breed: z.string().optional(),
+  age: z.coerce.number().positive("Age must be positive"),
+  ageUnit: z.enum(["years", "months", "weeks"]),
+  weight: z.coerce.number().positive("Weight must be positive"),
+  weightUnit: z.enum(["kg", "lb"]),
+  gender: z.enum(["male", "female", "unknown"]),
+  activityLevel: z.enum(["low", "moderate", "high"]),
+  notes: z.string().optional(),
+});
 
-export const PetOnboarding = ({ onComplete, initialValues = {} }: PetOnboardingProps) => {
-  const navigate = useNavigate();
+// Define schema for personality traits
+const personalitySchema = z.object({
+  personality: z.array(z.string()).min(1, "Select at least one trait"),
+  temperament: z.enum(["calm", "balanced", "energetic"]),
+  likesAndPreferences: z.array(z.string()).min(1, "Add at least one preference"),
+  dislikesAndAversions: z.array(z.string()).min(1, "Add at least one aversion"),
+  healthConditions: z.array(z.string()).optional(),
+});
+
+// Define schema for goals
+const goalsSchema = z.object({
+  shortTermGoals: z.array(z.string()).min(1, "Add at least one short-term goal"),
+  longTermGoals: z.array(z.string()).min(1, "Add at least one long-term goal"),
+  progressNotes: z.string().optional(),
+});
+
+// Combined schema
+const petProfileSchema = z.object({
+  ...basicInfoSchema.shape,
+  ...personalitySchema.shape,
+  ...goalsSchema.shape,
+  photo: z.string().optional(),
+});
+
+type PetOnboardingProps = {
+  onSave: (pet: Omit<PetProfile, "id" | "createdAt" | "updatedAt">) => void;
+  onCancel: () => void;
+};
+
+type TagInputProps = {
+  value: string[];
+  onChange: (value: string[]) => void;
+  placeholder?: string;
+};
+
+// Component for adding tags/multiple items
+const TagInput: React.FC<TagInputProps> = ({ value, onChange, placeholder }) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleAddTag = () => {
+    if (inputValue.trim() && !value.includes(inputValue.trim())) {
+      onChange([...value, inputValue.trim()]);
+      setInputValue("");
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    onChange(value.filter(t => t !== tag));
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex space-x-2">
+        <Input
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder={placeholder || "Add new item..."}
+          className="flex-1"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleAddTag();
+            }
+          }}
+        />
+        <Button type="button" onClick={handleAddTag}>Add</Button>
+      </div>
+      <div className="flex flex-wrap gap-2 mt-2">
+        {value.map((tag, index) => (
+          <Badge key={index} variant="secondary" className="px-3 py-1">
+            {tag}
+            <button
+              type="button"
+              className="ml-2 text-xs opacity-70 hover:opacity-100"
+              onClick={() => handleRemoveTag(tag)}
+            >
+              ×
+            </button>
+          </Badge>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export const PetOnboarding: React.FC<PetOnboardingProps> = ({ onSave, onCancel }) => {
   const [step, setStep] = useState(1);
-  const [showCamera, setShowCamera] = useState(false);
-  
-  const [formData, setFormData] = useState<Partial<PetProfile>>({
-    name: "",
-    type: "dog",
-    breed: "",
-    age: 1,
-    ageUnit: "years",
-    weight: 10,
-    weightUnit: "kg",
-    gender: "unknown",
-    activityLevel: "moderate",
-    photo: "",
-    notes: "",
+  const [photo, setPhoto] = useState<string | undefined>();
+  const [formData, setFormData] = useState<any>({
     personality: [],
-    temperament: "balanced",
     likesAndPreferences: [],
     dislikesAndAversions: [],
     healthConditions: [],
     shortTermGoals: [],
     longTermGoals: [],
-    ...initialValues
+  });
+  const totalSteps = 4;
+
+  // Basic info form
+  const basicInfoForm = useForm<z.infer<typeof basicInfoSchema>>({
+    resolver: zodResolver(basicInfoSchema),
+    defaultValues: {
+      name: "",
+      type: "dog",
+      age: 1,
+      ageUnit: "years",
+      weight: 10,
+      weightUnit: "kg",
+      gender: "unknown",
+      activityLevel: "moderate",
+    },
   });
 
-  // Helper for input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  // Personality form
+  const personalityForm = useForm<z.infer<typeof personalitySchema>>({
+    resolver: zodResolver(personalitySchema),
+    defaultValues: {
+      personality: [],
+      temperament: "balanced",
+      likesAndPreferences: [],
+      dislikesAndAversions: [],
+      healthConditions: [],
+    },
+  });
+
+  // Goals form
+  const goalsForm = useForm<z.infer<typeof goalsSchema>>({
+    resolver: zodResolver(goalsSchema),
+    defaultValues: {
+      shortTermGoals: [],
+      longTermGoals: [],
+      progressNotes: "",
+    },
+  });
+
+  const handlePhotoCapture = (photoData: string) => {
+    setPhoto(photoData);
   };
 
-  // Helper for select inputs
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleBasicInfoSubmit = (data: z.infer<typeof basicInfoSchema>) => {
+    setFormData({ ...formData, ...data, photo });
+    setStep(2);
   };
 
-  // Helper for number inputs
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: parseFloat(value) || 0 }));
+  const handlePersonalitySubmit = (data: z.infer<typeof personalitySchema>) => {
+    setFormData({ ...formData, ...data });
+    setStep(3);
   };
 
-  // Helper for array fields
-  const handleArrayItem = (field: string, value: string, add = true) => {
-    setFormData(prev => {
-      const currentArray = prev[field as keyof typeof prev] as string[] || [];
-      
-      if (add) {
-        if (!value.trim() || currentArray.includes(value.trim())) return prev;
-        return { ...prev, [field]: [...currentArray, value.trim()] };
-      } else {
-        return { ...prev, [field]: currentArray.filter(item => item !== value) };
+  const handleGoalsSubmit = (data: z.infer<typeof goalsSchema>) => {
+    setFormData({ ...formData, ...data });
+    setStep(4);
+  };
+
+  const handleFinalSubmit = () => {
+    const petData: Omit<PetProfile, "id" | "createdAt" | "updatedAt"> = {
+      ...formData,
+      photo,
+      dailyCalorieTarget: calculateCalorieTarget(formData),
+      preferredFoods: formData.likesAndPreferences || [],
+      dietaryRestrictions: formData.healthConditions?.filter((condition: string) => 
+        condition.toLowerCase().includes("allergy") || 
+        condition.toLowerCase().includes("intolerance")
+      ) || [],
+    };
+    onSave(petData);
+  };
+
+  const calculateCalorieTarget = (data: any): number => {
+    // Basic calculation based on weight and activity level
+    // Could be refined with more sophisticated formulas
+    const baseCalories = data.type === "dog" 
+      ? data.weight * (data.weightUnit === "kg" ? 30 : 13.6) 
+      : data.weight * (data.weightUnit === "kg" ? 20 : 9.1);
+    
+    const activityMultiplier = 
+      data.activityLevel === "low" ? 1.2 :
+      data.activityLevel === "moderate" ? 1.4 : 1.6;
+    
+    // Age adjustment
+    let ageAdjustment = 1.0;
+    if (data.ageUnit === "years") {
+      if (data.type === "dog") {
+        if (data.age < 1) ageAdjustment = 1.6; // puppy
+        else if (data.age > 7) ageAdjustment = 0.8; // senior
+      } else if (data.type === "cat") {
+        if (data.age < 1) ageAdjustment = 1.4; // kitten
+        else if (data.age > 10) ageAdjustment = 0.8; // senior
       }
-    });
+    }
+    
+    return Math.round(baseCalories * activityMultiplier * ageAdjustment);
   };
 
-  // Handle photo capture
-  const handleCapture = (photoDataUrl: string) => {
-    setFormData(prev => ({ ...prev, photo: photoDataUrl }));
-    setShowCamera(false);
-  };
+  // Predefined traits for pets
+  const dogTraits = ["Playful", "Loyal", "Energetic", "Affectionate", "Protective", "Calm", "Curious", "Independent", "Social", "Stubborn"];
+  const catTraits = ["Independent", "Curious", "Playful", "Affectionate", "Aloof", "Vocal", "Gentle", "Mischievous", "Lazy", "Alert"];
+  const otherPetTraits = ["Quiet", "Active", "Friendly", "Shy", "Curious", "Playful", "Independent", "Social", "Territorial"];
 
-  // Complete onboarding
-  const handleComplete = () => {
-    toast.success("Pet profile created successfully!");
-    onComplete(formData as Omit<PetProfile, "id" | "createdAt" | "updatedAt">);
-  };
-
-  // Cancel onboarding
-  const handleCancel = () => {
-    if (confirm("Are you sure you want to cancel? Your progress will be lost.")) {
-      navigate("/pet-profiles");
+  const getTraitOptions = () => {
+    switch (formData.type) {
+      case "dog": return dogTraits;
+      case "cat": return catTraits;
+      default: return otherPetTraits;
     }
   };
 
-  // Navigating between steps
-  const nextStep = () => setStep(prev => prev + 1);
-  const prevStep = () => setStep(prev => prev - 1);
-
-  // New field inputs
-  const [newLike, setNewLike] = useState("");
-  const [newDislike, setNewDislike] = useState("");
-  const [newHealth, setNewHealth] = useState("");
-  const [newShortGoal, setNewShortGoal] = useState("");
-  const [newLongGoal, setNewLongGoal] = useState("");
-
-  // Personality traits options
-  const personalityTraits = [
-    "Playful", "Affectionate", "Independent", "Loyal", "Cautious", 
-    "Social", "Curious", "Vocal", "Quiet", "Protective"
-  ];
-
-  // Array of steps content for the wizard
-  const steps = [
-    // Step 1: Basic Info
-    <div key="step1" className="space-y-4">
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Let's get to know your pet!</h2>
-        <p className="text-muted-foreground">Start with the basics about your furry friend.</p>
-      </div>
-
-      <div className="space-y-4">
-        <div className="space-y-1">
-          <Label htmlFor="name">Pet's Name</Label>
-          <Input 
-            id="name" 
-            name="name" 
-            value={formData.name} 
-            onChange={handleChange} 
-            placeholder="What's your pet's name?"
-            required 
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <Label htmlFor="type">Type of Pet</Label>
-            <Select 
-              value={formData.type} 
-              onValueChange={(value) => handleSelectChange("type", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="dog">Dog</SelectItem>
-                <SelectItem value="cat">Cat</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="breed">Breed</Label>
-            <Input 
-              id="breed" 
-              name="breed" 
-              value={formData.breed} 
-              onChange={handleChange} 
-              placeholder="What breed is your pet?"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <Label htmlFor="age">Age</Label>
-            <div className="flex gap-2">
-              <Input 
-                id="age" 
-                name="age" 
-                type="number" 
-                value={formData.age} 
-                onChange={handleNumberChange} 
-                min={0} 
-                step={0.1} 
-                required 
-                className="flex-1"
-              />
-              <Select 
-                value={formData.ageUnit} 
-                onValueChange={(value) => handleSelectChange("ageUnit", value)}
-              >
-                <SelectTrigger className="w-24">
-                  <SelectValue placeholder="Unit" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="years">Years</SelectItem>
-                  <SelectItem value="months">Months</SelectItem>
-                  <SelectItem value="weeks">Weeks</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="gender">Gender</Label>
-            <Select 
-              value={formData.gender} 
-              onValueChange={(value) => handleSelectChange("gender", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-                <SelectItem value="unknown">Unknown</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <Label htmlFor="weight">Weight</Label>
-            <div className="flex gap-2">
-              <Input 
-                id="weight" 
-                name="weight" 
-                type="number" 
-                value={formData.weight} 
-                onChange={handleNumberChange} 
-                min={0} 
-                step={0.1} 
-                required 
-                className="flex-1"
-              />
-              <Select 
-                value={formData.weightUnit} 
-                onValueChange={(value) => handleSelectChange("weightUnit", value)}
-              >
-                <SelectTrigger className="w-20">
-                  <SelectValue placeholder="Unit" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="kg">kg</SelectItem>
-                  <SelectItem value="lb">lb</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="activityLevel">Activity Level</Label>
-            <Select 
-              value={formData.activityLevel} 
-              onValueChange={(value) => handleSelectChange("activityLevel", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="moderate">Moderate</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
-    </div>,
-
-    // Step 2: Personality & Preferences
-    <div key="step2" className="space-y-4">
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Tell us about {formData.name}'s personality</h2>
-        <p className="text-muted-foreground">This helps us understand their unique character.</p>
-      </div>
-
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label>Personality Traits</Label>
-          <div className="grid grid-cols-2 gap-2">
-            {personalityTraits.map((trait) => (
-              <div key={trait} className="flex items-center space-x-2">
-                <Checkbox 
-                  id={`trait-${trait}`} 
-                  checked={(formData.personality || []).includes(trait)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      handleArrayItem('personality', trait, true);
-                    } else {
-                      handleArrayItem('personality', trait, false);
-                    }
-                  }}
+  // Render different steps based on current step
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Basic Information</h2>
+            <Form {...basicInfoForm}>
+              <form onSubmit={basicInfoForm.handleSubmit(handleBasicInfoSubmit)} className="space-y-4">
+                <FormField
+                  control={basicInfoForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pet Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter your pet's name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <label
-                  htmlFor={`trait-${trait}`}
-                  className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {trait}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-1">
-          <Label htmlFor="temperament">Overall Temperament</Label>
-          <Select 
-            value={formData.temperament || "balanced"} 
-            onValueChange={(value) => handleSelectChange("temperament", value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select temperament" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="calm">Calm & Relaxed</SelectItem>
-              <SelectItem value="balanced">Balanced</SelectItem>
-              <SelectItem value="energetic">Energetic & Excitable</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-1">
-          <Label>Likes & Preferences</Label>
-          <div className="flex gap-2">
-            <Input 
-              value={newLike} 
-              onChange={(e) => setNewLike(e.target.value)} 
-              placeholder="What does your pet love?"
-              className="flex-1"
-            />
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => {
-                handleArrayItem('likesAndPreferences', newLike, true);
-                setNewLike('');
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {(formData.likesAndPreferences || []).map((item) => (
-              <div key={item} className="flex items-center gap-1 bg-secondary/20 px-2 py-1 rounded-full text-sm">
-                <Heart className="h-3 w-3" />
-                {item}
-                <button 
-                  type="button" 
-                  onClick={() => handleArrayItem('likesAndPreferences', item, false)}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-1">
-          <Label>Dislikes & Aversions</Label>
-          <div className="flex gap-2">
-            <Input 
-              value={newDislike} 
-              onChange={(e) => setNewDislike(e.target.value)} 
-              placeholder="What does your pet dislike?"
-              className="flex-1"
-            />
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => {
-                handleArrayItem('dislikesAndAversions', newDislike, true);
-                setNewDislike('');
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {(formData.dislikesAndAversions || []).map((item) => (
-              <div key={item} className="flex items-center gap-1 bg-destructive/10 px-2 py-1 rounded-full text-sm">
-                <X className="h-3 w-3 text-destructive" />
-                {item}
-                <button 
-                  type="button" 
-                  onClick={() => handleArrayItem('dislikesAndAversions', item, false)}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>,
-
-    // Step 3: Health & Aspirations
-    <div key="step3" className="space-y-4">
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Health & Future Goals</h2>
-        <p className="text-muted-foreground">Help us create a tailored plan for {formData.name}.</p>
-      </div>
-
-      <div className="space-y-4">
-        <div className="space-y-1">
-          <Label>Health Conditions</Label>
-          <div className="flex gap-2">
-            <Input 
-              value={newHealth} 
-              onChange={(e) => setNewHealth(e.target.value)} 
-              placeholder="Any health conditions?"
-              className="flex-1"
-            />
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => {
-                handleArrayItem('healthConditions', newHealth, true);
-                setNewHealth('');
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {(formData.healthConditions || []).map((item) => (
-              <div key={item} className="flex items-center gap-1 bg-blue-500/10 px-2 py-1 rounded-full text-sm">
-                <Shield className="h-3 w-3 text-blue-500" />
-                {item}
-                <button 
-                  type="button" 
-                  onClick={() => handleArrayItem('healthConditions', item, false)}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-1">
-          <Label>Short-term Goals (next 3 months)</Label>
-          <div className="flex gap-2">
-            <Input 
-              value={newShortGoal} 
-              onChange={(e) => setNewShortGoal(e.target.value)} 
-              placeholder="A goal for your pet"
-              className="flex-1"
-            />
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => {
-                handleArrayItem('shortTermGoals', newShortGoal, true);
-                setNewShortGoal('');
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {(formData.shortTermGoals || []).map((item) => (
-              <div key={item} className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-full text-sm">
-                <Star className="h-3 w-3 text-primary" />
-                {item}
-                <button 
-                  type="button" 
-                  onClick={() => handleArrayItem('shortTermGoals', item, false)}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-1">
-          <Label>Long-term Goals (beyond 3 months)</Label>
-          <div className="flex gap-2">
-            <Input 
-              value={newLongGoal} 
-              onChange={(e) => setNewLongGoal(e.target.value)} 
-              placeholder="A longer-term aspiration"
-              className="flex-1"
-            />
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => {
-                handleArrayItem('longTermGoals', newLongGoal, true);
-                setNewLongGoal('');
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {(formData.longTermGoals || []).map((item) => (
-              <div key={item} className="flex items-center gap-1 bg-purple-500/10 px-2 py-1 rounded-full text-sm">
-                <Star className="h-3 w-3 text-purple-500" />
-                {item}
-                <button 
-                  type="button" 
-                  onClick={() => handleArrayItem('longTermGoals', item, false)}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-1">
-          <Label htmlFor="progressNotes">Additional Notes</Label>
-          <Textarea 
-            id="progressNotes" 
-            name="progressNotes" 
-            value={formData.progressNotes || ''} 
-            onChange={handleChange} 
-            placeholder="Any other information that might help us personalize the plan..."
-            rows={3}
-          />
-        </div>
-      </div>
-    </div>,
-
-    // Step 4: Photo & Finish
-    <div key="step4" className="space-y-4">
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Add a photo of {formData.name}</h2>
-        <p className="text-muted-foreground">This helps personalize your pet's profile.</p>
-      </div>
-
-      <div className="space-y-4">
-        {showCamera ? (
-          <CameraComponent onCapture={handleCapture} />
-        ) : (
-          <div className="flex flex-col items-center gap-4">
-            {formData.photo ? (
-              <div className="w-full h-64 relative rounded-lg overflow-hidden border">
-                <img 
-                  src={formData.photo} 
-                  alt={formData.name || "Pet"} 
-                  className="w-full h-full object-cover"
+                
+                <FormField
+                  control={basicInfoForm.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pet Type</FormLabel>
+                      <div className="flex space-x-2">
+                        <Button
+                          type="button"
+                          variant={field.value === "dog" ? "default" : "outline"}
+                          className="flex-1 py-6"
+                          onClick={() => basicInfoForm.setValue("type", "dog")}
+                        >
+                          <Dog className="mr-2 h-5 w-5" />
+                          Dog
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={field.value === "cat" ? "default" : "outline"}
+                          className="flex-1 py-6"
+                          onClick={() => basicInfoForm.setValue("type", "cat")}
+                        >
+                          <Cat className="mr-2 h-5 w-5" />
+                          Cat
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={field.value === "other" ? "default" : "outline"}
+                          className="flex-1 py-6"
+                          onClick={() => basicInfoForm.setValue("type", "other")}
+                        >
+                          Other
+                        </Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-            ) : (
-              <div className="w-full h-64 flex items-center justify-center bg-muted rounded-lg border border-dashed">
-                <div className="text-center">
-                  <Camera className="mx-auto h-10 w-10 text-muted-foreground" />
-                  <p className="mt-2 text-sm text-muted-foreground">No photo added yet</p>
+                
+                <FormField
+                  control={basicInfoForm.control}
+                  name="breed"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Breed (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter breed if known" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={basicInfoForm.control}
+                    name="age"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Age</FormLabel>
+                        <FormControl>
+                          <Input type="number" min="0" step="0.1" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={basicInfoForm.control}
+                    name="ageUnit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Age Unit</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select unit" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="years">Years</SelectItem>
+                            <SelectItem value="months">Months</SelectItem>
+                            <SelectItem value="weeks">Weeks</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={basicInfoForm.control}
+                    name="weight"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Weight</FormLabel>
+                        <FormControl>
+                          <Input type="number" min="0" step="0.1" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={basicInfoForm.control}
+                    name="weightUnit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Weight Unit</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select unit" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="kg">Kilograms (kg)</SelectItem>
+                            <SelectItem value="lb">Pounds (lb)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={basicInfoForm.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gender</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="unknown">Unknown</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={basicInfoForm.control}
+                  name="activityLevel"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Activity Level</FormLabel>
+                      <FormControl>
+                        <RadioGroup 
+                          defaultValue={field.value} 
+                          onValueChange={field.onChange}
+                          className="flex flex-col space-y-1"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="low" id="activity-low" />
+                            <FormLabel htmlFor="activity-low" className="cursor-pointer">Low - Mostly inactive or sedentary</FormLabel>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="moderate" id="activity-moderate" />
+                            <FormLabel htmlFor="activity-moderate" className="cursor-pointer">Moderate - Regular walks, some play</FormLabel>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="high" id="activity-high" />
+                            <FormLabel htmlFor="activity-high" className="cursor-pointer">High - Very active, lots of exercise</FormLabel>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={basicInfoForm.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Notes (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Any additional information about your pet" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                  {photo ? (
+                    <div className="space-y-2">
+                      <img 
+                        src={photo} 
+                        alt="Pet" 
+                        className="w-32 h-32 object-cover mx-auto rounded-full" 
+                      />
+                      <Button type="button" variant="outline" onClick={() => setPhoto(undefined)}>
+                        Change Photo
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Camera className="w-12 h-12 mx-auto text-gray-400" />
+                      <p className="text-sm text-gray-500">Add a photo of your pet</p>
+                      <Button type="button" variant="outline">
+                        Take Photo
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex justify-between pt-4">
+                  <Button type="button" variant="outline" onClick={onCancel}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">
+                    Next <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        );
+        
+      case 2:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Personality & Preferences</h2>
+            <p className="text-gray-500">Tell us about your pet's personality, likes, and dislikes</p>
+            
+            <Form {...personalityForm}>
+              <form onSubmit={personalityForm.handleSubmit(handlePersonalitySubmit)} className="space-y-4">
+                <FormField
+                  control={personalityForm.control}
+                  name="personality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Personality Traits</FormLabel>
+                      <FormControl>
+                        <div className="flex flex-wrap gap-2">
+                          {getTraitOptions().map((trait) => (
+                            <Badge 
+                              key={trait}
+                              variant={field.value.includes(trait) ? "default" : "outline"}
+                              className="px-3 py-2 cursor-pointer"
+                              onClick={() => {
+                                const newValue = field.value.includes(trait)
+                                  ? field.value.filter(t => t !== trait)
+                                  : [...field.value, trait];
+                                personalityForm.setValue("personality", newValue);
+                              }}
+                            >
+                              {trait}
+                            </Badge>
+                          ))}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={personalityForm.control}
+                  name="temperament"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Overall Temperament</FormLabel>
+                      <FormControl>
+                        <RadioGroup 
+                          defaultValue={field.value} 
+                          onValueChange={field.onChange}
+                          className="flex flex-col space-y-1"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="calm" id="temperament-calm" />
+                            <FormLabel htmlFor="temperament-calm" className="cursor-pointer">Calm - Relaxed, mild-mannered</FormLabel>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="balanced" id="temperament-balanced" />
+                            <FormLabel htmlFor="temperament-balanced" className="cursor-pointer">Balanced - Mix of energy and calmness</FormLabel>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="energetic" id="temperament-energetic" />
+                            <FormLabel htmlFor="temperament-energetic" className="cursor-pointer">Energetic - High energy, very active</FormLabel>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={personalityForm.control}
+                  name="likesAndPreferences"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Likes & Preferences</FormLabel>
+                      <FormControl>
+                        <TagInput 
+                          value={field.value} 
+                          onChange={(value) => personalityForm.setValue("likesAndPreferences", value)}
+                          placeholder="What does your pet enjoy? (e.g., specific foods, toys, activities)"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={personalityForm.control}
+                  name="dislikesAndAversions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dislikes & Aversions</FormLabel>
+                      <FormControl>
+                        <TagInput 
+                          value={field.value} 
+                          onChange={(value) => personalityForm.setValue("dislikesAndAversions", value)}
+                          placeholder="What does your pet dislike? (e.g., loud noises, nail trimming)"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={personalityForm.control}
+                  name="healthConditions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Health Conditions (Optional)</FormLabel>
+                      <FormControl>
+                        <TagInput 
+                          value={field.value || []} 
+                          onChange={(value) => personalityForm.setValue("healthConditions", value)}
+                          placeholder="Any health conditions or allergies? (e.g., joint issues, food allergies)"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="flex justify-between pt-4">
+                  <Button type="button" variant="outline" onClick={() => setStep(1)}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                  </Button>
+                  <Button type="submit">
+                    Next <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        );
+        
+      case 3:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Goals & Aspirations</h2>
+            <p className="text-gray-500">Set meaningful goals for your pet's health and wellbeing</p>
+            
+            <Form {...goalsForm}>
+              <form onSubmit={goalsForm.handleSubmit(handleGoalsSubmit)} className="space-y-4">
+                <FormField
+                  control={goalsForm.control}
+                  name="shortTermGoals"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Short-Term Goals (1-3 months)</FormLabel>
+                      <FormControl>
+                        <TagInput 
+                          value={field.value} 
+                          onChange={(value) => goalsForm.setValue("shortTermGoals", value)}
+                          placeholder="Add a short-term goal (e.g., basic training, improve diet)"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={goalsForm.control}
+                  name="longTermGoals"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Long-Term Goals (6+ months)</FormLabel>
+                      <FormControl>
+                        <TagInput 
+                          value={field.value} 
+                          onChange={(value) => goalsForm.setValue("longTermGoals", value)}
+                          placeholder="Add a long-term goal (e.g., reach ideal weight, master advanced commands)"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={goalsForm.control}
+                  name="progressNotes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Progress Notes (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Notes on current progress or starting point" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="flex justify-between pt-4">
+                  <Button type="button" variant="outline" onClick={() => setStep(2)}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                  </Button>
+                  <Button type="submit">
+                    Next <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        );
+        
+      case 4:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Review & Save</h2>
+            <p className="text-gray-500">Review your pet's profile before saving</p>
+            
+            <div className="space-y-6 bg-gray-50 p-4 rounded-lg">
+              <div className="flex items-center space-x-4">
+                {photo && (
+                  <img 
+                    src={photo} 
+                    alt={formData.name} 
+                    className="w-20 h-20 rounded-full object-cover" 
+                  />
+                )}
+                <div>
+                  <h3 className="text-xl font-bold">{formData.name}</h3>
+                  <p className="text-gray-500">
+                    {formData.breed ? `${formData.breed} ` : ""}
+                    {formData.type === "dog" ? "Dog" : formData.type === "cat" ? "Cat" : "Pet"}
+                  </p>
                 </div>
               </div>
-            )}
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => setShowCamera(true)}
-              className="gap-2"
-            >
-              <Camera className="h-4 w-4" />
-              {formData.photo ? "Change Photo" : "Take Photo"}
-            </Button>
+              
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-500">Age</p>
+                  <p>{formData.age} {formData.ageUnit}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Weight</p>
+                  <p>{formData.weight} {formData.weightUnit}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Gender</p>
+                  <p className="capitalize">{formData.gender}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Activity Level</p>
+                  <p className="capitalize">{formData.activityLevel}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-gray-500">Estimated Daily Calorie Target</p>
+                  <p className="font-bold">{calculateCalorieTarget(formData)} calories</p>
+                </div>
+              </div>
+              
+              <div>
+                <p className="text-gray-500">Personality</p>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {formData.personality.map((trait: string, i: number) => (
+                    <Badge key={i} variant="outline">{trait}</Badge>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-500">Likes & Preferences</p>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {formData.likesAndPreferences.map((item: string, i: number) => (
+                      <Badge key={i} variant="secondary">{item}</Badge>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-gray-500">Dislikes & Aversions</p>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {formData.dislikesAndAversions.map((item: string, i: number) => (
+                      <Badge key={i} variant="outline">{item}</Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <p className="text-gray-500">Goals</p>
+                <div className="space-y-3 mt-2">
+                  <div>
+                    <p className="text-xs text-gray-500">Short-Term</p>
+                    <ul className="list-disc list-inside text-sm">
+                      {formData.shortTermGoals.map((goal: string, i: number) => (
+                        <li key={i}>{goal}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Long-Term</p>
+                    <ul className="list-disc list-inside text-sm">
+                      {formData.longTermGoals.map((goal: string, i: number) => (
+                        <li key={i}>{goal}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-between pt-4">
+              <Button type="button" variant="outline" onClick={() => setStep(3)}>
+                <ArrowLeft className="mr-2 h-4 w-4" /> Back
+              </Button>
+              <Button onClick={handleFinalSubmit}>
+                <Check className="mr-2 h-4 w-4" /> Save Pet Profile
+              </Button>
+            </div>
           </div>
-        )}
-
-        <div className="space-y-1">
-          <Label htmlFor="notes">Additional Notes</Label>
-          <Textarea 
-            id="notes" 
-            name="notes" 
-            value={formData.notes || ''} 
-            onChange={handleChange} 
-            placeholder="Anything else we should know about your pet?"
-            rows={3}
-          />
-        </div>
-
-        <div className="pt-4">
-          <p className="text-sm text-muted-foreground">Ready to create {formData.name}'s personalized profile? Click Finish to continue.</p>
-        </div>
-      </div>
-    </div>
-  ];
+        );
+        
+      default:
+        return null;
+    }
+  };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>Create Pet Profile</CardTitle>
-          <div className="flex items-center text-sm text-muted-foreground">
-            Step {step} of {steps.length}
-          </div>
+    <div className="max-w-2xl mx-auto p-4 bg-white rounded-xl shadow-sm">
+      <div className="mb-6">
+        <Progress value={(step / totalSteps) * 100} className="h-2" />
+        <div className="flex justify-between mt-2 text-sm text-gray-500">
+          <span>Basic Info</span>
+          <span>Personality</span>
+          <span>Goals</span>
+          <span>Review</span>
         </div>
-        <div className="relative w-full h-2 bg-muted rounded-full overflow-hidden">
-          <div 
-            className="absolute left-0 top-0 h-full bg-primary transition-all duration-300"
-            style={{ width: `${(step / steps.length) * 100}%` }}
-          />
-        </div>
-      </CardHeader>
-      <CardContent className="pb-6">
-        {steps[step - 1]}
-      </CardContent>
-      <CardFooter className="flex justify-between border-t pt-4">
-        <div>
-          {step > 1 ? (
-            <Button variant="outline" onClick={prevStep} className="gap-2">
-              <ArrowLeft className="h-4 w-4" /> Back
-            </Button>
-          ) : (
-            <Button variant="ghost" onClick={handleCancel} className="text-muted-foreground">
-              Cancel
-            </Button>
-          )}
-        </div>
-        <div>
-          {step < steps.length ? (
-            <Button onClick={nextStep} className="gap-2">
-              Next <ArrowRight className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button onClick={handleComplete} className="gap-2">
-              <Check className="h-4 w-4" /> Finish
-            </Button>
-          )}
-        </div>
-      </CardFooter>
-    </Card>
+      </div>
+      
+      {renderStep()}
+    </div>
   );
 };
-
-// Helper components
-const Plus = ({ className }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <path d="M12 5v14M5 12h14" />
-  </svg>
-);

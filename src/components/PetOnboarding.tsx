@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +13,6 @@ import { Progress } from "@/components/ui/progress";
 import { PetProfile } from "@/data/types/petTypes";
 import { Badge } from "@/components/ui/badge";
 
-// Define the form schema for the basic information step
 const basicInfoSchema = z.object({
   name: z.string().min(1, "Name is required"),
   type: z.enum(["dog", "cat", "other"]),
@@ -28,7 +26,6 @@ const basicInfoSchema = z.object({
   notes: z.string().optional(),
 });
 
-// Define schema for personality traits
 const personalitySchema = z.object({
   personality: z.array(z.string()).min(1, "Select at least one trait"),
   temperament: z.enum(["calm", "balanced", "energetic"]),
@@ -37,14 +34,12 @@ const personalitySchema = z.object({
   healthConditions: z.array(z.string()).optional(),
 });
 
-// Define schema for goals
 const goalsSchema = z.object({
   shortTermGoals: z.array(z.string()).min(1, "Add at least one short-term goal"),
   longTermGoals: z.array(z.string()).min(1, "Add at least one long-term goal"),
   progressNotes: z.string().optional(),
 });
 
-// Combined schema
 const petProfileSchema = z.object({
   ...basicInfoSchema.shape,
   ...personalitySchema.shape,
@@ -53,8 +48,9 @@ const petProfileSchema = z.object({
 });
 
 type PetOnboardingProps = {
-  onSave: (pet: Omit<PetProfile, "id" | "createdAt" | "updatedAt">) => void;
-  onCancel: () => void;
+  onComplete: (pet: Omit<PetProfile, "id" | "createdAt" | "updatedAt">) => void;
+  onCancel?: () => void;
+  initialValues?: Partial<PetProfile>;
 };
 
 type TagInputProps = {
@@ -63,7 +59,6 @@ type TagInputProps = {
   placeholder?: string;
 };
 
-// Component for adding tags/multiple items
 const TagInput: React.FC<TagInputProps> = ({ value, onChange, placeholder }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -113,35 +108,36 @@ const TagInput: React.FC<TagInputProps> = ({ value, onChange, placeholder }) => 
   );
 };
 
-export const PetOnboarding: React.FC<PetOnboardingProps> = ({ onSave, onCancel }) => {
+export const PetOnboarding: React.FC<PetOnboardingProps> = ({ onComplete, onCancel, initialValues }) => {
   const [step, setStep] = useState(1);
-  const [photo, setPhoto] = useState<string | undefined>();
+  const [photo, setPhoto] = useState<string | undefined>(initialValues?.photo);
   const [formData, setFormData] = useState<any>({
-    personality: [],
-    likesAndPreferences: [],
-    dislikesAndAversions: [],
-    healthConditions: [],
-    shortTermGoals: [],
-    longTermGoals: [],
+    personality: initialValues?.personality || [],
+    likesAndPreferences: initialValues?.likesAndPreferences || [],
+    dislikesAndAversions: initialValues?.dislikesAndAversions || [],
+    healthConditions: initialValues?.healthConditions || [],
+    shortTermGoals: initialValues?.shortTermGoals || [],
+    longTermGoals: initialValues?.longTermGoals || [],
+    type: initialValues?.type || "dog",
   });
   const totalSteps = 4;
 
-  // Basic info form
   const basicInfoForm = useForm<z.infer<typeof basicInfoSchema>>({
     resolver: zodResolver(basicInfoSchema),
     defaultValues: {
-      name: "",
-      type: "dog",
-      age: 1,
-      ageUnit: "years",
-      weight: 10,
-      weightUnit: "kg",
-      gender: "unknown",
-      activityLevel: "moderate",
+      name: initialValues?.name || "",
+      type: (initialValues?.type as "dog" | "cat" | "other") || "dog",
+      breed: initialValues?.breed || "",
+      age: initialValues?.age || 1,
+      ageUnit: initialValues?.ageUnit || "years",
+      weight: initialValues?.weight || 10,
+      weightUnit: initialValues?.weightUnit || "kg",
+      gender: initialValues?.gender || "unknown",
+      activityLevel: initialValues?.activityLevel || "moderate",
+      notes: initialValues?.notes || "",
     },
   });
 
-  // Personality form
   const personalityForm = useForm<z.infer<typeof personalitySchema>>({
     resolver: zodResolver(personalitySchema),
     defaultValues: {
@@ -153,7 +149,6 @@ export const PetOnboarding: React.FC<PetOnboardingProps> = ({ onSave, onCancel }
     },
   });
 
-  // Goals form
   const goalsForm = useForm<z.infer<typeof goalsSchema>>({
     resolver: zodResolver(goalsSchema),
     defaultValues: {
@@ -193,12 +188,10 @@ export const PetOnboarding: React.FC<PetOnboardingProps> = ({ onSave, onCancel }
         condition.toLowerCase().includes("intolerance")
       ) || [],
     };
-    onSave(petData);
+    onComplete(petData);
   };
 
   const calculateCalorieTarget = (data: any): number => {
-    // Basic calculation based on weight and activity level
-    // Could be refined with more sophisticated formulas
     const baseCalories = data.type === "dog" 
       ? data.weight * (data.weightUnit === "kg" ? 30 : 13.6) 
       : data.weight * (data.weightUnit === "kg" ? 20 : 9.1);
@@ -207,7 +200,6 @@ export const PetOnboarding: React.FC<PetOnboardingProps> = ({ onSave, onCancel }
       data.activityLevel === "low" ? 1.2 :
       data.activityLevel === "moderate" ? 1.4 : 1.6;
     
-    // Age adjustment
     let ageAdjustment = 1.0;
     if (data.ageUnit === "years") {
       if (data.type === "dog") {
@@ -222,20 +214,14 @@ export const PetOnboarding: React.FC<PetOnboardingProps> = ({ onSave, onCancel }
     return Math.round(baseCalories * activityMultiplier * ageAdjustment);
   };
 
-  // Predefined traits for pets
-  const dogTraits = ["Playful", "Loyal", "Energetic", "Affectionate", "Protective", "Calm", "Curious", "Independent", "Social", "Stubborn"];
-  const catTraits = ["Independent", "Curious", "Playful", "Affectionate", "Aloof", "Vocal", "Gentle", "Mischievous", "Lazy", "Alert"];
-  const otherPetTraits = ["Quiet", "Active", "Friendly", "Shy", "Curious", "Playful", "Independent", "Social", "Territorial"];
-
   const getTraitOptions = () => {
     switch (formData.type) {
-      case "dog": return dogTraits;
-      case "cat": return catTraits;
-      default: return otherPetTraits;
+      case "dog": return ["Playful", "Loyal", "Energetic", "Affectionate", "Protective", "Calm", "Curious", "Independent", "Social", "Stubborn"];
+      case "cat": return ["Independent", "Curious", "Playful", "Affectionate", "Aloof", "Vocal", "Gentle", "Mischievous", "Lazy", "Alert"];
+      default: return ["Quiet", "Active", "Friendly", "Shy", "Curious", "Playful", "Independent", "Social", "Territorial"];
     }
   };
 
-  // Render different steps based on current step
   const renderStep = () => {
     switch (step) {
       case 1:

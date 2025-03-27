@@ -73,7 +73,8 @@ const PetProfiles = () => {
             {showOnboarding && (
               <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
                 <PetOnboarding 
-                  onComplete={handleSaveNewPet} 
+                  onComplete={handleSaveNewPet}
+                  onCancel={() => setShowOnboarding(false)}
                 />
               </div>
             )}
@@ -112,12 +113,24 @@ const PetProfiles = () => {
 
           <TabsContent value="dog" className="mt-0">
             {/* Dog-specific content will be shown via the filtered profiles */}
-            {showOnboarding && <PetOnboarding onComplete={handleSaveNewPet} initialValues={{ type: "dog" }} />}
+            {showOnboarding && (
+              <PetOnboarding 
+                onComplete={handleSaveNewPet} 
+                initialValues={{ type: "dog" }}
+                onCancel={() => setShowOnboarding(false)}
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="cat" className="mt-0">
             {/* Cat-specific content will be shown via the filtered profiles */}
-            {showOnboarding && <PetOnboarding onComplete={handleSaveNewPet} initialValues={{ type: "cat" }} />}
+            {showOnboarding && (
+              <PetOnboarding 
+                onComplete={handleSaveNewPet} 
+                initialValues={{ type: "cat" }}
+                onCancel={() => setShowOnboarding(false)}
+              />
+            )}
           </TabsContent>
         </Tabs>
 

@@ -1,3 +1,4 @@
+
 export interface DogStandard {
   breed: string;
   size: string;
@@ -599,4 +600,6 @@ export const dogStandards: DogStandard[] = [
       senior: "Prone to obesity, strict portion control needed. Consider joint health due to body structure."
     },
     imageUrl: "https://images.unsplash.com/photo-1612536057832-2ff7ead58194?q=80",
-    source: "American
+    source: "American College of Veterinary Nutrition (ACVN)"
+  }
+];

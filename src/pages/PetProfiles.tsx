@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -112,7 +111,6 @@ const PetProfiles = () => {
           </TabsContent>
 
           <TabsContent value="dog" className="mt-0">
-            {/* Dog-specific content will be shown via the filtered profiles */}
             {showOnboarding && (
               <PetOnboarding 
                 onComplete={handleSaveNewPet} 
@@ -123,7 +121,6 @@ const PetProfiles = () => {
           </TabsContent>
 
           <TabsContent value="cat" className="mt-0">
-            {/* Cat-specific content will be shown via the filtered profiles */}
             {showOnboarding && (
               <PetOnboarding 
                 onComplete={handleSaveNewPet} 
@@ -144,7 +141,6 @@ const PetProfiles = () => {
         </footer>
       </div>
 
-      {/* Delete confirmation dialog */}
       <Dialog open={!!confirmDeleteId} onOpenChange={(open) => !open && setConfirmDeleteId(null)}>
         <DialogContent>
           <DialogHeader>

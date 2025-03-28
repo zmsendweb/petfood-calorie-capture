@@ -2,8 +2,12 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dashboard } from "@/components/Dashboard";
+import { MealEntry } from "@/types/mealTypes";
 
 export function Index() {
+  // Initialize with an empty array of meals
+  const initialMeals: MealEntry[] = [];
+  
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
@@ -23,7 +27,7 @@ export function Index() {
           </Button>
         </div>
       </div>
-      <Dashboard />
+      <Dashboard meals={initialMeals} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 
-import { PetRecipeSuggestions } from "@/components/pet-recipes";
+import { PetRecipeSuggestions, ReminderNotifications } from "@/components/pet-recipes";
+import { Toaster } from "sonner";
 
 export function PetRecipes() {
   return (
@@ -12,8 +13,10 @@ export function PetRecipes() {
           </p>
         </div>
 
+        <ReminderNotifications />
         <PetRecipeSuggestions />
       </div>
+      <Toaster position="top-right" />
     </div>
   );
 }

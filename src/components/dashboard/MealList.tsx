@@ -1,5 +1,5 @@
 
-import { EnhancedMealCard } from "../EnhancedMealEntry";
+import { MealCard } from "../meal";
 import { MealEntry } from "@/types/mealTypes";
 
 interface MealListProps {
@@ -19,7 +19,7 @@ export const MealList = ({ meals, date }: MealListProps) => {
       </h2>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {meals.map(meal => (
-          <EnhancedMealCard key={meal.id} meal={meal} />
+          <MealCard key={meal.id} meal={meal} />
         ))}
       </div>
     </div>

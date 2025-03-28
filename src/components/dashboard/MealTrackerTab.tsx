@@ -1,4 +1,3 @@
-
 import { useMemo } from "react";
 import { format } from "date-fns";
 import { Card } from "../ui/card";
@@ -10,6 +9,7 @@ import { TrendingUp } from "lucide-react";
 import { MealCaloriesChart } from "./MealCaloriesChart";
 import { MealList } from "./MealList";
 import { MealEntry } from "@/types/mealTypes";
+import { MealEntryForm } from "../meal";
 
 interface MealTrackerTabProps {
   meals: MealEntry[];
@@ -24,14 +24,12 @@ export const MealTrackerTab = ({
   setSelectedDate, 
   handleAddMeal 
 }: MealTrackerTabProps) => {
-  // Calculate daily calories
   const dailyCalories = useMemo(() => {
     return meals
       .filter(meal => format(new Date(meal.timestamp), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd'))
       .reduce((acc, meal) => acc + meal.calories, 0);
   }, [meals, selectedDate]);
 
-  // Calculate calendar data
   const calendarData = useMemo(() => {
     const dailyTotals = new Map<string, number>();
     meals.forEach(meal => {
@@ -41,7 +39,6 @@ export const MealTrackerTab = ({
     return dailyTotals;
   }, [meals]);
 
-  // Selected date meals
   const selectedDateMeals = useMemo(() => {
     return meals
       .filter(meal => format(new Date(meal.timestamp), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd'))
@@ -61,7 +58,7 @@ export const MealTrackerTab = ({
         </Link>
       </div>
       
-      <EnhancedMealEntryForm onSave={handleAddMeal} />
+      <MealEntryForm onSave={handleAddMeal} />
       
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="p-6 bg-white/80 backdrop-blur-sm">

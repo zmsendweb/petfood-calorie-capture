@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Camera } from "lucide-react";
-import { FoodSearch } from "../FoodSearch";
+import { FoodSearch } from "../food-search";
 import { FoodItem } from "@/hooks/use-fatsecret-api";
 import { CameraComponent } from "../Camera";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";

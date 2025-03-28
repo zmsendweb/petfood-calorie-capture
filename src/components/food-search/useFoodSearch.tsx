@@ -1,0 +1,96 @@
+
+import { useState } from "react";
+import { useFatSecretAPI, FoodItem } from "@/hooks/use-fatsecret-api";
+import { toast } from "@/hooks/use-toast";
+
+export function useFoodSearch() {
+  const [query, setQuery] = useState("");
+  const [nlpDescription, setNlpDescription] = useState("");
+  const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
+  const [barcodeValue, setBarcodeValue] = useState("");
+  const [searchMode, setSearchMode] = useState<"keyword" | "barcode" | "nlp">("keyword");
+  
+  const { 
+    searchFoods, 
+    scanBarcode, 
+    getFoodDetails,
+    parseFoodDescription,
+    isLoading 
+  } = useFatSecretAPI();
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (searchMode === "keyword" && query.trim()) {
+      const result = await searchFoods(query);
+      if (result?.foods?.food) {
+        // Handle the case where there's only one food item (which comes as an object, not an array)
+        const foodArray = Array.isArray(result.foods.food) 
+          ? result.foods.food 
+          : [result.foods.food];
+        setSearchResults(foodArray);
+      } else {
+        setSearchResults([]);
+        toast({
+          title: "No results found",
+          description: "Try a different search term",
+          variant: "default"
+        });
+      }
+    } else if (searchMode === "barcode" && barcodeValue.trim()) {
+      const result = await scanBarcode(barcodeValue);
+      if (result?.food_id) {
+        const foodDetails = await getFoodDetails(result.food_id);
+        if (foodDetails?.food) {
+          return foodDetails.food;
+        }
+      } else {
+        toast({
+          title: "Barcode not found",
+          description: "This product is not in the FatSecret database",
+          variant: "destructive"
+        });
+      }
+    } else if (searchMode === "nlp" && nlpDescription.trim()) {
+      const result = await parseFoodDescription(nlpDescription);
+      if (result?.food) {
+        // Search for the food based on the NLP result
+        const searchResult = await searchFoods(result.food.food_name);
+        if (searchResult?.foods?.food) {
+          const foodArray = Array.isArray(searchResult.foods.food) 
+            ? searchResult.foods.food 
+            : [searchResult.foods.food];
+          setSearchResults(foodArray);
+          toast({
+            title: "Food identified",
+            description: `Found "${result.food.food_name}" (${result.food.food_quantity} ${result.food.food_unit})`,
+            variant: "default"
+          });
+        }
+      } else {
+        toast({
+          title: "Couldn't parse description",
+          description: "Try being more specific about the food item",
+          variant: "destructive"
+        });
+      }
+    }
+    
+    return null;
+  };
+
+  return {
+    query,
+    setQuery,
+    nlpDescription,
+    setNlpDescription,
+    barcodeValue,
+    setBarcodeValue,
+    searchResults,
+    searchMode,
+    setSearchMode,
+    handleSearch,
+    isLoading,
+    getFoodDetails
+  };
+}

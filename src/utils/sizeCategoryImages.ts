@@ -1,31 +1,37 @@
 
 /**
- * Utility to get size-based images for pet breeds
+ * Utility for size-based styling and labeling of pet breeds
  */
 
-type PetSize = "Small" | "Medium" | "Large";
+import { PawPrint } from "lucide-react";
 
-interface SizeCategoryImage {
-  imageUrl: string;
-  altText: string;
+export type PetSize = "Small" | "Medium" | "Large";
+
+export interface SizeCategory {
+  color: string;
+  bgColor: string;
+  label: string;
 }
 
-// Size-based images for both cats and dogs
-const sizeCategoryImages: Record<PetSize, SizeCategoryImage> = {
+// Size-based styling information for both cats and dogs
+export const sizeCategoryStyles: Record<PetSize, SizeCategory> = {
   "Small": {
-    imageUrl: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?q=80&w=400&auto=format",
-    altText: "Small size pet silhouette"
+    color: "text-green-600",
+    bgColor: "bg-green-100",
+    label: "Small"
   },
   "Medium": {
-    imageUrl: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d?q=80&w=400&auto=format",
-    altText: "Medium size pet silhouette"
+    color: "text-blue-600",
+    bgColor: "bg-blue-100",
+    label: "Medium"
   },
   "Large": {
-    imageUrl: "https://images.unsplash.com/photo-1493962853295-0fd70327578a?q=80&w=400&auto=format",
-    altText: "Large size pet silhouette"
+    color: "text-purple-600",
+    bgColor: "bg-purple-100",
+    label: "Large"
   }
 };
 
-export const getSizeCategoryImage = (size: PetSize): SizeCategoryImage => {
-  return sizeCategoryImages[size];
+export const getSizeCategoryStyle = (size: PetSize): SizeCategory => {
+  return sizeCategoryStyles[size];
 };

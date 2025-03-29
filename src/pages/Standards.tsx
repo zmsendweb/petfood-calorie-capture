@@ -1,13 +1,14 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft, PawPrint } from "lucide-react";
 import { NutritionQuery } from "@/components/NutritionQuery";
 import { dogStandards } from "@/data/dogStandards";
-import { getSizeCategoryImage } from "@/utils/sizeCategoryImages";
+import { getSizeCategoryStyle, PetSize } from "@/utils/sizeCategoryImages";
 
 const Standards = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,6 +39,24 @@ const Standards = () => {
             </Button>
           </Link>
           <h1 className="text-3xl font-bold">Dog Breed Feeding Standards</h1>
+        </div>
+
+        <div className="mb-4 flex flex-wrap gap-2">
+          <Link to="/standards">
+            <Button variant="default">
+              Dog Standards
+            </Button>
+          </Link>
+          <Link to="/cat-standards">
+            <Button variant="outline">
+              Cat Standards
+            </Button>
+          </Link>
+          <Link to="/">
+            <Button variant="outline">
+              Back to Home
+            </Button>
+          </Link>
         </div>
 
         <div className="space-y-6 mb-6">
@@ -75,16 +94,20 @@ const Standards = () => {
               >
                 All Sizes
               </Button>
-              {sizes.map((size) => (
-                <Button
-                  key={size}
-                  variant={selectedSize === size ? "default" : "outline"}
-                  onClick={() => setSelectedSize(size)}
-                  className="rounded-full"
-                >
-                  {size} Dogs
-                </Button>
-              ))}
+              {sizes.map((size) => {
+                const sizeStyle = getSizeCategoryStyle(size as PetSize);
+                return (
+                  <Button
+                    key={size}
+                    variant={selectedSize === size ? "default" : "outline"}
+                    onClick={() => setSelectedSize(size)}
+                    className="rounded-full flex items-center gap-2"
+                  >
+                    <PawPrint className={`h-4 w-4 ${sizeStyle.color}`} />
+                    {size} Dogs
+                  </Button>
+                );
+              })}
             </div>
             
             <Tabs defaultValue="adult" className="w-full sm:w-auto" onValueChange={setAgeFilter}>
@@ -99,29 +122,14 @@ const Standards = () => {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredStandards.map((standard) => {
-            const sizeImage = getSizeCategoryImage(standard.size as "Small" | "Medium" | "Large");
+            const sizeStyle = getSizeCategoryStyle(standard.size as PetSize);
             return (
-              <Card key={standard.breed} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow overflow-hidden">
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={sizeImage.imageUrl}
-                    alt={`${standard.size} dog - ${standard.breed}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <span className="text-white font-semibold text-xl">
-                      {standard.size} Size
-                    </span>
-                  </div>
-                </div>
-                <CardHeader>
-                  <CardTitle className="flex justify-between items-start">
-                    <span>{standard.breed}</span>
-                    <span className={`text-sm font-normal px-2 py-1 rounded-full ${
-                      standard.size === "Small" ? "bg-secondary/20" :
-                      standard.size === "Medium" ? "bg-primary/20" :
-                      "bg-accent/20"
-                    }`}>
+              <Card key={standard.breed} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex justify-between items-center">
+                    <span className="text-xl">{standard.breed}</span>
+                    <span className={`inline-flex items-center gap-2 text-sm font-normal px-3 py-1.5 rounded-full ${sizeStyle.bgColor} ${sizeStyle.color}`}>
+                      <PawPrint className="h-4 w-4" />
                       {standard.size}
                     </span>
                   </CardTitle>
@@ -149,6 +157,9 @@ const Standards = () => {
                       <p className="text-sm">
                         {standard.nutritionNotes[ageFilter as keyof typeof standard.nutritionNotes]}
                       </p>
+                    </div>
+                    <div className="pt-2 text-xs text-gray-500 italic">
+                      Source: {standard.source}
                     </div>
                   </div>
                 </CardContent>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,7 +9,7 @@ import { useFatSecretAPI, FoodItem } from "@/hooks/use-fatsecret-api";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNutritionRAG } from "@/hooks/use-nutrition-rag";
 import { Loader2, Dog, Cat } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export function PetRecipeSuggestions() {
   const [petType, setPetType] = useState<"dog" | "cat">("dog");
@@ -39,8 +38,7 @@ export function PetRecipeSuggestions() {
       setSearchResults([]);
       toast({
         title: "No results found",
-        description: "Try a different search term",
-        variant: "default"
+        description: "Try a different search term"
       });
     }
   };
@@ -50,14 +48,12 @@ export function PetRecipeSuggestions() {
       setIngredients([...ingredients, food]);
       toast({
         title: "Ingredient added",
-        description: `${food.food_name} added to your recipe`,
-        variant: "default"
+        description: `${food.food_name} added to your recipe`
       });
     } else {
       toast({
         title: "Ingredient already added",
-        description: `${food.food_name} is already in your recipe`,
-        variant: "default"
+        description: `${food.food_name} is already in your recipe`
       });
     }
   };
@@ -70,8 +66,7 @@ export function PetRecipeSuggestions() {
     if (ingredients.length === 0) {
       toast({
         title: "No ingredients selected",
-        description: "Please add at least one ingredient to generate a recipe",
-        variant: "destructive"
+        description: "Please add at least one ingredient to generate a recipe"
       });
       return;
     }
@@ -101,8 +96,7 @@ export function PetRecipeSuggestions() {
       console.error("Error generating recipe:", error);
       toast({
         title: "Error generating recipe",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive"
+        description: "Something went wrong. Please try again."
       });
     } finally {
       setIsLoading(false);

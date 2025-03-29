@@ -1,43 +1,40 @@
 
+// Simple notification state management
 import { useState, useEffect } from "react";
 
-type NotificationId = string;
+type DismissedNotifications = {
+  [key: string]: number; // timestamp of when it was dismissed
+};
 
-export function useNotifications() {
-  const [dismissedNotifications, setDismissedNotifications] = useState<Record<NotificationId, number>>({});
+export const useNotifications = () => {
+  const [dismissedNotifications, setDismissedNotifications] = useState<DismissedNotifications>(() => {
+    const saved = localStorage.getItem("dismissedNotifications");
+    return saved ? JSON.parse(saved) : {};
+  });
 
-  // Load dismissed notifications from localStorage on mount
   useEffect(() => {
-    try {
-      const savedDismissed = localStorage.getItem('dismissedNotifications');
-      if (savedDismissed) {
-        setDismissedNotifications(JSON.parse(savedDismissed));
-      }
-    } catch (error) {
-      console.error("Failed to load dismissed notifications", error);
-    }
-  }, []);
-
-  // Save to localStorage whenever dismissedNotifications changes
-  useEffect(() => {
-    localStorage.setItem('dismissedNotifications', JSON.stringify(dismissedNotifications));
+    localStorage.setItem("dismissedNotifications", JSON.stringify(dismissedNotifications));
   }, [dismissedNotifications]);
 
-  const isDismissed = (id: NotificationId): boolean => {
-    const dismissedTime = dismissedNotifications[id];
-    if (!dismissedTime) return false;
-    
-    // Check if 7 days have passed since dismissal
-    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
-    return Date.now() - dismissedTime < sevenDaysInMs;
-  };
-
-  const dismissNotification = (id: NotificationId): void => {
+  const dismissNotification = (id: string) => {
     setDismissedNotifications(prev => ({
       ...prev,
-      [id]: Date.now(),
+      [id]: Date.now()
     }));
   };
 
-  return { isDismissed, dismissNotification };
-}
+  const isDismissed = (id: string, maxAgeDays = 7) => {
+    const timestamp = dismissedNotifications[id];
+    if (!timestamp) return false;
+    
+    // Check if dismissal is older than maxAgeDays
+    const maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000;
+    return Date.now() - timestamp < maxAgeMs;
+  };
+
+  return {
+    dismissNotification,
+    isDismissed,
+    dismissedNotifications
+  };
+};

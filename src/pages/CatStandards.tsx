@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, ArrowLeft } from "lucide-react";
 import { catStandards } from "@/data/catStandards";
 import { NutritionQuery } from "@/components/NutritionQuery";
+import { getSizeCategoryImage } from "@/utils/sizeCategoryImages";
 
 const CatStandards = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -98,58 +98,66 @@ const CatStandards = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredStandards.map((standard) => (
-            <Card key={standard.breed} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow overflow-hidden">
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={standard.imageUrl}
-                  alt={standard.breed}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle className="flex justify-between items-start">
-                  <span>{standard.breed}</span>
-                  <span className={`text-sm font-normal px-2 py-1 rounded-full ${
-                    standard.size === "Small" ? "bg-secondary/20" :
-                    standard.size === "Medium" ? "bg-primary/20" :
-                    "bg-accent/20"
-                  }`}>
-                    {standard.size}
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      {ageFilter === "kitten" ? "Kitten" : ageFilter === "adult" ? "Adult" : "Senior"} Daily Calorie Range
-                    </p>
-                    <p className="font-semibold">
-                      {standard.ageSpecificCalories[ageFilter as keyof typeof standard.ageSpecificCalories].min} - {standard.ageSpecificCalories[ageFilter as keyof typeof standard.ageSpecificCalories].max} calories
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Recommended Meals
-                    </p>
-                    <p className="font-semibold">
-                      {standard.mealsByAge[ageFilter as keyof typeof standard.mealsByAge]} times per day
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Nutrition Notes</p>
-                    <p className="text-sm">
-                      {standard.nutritionNotes[ageFilter as keyof typeof standard.nutritionNotes]}
-                    </p>
-                  </div>
-                  <div className="pt-2 text-xs text-gray-500 italic">
-                    Source: {standard.source}
+          {filteredStandards.map((standard) => {
+            const sizeImage = getSizeCategoryImage(standard.size as "Small" | "Medium" | "Large");
+            return (
+              <Card key={standard.breed} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow overflow-hidden">
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={sizeImage.imageUrl}
+                    alt={`${standard.size} cat - ${standard.breed}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    <span className="text-white font-semibold text-xl">
+                      {standard.size} Size
+                    </span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                <CardHeader>
+                  <CardTitle className="flex justify-between items-start">
+                    <span>{standard.breed}</span>
+                    <span className={`text-sm font-normal px-2 py-1 rounded-full ${
+                      standard.size === "Small" ? "bg-secondary/20" :
+                      standard.size === "Medium" ? "bg-primary/20" :
+                      "bg-accent/20"
+                    }`}>
+                      {standard.size}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        {ageFilter === "kitten" ? "Kitten" : ageFilter === "adult" ? "Adult" : "Senior"} Daily Calorie Range
+                      </p>
+                      <p className="font-semibold">
+                        {standard.ageSpecificCalories[ageFilter as keyof typeof standard.ageSpecificCalories].min} - {standard.ageSpecificCalories[ageFilter as keyof typeof standard.ageSpecificCalories].max} calories
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        Recommended Meals
+                      </p>
+                      <p className="font-semibold">
+                        {standard.mealsByAge[ageFilter as keyof typeof standard.mealsByAge]} times per day
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Nutrition Notes</p>
+                      <p className="text-sm">
+                        {standard.nutritionNotes[ageFilter as keyof typeof standard.nutritionNotes]}
+                      </p>
+                    </div>
+                    <div className="pt-2 text-xs text-gray-500 italic">
+                      Source: {standard.source}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {filteredStandards.length === 0 && (

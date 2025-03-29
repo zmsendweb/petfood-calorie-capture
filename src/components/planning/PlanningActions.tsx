@@ -1,9 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import { PetProfile } from "@/data/types/petTypes";
-import { AlertTriangle, Calendar, Check, Clock, ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { AlertTriangle, Calendar, Check, Clock, ExternalLink, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useNotifications } from "@/hooks/use-notifications";
 
 interface PlanningActionsProps {
   pet: PetProfile;
@@ -11,7 +12,16 @@ interface PlanningActionsProps {
 }
 
 export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
+  const { isDismissed, dismissNotification } = useNotifications();
   const [showMissedOpportunity, setShowMissedOpportunity] = useState(true);
+  const MISSED_OPPORTUNITY_ID = `missed-opportunity-${pet.id}`;
+  
+  // Check if notification was dismissed in the last 7 days
+  useEffect(() => {
+    if (isDismissed(MISSED_OPPORTUNITY_ID)) {
+      setShowMissedOpportunity(false);
+    }
+  }, [isDismissed, MISSED_OPPORTUNITY_ID]);
 
   // Sample missed opportunity message (psychological trigger)
   const missedOpportunityMessage = 
@@ -21,18 +31,27 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
 
   const handleSetReminder = () => {
     toast.success("Reminder set! We'll help you stay on track with your pet's health goals.");
+    dismissNotification(MISSED_OPPORTUNITY_ID);
     setShowMissedOpportunity(false);
   };
 
   const handleDismiss = () => {
     toast.info("You've dismissed the reminder, but your pet's progress might slow down without consistent tracking.");
+    dismissNotification(MISSED_OPPORTUNITY_ID);
     setShowMissedOpportunity(false);
   };
 
   return (
     <div className="space-y-4">
       {showMissedOpportunity && (
-        <div className="bg-amber-50 border border-amber-200 rounded-md p-3 mb-4">
+        <div className="bg-amber-50 border border-amber-200 rounded-md p-3 mb-4 relative">
+          <button 
+            onClick={handleDismiss}
+            className="absolute top-2 right-2 p-1 rounded-full hover:bg-amber-100 transition-colors"
+            aria-label="Dismiss notification"
+          >
+            <X className="h-4 w-4 text-amber-500" />
+          </button>
           <div className="flex gap-3">
             <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
             <div>
@@ -41,9 +60,6 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
               <div className="flex gap-2 mt-3">
                 <Button size="sm" variant="default" onClick={handleSetReminder}>
                   Set a Reminder
-                </Button>
-                <Button size="sm" variant="outline" onClick={handleDismiss}>
-                  Not Now
                 </Button>
               </div>
             </div>

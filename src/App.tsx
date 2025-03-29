@@ -6,6 +6,9 @@ import CatStandards from "./pages/CatStandards";
 import PetProfiles from "./pages/PetProfiles";
 import PlanningDashboard from "./pages/PlanningDashboard";
 import { PetRecipes } from "./pages/PetRecipes";
+import { Features } from "./pages/Features";
+import { FeatureDetails } from "./pages/FeatureDetails";
+import { Contact } from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import "./App.css";
 
@@ -18,6 +21,9 @@ function App() {
       <Route path="/pet-profiles" element={<PetProfiles />} />
       <Route path="/planning" element={<PlanningDashboard />} />
       <Route path="/pet-recipes" element={<PetRecipes />} />
+      <Route path="/features" element={<Features />} />
+      <Route path="/features/:featureId" element={<FeatureDetails />} />
+      <Route path="/contact" element={<Contact />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

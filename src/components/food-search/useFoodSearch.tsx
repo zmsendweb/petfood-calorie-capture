@@ -33,8 +33,7 @@ export function useFoodSearch() {
         setSearchResults([]);
         toast({
           title: "No results found",
-          description: "Try a different search term",
-          variant: "default"
+          description: "Try a different search term"
         });
       }
     } else if (searchMode === "barcode" && barcodeValue.trim()) {
@@ -63,8 +62,7 @@ export function useFoodSearch() {
           setSearchResults(foodArray);
           toast({
             title: "Food identified",
-            description: `Found "${result.food.food_name}" (${result.food.food_quantity} ${result.food.food_unit})`,
-            variant: "default"
+            description: `Found "${result.food.food_name}" (${result.food.food_quantity} ${result.food.food_unit})`
           });
         }
       } else {

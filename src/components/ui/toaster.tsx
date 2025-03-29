@@ -1,3 +1,4 @@
+
 import { useToast } from "@/hooks/use-toast"
 import {
   Toast,
@@ -9,6 +10,8 @@ import {
 } from "@/components/ui/toast"
 
 export function Toaster() {
+  // We know toasts will be an empty array from our modified useToast implementation
+  // This component will be unused since we're using sonner directly
   const { toasts } = useToast()
 
   return (

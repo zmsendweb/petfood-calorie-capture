@@ -10,9 +10,24 @@ export type ToastActionElement = {
   onClick: () => void;
 };
 
-// Simple wrapper to maintain backwards compatibility if needed
-export function toast(message: string, props?: ToastProps) {
-  return sonnerToast(message, props);
+// Simple wrapper to maintain backwards compatibility with both string and object patterns
+export function toast(message: string | { title: string; description?: string; variant?: string; [key: string]: any }, props?: ToastProps) {
+  if (typeof message === 'string') {
+    return sonnerToast(message, props);
+  } else {
+    // Extract the title, description, and variant
+    const { title, description, variant, ...restProps } = message;
+    
+    // Merge the extracted properties with any additional props
+    const mergedProps = {
+      ...restProps,
+      ...(description && { description }),
+      ...(variant === 'destructive' && { style: { backgroundColor: 'rgba(239, 68, 68, 0.9)', color: 'white' } }),
+      ...props
+    };
+    
+    return sonnerToast(title, mergedProps);
+  }
 }
 
 // Since sonner doesn't have useToast, create a minimal implementation to avoid breaking code
@@ -25,6 +40,8 @@ export function useToast() {
       } else {
         sonnerToast.dismiss();
       }
-    }
+    },
+    // Add a dummy toasts property for compatibility with toaster.tsx
+    toasts: [] 
   };
 }

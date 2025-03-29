@@ -9,7 +9,7 @@ import { useFatSecretAPI, FoodItem } from "@/hooks/use-fatsecret-api";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNutritionRAG } from "@/hooks/use-nutrition-rag";
 import { Loader2, Dog, Cat } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 export function PetRecipeSuggestions() {
   const [petType, setPetType] = useState<"dog" | "cat">("dog");
@@ -36,7 +36,8 @@ export function PetRecipeSuggestions() {
       setSearchResults(foodArray);
     } else {
       setSearchResults([]);
-      toast("No results found", {
+      toast({
+        title: "No results found",
         description: "Try a different search term"
       });
     }
@@ -45,11 +46,13 @@ export function PetRecipeSuggestions() {
   const addIngredient = (food: FoodItem) => {
     if (!ingredients.some(item => item.food_id === food.food_id)) {
       setIngredients([...ingredients, food]);
-      toast("Ingredient added", {
+      toast({
+        title: "Ingredient added",
         description: `${food.food_name} added to your recipe`
       });
     } else {
-      toast("Ingredient already added", {
+      toast({
+        title: "Ingredient already added",
         description: `${food.food_name} is already in your recipe`
       });
     }
@@ -61,7 +64,8 @@ export function PetRecipeSuggestions() {
 
   const generateRecipe = async () => {
     if (ingredients.length === 0) {
-      toast("No ingredients selected", {
+      toast({
+        title: "No ingredients selected",
         description: "Please add at least one ingredient to generate a recipe"
       });
       return;
@@ -69,7 +73,6 @@ export function PetRecipeSuggestions() {
 
     setIsLoading(true);
     try {
-      // Generate recipe based on ingredients
       const ingredientList = ingredients.map(item => item.food_name).join(", ");
       const customPrompt = recipePrompt.trim() 
         ? recipePrompt 
@@ -80,7 +83,6 @@ export function PetRecipeSuggestions() {
       if (result) {
         setRecipe(result.answer);
         
-        // Get nutrition analysis
         const nutritionPrompt = `Analyze the nutritional value of this ${petType} recipe and explain if it meets basic nutritional needs: ${result.answer}`;
         const nutritionResult = await getAnswer(nutritionPrompt, petType);
         
@@ -90,7 +92,8 @@ export function PetRecipeSuggestions() {
       }
     } catch (error) {
       console.error("Error generating recipe:", error);
-      toast("Error generating recipe", {
+      toast({
+        title: "Error generating recipe",
         description: "Something went wrong. Please try again."
       });
     } finally {

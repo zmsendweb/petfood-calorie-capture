@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Clock, Bell, Heart, Star, Calendar, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
 import { useNotifications } from "@/hooks/use-notifications";
 
@@ -11,17 +11,14 @@ export function ReminderNotifications() {
   const { isDismissed, dismissNotification } = useNotifications();
   const [showReminder, setShowReminder] = useState(true);
   
-  // Notification ID for this component
   const NOTIFICATION_ID = "pet-recipes-reminder";
   
-  // Check if notification was dismissed in the last 7 days
   useEffect(() => {
     if (isDismissed(NOTIFICATION_ID)) {
       setShowReminder(false);
     }
   }, [isDismissed]);
   
-  // Psychological triggers - different messages for motivation
   const reminderMessages = [
     {
       title: "Don't miss out on tracking your pet's progress!",
@@ -49,37 +46,42 @@ export function ReminderNotifications() {
     }
   ];
 
-  // Select a random message when component mounts
   const [currentMessage, setCurrentMessage] = useState(() => {
     const randomIndex = Math.floor(Math.random() * reminderMessages.length);
     return reminderMessages[randomIndex];
   });
 
-  // Show a toast notification after a delay, only if not dismissed
   useEffect(() => {
     if (isDismissed("toast-" + NOTIFICATION_ID)) return;
     
     const timeout = setTimeout(() => {
-      toast(currentMessage.title, {
+      toast({
+        title: currentMessage.title,
         description: currentMessage.description,
-        duration: 0, // Make it stay until dismissed
+        duration: 0,
         action: {
           label: "View",
           onClick: () => {
-            toast.success("Navigating to tracking page");
+            toast({
+              title: "Success",
+              description: "Navigating to tracking page"
+            });
           }
         },
         onDismiss: () => {
           dismissNotification("toast-" + NOTIFICATION_ID);
         }
       });
-    }, 5000); // Show after 5 seconds
+    }, 5000);
 
     return () => clearTimeout(timeout);
   }, [currentMessage, isDismissed, dismissNotification]);
 
   const handleActionClick = () => {
-    toast.success("Taking action on your pet's health journey!");
+    toast({
+      title: "Success",
+      description: "Taking action on your pet's health journey!"
+    });
     dismissNotification(NOTIFICATION_ID);
     setShowReminder(false);
   };

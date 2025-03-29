@@ -1,4 +1,3 @@
-
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FoodItem } from "@/hooks/use-fatsecret-api";
@@ -69,8 +68,7 @@ export function FoodDetails({ selectedFood, onBack, onSelectFood }: FoodDetailsP
               onSelectFood(selectedFood);
               toast({
                 title: "Food added",
-                description: `${selectedFood.food_name} has been added to the meal`,
-                variant: "default"
+                description: `${selectedFood.food_name} has been added to the meal`
               });
             }
           }}

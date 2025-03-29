@@ -36,8 +36,7 @@ export function PetRecipeSuggestions() {
       setSearchResults(foodArray);
     } else {
       setSearchResults([]);
-      toast({
-        title: "No results found",
+      toast("No results found", {
         description: "Try a different search term"
       });
     }
@@ -46,13 +45,11 @@ export function PetRecipeSuggestions() {
   const addIngredient = (food: FoodItem) => {
     if (!ingredients.some(item => item.food_id === food.food_id)) {
       setIngredients([...ingredients, food]);
-      toast({
-        title: "Ingredient added",
+      toast("Ingredient added", {
         description: `${food.food_name} added to your recipe`
       });
     } else {
-      toast({
-        title: "Ingredient already added",
+      toast("Ingredient already added", {
         description: `${food.food_name} is already in your recipe`
       });
     }
@@ -64,8 +61,7 @@ export function PetRecipeSuggestions() {
 
   const generateRecipe = async () => {
     if (ingredients.length === 0) {
-      toast({
-        title: "No ingredients selected",
+      toast("No ingredients selected", {
         description: "Please add at least one ingredient to generate a recipe"
       });
       return;
@@ -94,8 +90,7 @@ export function PetRecipeSuggestions() {
       }
     } catch (error) {
       console.error("Error generating recipe:", error);
-      toast({
-        title: "Error generating recipe",
+      toast("Error generating recipe", {
         description: "Something went wrong. Please try again."
       });
     } finally {

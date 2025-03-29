@@ -1,6 +1,6 @@
 
-// Re-export the toast hook to maintain backward compatibility
-// This avoids breaking existing imports
-import { useToast, toast } from "sonner";
+// Re-export the toast function from sonner
+// sonner doesn't export useToast, only toast
+import { toast } from "sonner";
 
-export { useToast, toast };
+export { toast };

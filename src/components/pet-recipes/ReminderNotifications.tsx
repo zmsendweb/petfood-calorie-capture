@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Clock, Bell, Heart, Star, Calendar, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -61,27 +60,19 @@ export function ReminderNotifications() {
     if (isDismissed("toast-" + NOTIFICATION_ID)) return;
     
     const timeout = setTimeout(() => {
-      toast.info(
-        <div className="flex items-start gap-3">
-          <Bell className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="font-medium">{currentMessage.title}</p>
-            <p className="text-sm text-gray-500">{currentMessage.description}</p>
-          </div>
-        </div>,
-        {
-          duration: 0, // Make it stay until dismissed
-          action: {
-            label: "View",
-            onClick: () => {
-              toast.success("Navigating to tracking page");
-            }
-          },
-          onDismiss: () => {
-            dismissNotification("toast-" + NOTIFICATION_ID);
+      toast(currentMessage.title, {
+        description: currentMessage.description,
+        duration: 0, // Make it stay until dismissed
+        action: {
+          label: "View",
+          onClick: () => {
+            toast.success("Navigating to tracking page");
           }
+        },
+        onDismiss: () => {
+          dismissNotification("toast-" + NOTIFICATION_ID);
         }
-      );
+      });
     }, 5000); // Show after 5 seconds
 
     return () => clearTimeout(timeout);

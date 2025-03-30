@@ -34,3 +34,18 @@ export const dogStandards: DogStandard[] = [
   ...mediumDogs,
   ...largeDogs
 ];
+
+// For convenience when querying the library by size
+export const smallDogBreeds = smallDogs;
+export const mediumDogBreeds = mediumDogs;
+export const largeDogBreeds = largeDogs;
+
+// Utility function to get total count
+export const getDogBreedCount = () => {
+  return {
+    small: smallDogs.length,
+    medium: mediumDogs.length,
+    large: largeDogs.length,
+    total: dogStandards.length
+  };
+};

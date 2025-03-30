@@ -15,3 +15,22 @@ export const catStandards: CatStandard[] = [
   ...exoticCats,
   ...rareCats
 ];
+
+// For convenience when querying the library by size
+export const smallCatBreeds = smallCats;
+export const mediumCatBreeds = mediumCats;
+export const largeCatBreeds = largeCats;
+export const exoticCatBreeds = exoticCats;
+export const rareCatBreeds = rareCats;
+
+// Utility function to get total count
+export const getCatBreedCount = () => {
+  return {
+    small: smallCats.length,
+    medium: mediumCats.length,
+    large: largeCats.length,
+    exotic: exoticCats.length,
+    rare: rareCats.length,
+    total: catStandards.length
+  };
+};

@@ -116,5 +116,212 @@ export const smallCats: CatStandard[] = [
       senior: "Maintain higher calories than other senior cats. Moderate protein (33-36%) with quality sources. Continue skin support supplements."
     },
     imageUrl: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?q=80"
+  },
+  {
+    breed: "American Curl",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Active breed needs balanced nutrition. Quality protein (30-35%). Normal feeding requirements but consider ear care diet supplements.",
+    nutritionNotes: {
+      kitten: "Standard growth requirements. Moderate protein (35-38%) supports overall development. Monitor ear formation during growth.",
+      adult: "Balanced diet with quality protein (30-35%). Consider grooming-specific supplements to support coat and ear cartilage health.",
+      senior: "Maintain lean body mass with adequate protein (28-32%). Watch for potential joint issues in curled ears with aging."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+  },
+  {
+    breed: "Burmilla",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Generally healthy breed with standard nutritional needs. Quality protein (30-35%). Monitor coat condition for nutritional deficiencies.",
+    nutritionNotes: {
+      kitten: "Steady growth pattern. Balanced nutrients with moderate protein (34-38%) support development. Watch for silvery coat development.",
+      adult: "Balanced diet with quality protein (30-35%). Consider coat-specific supplements for shine maintenance of silver coats.",
+      senior: "Maintain lean body mass with adequate protein (28-32%). Watch for kidney issues that are sometimes seen in related breeds."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?q=80"
+  },
+  {
+    breed: "Dwelf",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 3,
+    mealsByAge: {
+      kitten: 4,
+      adult: 3,
+      senior: 3
+    },
+    notes: "Hairless dwarf breed needs specialized nutrition. Quality protein (33-38%). Monitor body temperature. Joint support needed.",
+    nutritionNotes: {
+      kitten: "Careful growth monitoring essential. Higher calories for body heat maintenance combined with controlled growth for joint development.",
+      adult: "Higher caloric needs (like other hairless breeds). Joint supplements recommended. Skin support nutrients essential.",
+      senior: "Maintain higher calories than typical senior cats. Moderate protein (30-34%) with increased joint support as they age."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80"
+  },
+  {
+    breed: "Korat",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Slow maturing breed needs consistent nutrition. Moderate protein (30-35%). Silver-blue coat benefits from specific nutrients.",
+    nutritionNotes: {
+      kitten: "Extended growth period - may require kitten formulas longer. Moderate protein (34-38%) supports slow muscle development.",
+      adult: "Balanced diet with moderate fat content. Quality protein (30-35%) with coat-supporting nutrients for blue sheen maintenance.",
+      senior: "Gradual transition to senior diet. Moderate protein (28-32%) with antioxidants to support overall health during aging."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80"
+  },
+  {
+    breed: "Minuet (Napoleon)",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Short legs need joint support. Quality protein (30-35%) for muscle maintenance. Control weight carefully due to short stature.",
+    nutritionNotes: {
+      kitten: "Controlled growth essential for proper development. Focus on joint-supporting nutrients. Monitor limb development closely.",
+      adult: "Weight management crucial. Moderate calorie diet with quality protein (30-35%) to maintain muscle without excess weight.",
+      senior: "Joint support increasingly important with age. Lower calorie density to prevent weight gain. Consider raised feeding stations."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80"
+  },
+  {
+    breed: "Russian Blue",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Genetically prone to obesity. Control portions carefully. Quality protein (30-35%) for muscle and coat maintenance.",
+    nutritionNotes: {
+      kitten: "Standard growth patterns. Moderate protein (34-38%) supports development. Establish portion control early.",
+      adult: "Weight management crucial. Measured portions of quality protein (30-35%) diet. Coat supplements beneficial for plush double coat.",
+      senior: "Continue strict weight management. Moderate protein (28-32%) with adjusted calories for lower activity levels."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1511275539165-cc46b1ee89bf?q=80"
+  },
+  {
+    breed: "Scottish Fold",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Cartilage and joint support crucial due to genetic factors. Quality protein (30-35%) with supplements. Monitor mobility carefully.",
+    nutritionNotes: {
+      kitten: "Joint supplements from early age. Moderate protein (34-38%) with glucosamine and chondroitin to support cartilage development.",
+      adult: "Continue joint support throughout life. Quality protein (30-35%) with ongoing supplementation for cartilage health.",
+      senior: "Increased joint support needed. Moderate protein (28-32%) with comprehensive joint supplement regimen."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80"
+  },
+  {
+    breed: "Tonkinese",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Active breed with standard nutritional needs. Quality protein (30-35%). Monitor activity levels for caloric adjustments.",
+    nutritionNotes: {
+      kitten: "Standard growth patterns. Moderate protein (34-38%) supports development. May require more calories due to playful nature.",
+      adult: "Active disposition may require higher end of caloric range. Quality protein (30-35%) maintains muscle tone and supports activity.",
+      senior: "Gradually decrease calories with age. Moderate protein (28-32%) maintains muscle mass as activity naturally decreases."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80"
+  },
+  {
+    breed: "Toyger",
+    size: "Small",
+    dailyCalories: { min: 180, max: 280 },
+    ageSpecificCalories: {
+      kitten: { min: 200, max: 300 },
+      adult: { min: 180, max: 280 },
+      senior: { min: 160, max: 250 }
+    },
+    mealsPerDay: 2,
+    mealsByAge: {
+      kitten: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Muscular build requires quality protein (32-36%). Consider coat-supporting nutrients for distinctive markings.",
+    nutritionNotes: {
+      kitten: "Standard growth with focus on muscle development. Moderate protein (35-39%) supports proper muscular structure.",
+      adult: "Muscle maintenance key for breed standard. Quality protein (32-36%) with coat-supporting nutrients for pattern enhancement.",
+      senior: "Maintain muscle mass with adequate protein (30-34%). Adjust calories as activity decreases with age."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80"
   }
 ];

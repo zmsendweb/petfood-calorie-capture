@@ -158,9 +158,7 @@ const Standards = () => {
                         {standard.nutritionNotes[ageFilter as keyof typeof standard.nutritionNotes]}
                       </p>
                     </div>
-                    <div className="pt-2 text-xs text-gray-500 italic">
-                      Source: {standard.source}
-                    </div>
+                    {/* Source information removed */}
                   </div>
                 </CardContent>
               </Card>

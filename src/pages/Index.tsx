@@ -41,6 +41,7 @@ export function Index() {
         </div>,
         {
           duration: 0, // Stay until dismissed
+          closeButton: true, // Ensure close button is visible
           action: {
             label: "Track Now",
             onClick: () => {

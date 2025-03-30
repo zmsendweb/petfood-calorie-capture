@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Clock, Bell, Heart, Star, Calendar, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,7 +59,7 @@ export function ReminderNotifications() {
       toast({
         title: currentMessage.title,
         description: currentMessage.description,
-        duration: 0,
+        duration: 0, // Keep it visible until manually dismissed
         action: {
           label: "View",
           onClick: () => {

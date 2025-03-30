@@ -1,8 +1,8 @@
 
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { FoodItem } from "@/hooks/use-fatsecret-api";
 import { FoodDetails } from "./FoodDetails";
+import { FoodResultsList } from "./FoodResultsList";
 
 interface FoodSearchResultsProps {
   searchResults: FoodItem[];
@@ -52,34 +52,11 @@ export function FoodSearchResults({
   }
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle>Results</CardTitle>
-        <CardDescription>
-          Found {searchResults.length} results for "{query}"
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="divide-y">
-          {searchResults.map((food) => (
-            <div 
-              key={food.food_id}
-              className="py-3 cursor-pointer hover:bg-gray-50 rounded px-2"
-              onClick={() => handleSelectFood(food.food_id)}
-            >
-              <div className="flex justify-between">
-                <div>
-                  <h3 className="font-medium">{food.food_name}</h3>
-                  {food.brand_name && (
-                    <p className="text-sm text-gray-500">{food.brand_name}</p>
-                  )}
-                </div>
-                <div className="text-sm font-semibold">{getCaloriesRange(food)}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <FoodResultsList
+      searchResults={searchResults}
+      query={query}
+      onSelectFood={handleSelectFood}
+      getCaloriesRange={getCaloriesRange}
+    />
   );
 }

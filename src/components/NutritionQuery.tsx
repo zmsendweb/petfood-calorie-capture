@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SearchIcon, RefreshCw, Cat, Dog } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { VoiceInput } from "./voice/VoiceInput";
 
 interface NutritionQueryProps {
   defaultPetType?: PetType;
@@ -21,6 +22,10 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
     if (query.trim()) {
       await getAnswer(query, petType);
     }
+  };
+
+  const handleVoiceInput = (text: string) => {
+    setQuery(text);
   };
 
   return (
@@ -60,6 +65,11 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
               onChange={(e) => setQuery(e.target.value)}
               className="flex-1"
               disabled={isLoading}
+            />
+            <VoiceInput 
+              onTranscription={handleVoiceInput}
+              placeholder="Ask a question..."
+              isProcessing={isLoading}
             />
             <Button type="submit" disabled={isLoading || !query.trim()}>
               {isLoading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <SearchIcon className="h-4 w-4" />}

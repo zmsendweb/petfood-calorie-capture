@@ -1,9 +1,11 @@
 
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Image } from "lucide-react";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { VoiceInput } from "../voice/VoiceInput";
 
 interface ManualTabProps {
   calories: string;
@@ -30,8 +32,25 @@ export const ManualTab = ({
 }: ManualTabProps) => {
   const { petProfiles } = usePetProfiles();
 
+  const handleVoiceInput = (text: string) => {
+    // Try to extract calories from spoken text
+    const caloriesMatch = text.match(/(\d+)\s*(?:calorie|calories|kcal)/i);
+    if (caloriesMatch && caloriesMatch[1]) {
+      setCalories(caloriesMatch[1]);
+    }
+    
+    // Try to extract meal type from spoken text
+    const mealTypes = ["breakfast", "lunch", "dinner", "snack"];
+    for (const type of mealTypes) {
+      if (text.toLowerCase().includes(type)) {
+        setMealType(type);
+        break;
+      }
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form className="space-y-6" onSubmit={handleSubmit}>
       {petProfiles.length > 0 && (
         <div className="space-y-2">
           <Label>Pet</Label>
@@ -65,6 +84,12 @@ export const ManualTab = ({
             </Button>
           ))}
         </div>
+        <div className="flex justify-end mt-2">
+          <VoiceInput 
+            onTranscription={handleVoiceInput} 
+            placeholder="Speak to input meal info"
+          />
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -82,13 +107,18 @@ export const ManualTab = ({
 
       <div className="space-y-2">
         <Label>Photo URL (Optional)</Label>
-        <Input
-          type="url"
-          value={photo}
-          onChange={(e) => setPhoto(e.target.value)}
-          placeholder="Enter photo URL"
-          className="transition-all duration-300"
-        />
+        <div className="flex gap-2">
+          <Input
+            type="url"
+            value={photo}
+            onChange={(e) => setPhoto(e.target.value)}
+            placeholder="Enter photo URL"
+            className="transition-all duration-300"
+          />
+          <Button type="button" variant="outline" size="icon">
+            <Image className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       <Button

@@ -9,6 +9,7 @@ import { Search, ArrowLeft, PawPrint } from "lucide-react";
 import { NutritionQuery } from "@/components/NutritionQuery";
 import { dogStandards } from "@/data/dogStandards";
 import { getSizeCategoryStyle, PetSize } from "@/utils/sizeCategoryImages";
+import { BreedCounter } from "@/components/BreedCounter";
 
 const Standards = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -58,6 +59,9 @@ const Standards = () => {
             </Button>
           </Link>
         </div>
+
+        {/* Add the BreedCounter component */}
+        <BreedCounter petType="dog" />
 
         <div className="space-y-6 mb-6">
           <div className="flex flex-col sm:flex-row sm:justify-between gap-4">

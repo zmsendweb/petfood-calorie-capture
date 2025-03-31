@@ -28,17 +28,23 @@ export interface DogStandard {
 import { smallDogs } from "./dogs/small";
 import { mediumDogs } from "./dogs/medium";
 import { largeDogs } from "./dogs/large";
+import { specialtyDogs } from "./dogs/specialty";
+import { rareDogs } from "./dogs/rare";
 
 export const dogStandards: DogStandard[] = [
   ...smallDogs,
   ...mediumDogs,
-  ...largeDogs
+  ...largeDogs,
+  ...specialtyDogs,
+  ...rareDogs
 ];
 
 // For convenience when querying the library by size
 export const smallDogBreeds = smallDogs;
 export const mediumDogBreeds = mediumDogs;
 export const largeDogBreeds = largeDogs;
+export const specialtyDogBreeds = specialtyDogs;
+export const rareDogBreeds = rareDogs;
 
 // Utility function to get total count
 export const getDogBreedCount = () => {
@@ -46,6 +52,8 @@ export const getDogBreedCount = () => {
     small: smallDogs.length,
     medium: mediumDogs.length,
     large: largeDogs.length,
+    specialty: specialtyDogs.length,
+    rare: rareDogs.length,
     total: dogStandards.length
   };
 };

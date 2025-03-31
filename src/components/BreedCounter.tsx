@@ -20,6 +20,8 @@ import {
   rareDogBreeds
 } from "@/data/dogStandards";
 
+import { PetSize, getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
+
 interface BreedCounterProps {
   petType: 'dog' | 'cat';
 }
@@ -41,6 +43,7 @@ export const BreedCounter = ({ petType }: BreedCounterProps) => {
         {Object.entries(counts).map(([key, count]) => {
           if (key === 'total') return null;
           
+          // Define variant types for the badges
           let variant: 
             | "default"
             | "secondary"

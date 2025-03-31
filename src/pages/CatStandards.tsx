@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, ArrowLeft, PawPrint } from "lucide-react";
 import { catStandards } from "@/data/catStandards";
 import { NutritionQuery } from "@/components/NutritionQuery";
-import { getSizeCategoryStyle, PetSize } from "@/utils/sizeCategoryImages";
+import { getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
 import { BreedCounter } from "@/components/BreedCounter";
 
 const CatStandards = () => {
@@ -99,7 +99,6 @@ const CatStandards = () => {
                 All Sizes
               </Button>
               {sizes.map((size) => {
-                const sizeStyle = getSizeCategoryStyle(size as PetSize);
                 return (
                   <Button
                     key={size}
@@ -107,7 +106,7 @@ const CatStandards = () => {
                     onClick={() => setSelectedSize(size)}
                     className="rounded-full flex items-center gap-2"
                   >
-                    <PawPrint className={`h-4 w-4 ${sizeStyle.color}`} />
+                    <PawPrint className={`h-4 w-4 ${getSizeCategoryStyle(size).color}`} />
                     {size} Cats
                   </Button>
                 );
@@ -126,7 +125,7 @@ const CatStandards = () => {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredStandards.map((standard) => {
-            const sizeStyle = getSizeCategoryStyle(standard.size as PetSize);
+            const sizeStyle = getSizeCategoryStyle(standard.size);
             return (
               <Card key={standard.breed} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-2">

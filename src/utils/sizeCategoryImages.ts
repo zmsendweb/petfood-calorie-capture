@@ -5,6 +5,7 @@
 
 import { PawPrint } from "lucide-react";
 
+// Define the allowed size categories
 export type PetSize = "Small" | "Medium" | "Large";
 
 export interface SizeCategory {
@@ -32,6 +33,16 @@ export const sizeCategoryStyles: Record<PetSize, SizeCategory> = {
   }
 };
 
-export const getSizeCategoryStyle = (size: PetSize): SizeCategory => {
-  return sizeCategoryStyles[size];
+export const getSizeCategoryStyle = (size: string): SizeCategory => {
+  // Check if the provided size is a valid PetSize
+  if (size in sizeCategoryStyles) {
+    return sizeCategoryStyles[size as PetSize];
+  }
+  
+  // Fallback to avoid "undefined" errors
+  return {
+    color: "text-gray-600",
+    bgColor: "bg-gray-100",
+    label: size
+  };
 };

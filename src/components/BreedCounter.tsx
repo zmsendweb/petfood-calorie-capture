@@ -15,7 +15,9 @@ import {
   dogStandards,
   smallDogBreeds,
   mediumDogBreeds,
-  largeDogBreeds
+  largeDogBreeds,
+  specialtyDogBreeds,
+  rareDogBreeds
 } from "@/data/dogStandards";
 
 interface BreedCounterProps {

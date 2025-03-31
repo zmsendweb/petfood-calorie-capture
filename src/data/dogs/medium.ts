@@ -1,5 +1,4 @@
-
-import { DogStandard } from "../dogStandards";
+import { DogStandard } from "../types/dogTypes";
 
 export const mediumDogs: DogStandard[] = [
   {

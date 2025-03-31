@@ -1,5 +1,5 @@
 
-import { DogStandard } from "../../dogStandards";
+import { DogStandard } from "../../types/dogTypes";
 import { sportingDogs } from "./sportingDogs";
 import { workingDogs } from "./workingDogs";
 

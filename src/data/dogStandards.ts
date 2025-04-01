@@ -2,7 +2,7 @@
 import { DogStandard } from "./types/dogTypes";
 import { smallDogs } from "./dogs/small/index";
 import { mediumDogs } from "./dogs/medium/index";
-import { largeDogs } from "./dogs/large";
+import { largeDogs } from "./dogs/large/index";
 import { specialtyDogs } from "./dogs/specialty";
 import { rareDogs } from "./dogs/rare/index";
 

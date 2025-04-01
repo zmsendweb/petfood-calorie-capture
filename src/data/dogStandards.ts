@@ -1,6 +1,6 @@
 
 import { DogStandard } from "./types/dogTypes";
-import { smallDogs } from "./dogs/small";
+import { smallDogs } from "./dogs/small/index";
 import { mediumDogs } from "./dogs/medium";
 import { largeDogs } from "./dogs/large";
 import { specialtyDogs } from "./dogs/specialty";

@@ -4,7 +4,7 @@ import { smallDogs } from "./dogs/small";
 import { mediumDogs } from "./dogs/medium";
 import { largeDogs } from "./dogs/large";
 import { specialtyDogs } from "./dogs/specialty";
-import { rareDogs } from "./dogs/rare";
+import { rareDogs } from "./dogs/rare/index";
 
 export type { DogStandard };
 

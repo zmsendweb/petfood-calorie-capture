@@ -1,224 +1,225 @@
+
 import { DogStandard } from "../../types/dogTypes";
 
 export const sportingDogs: DogStandard[] = [
   {
-    breed: "Vizsla",
-    size: "Medium",
-    dailyCalories: { min: 1200, max: 1800 },
-    ageSpecificCalories: {
-      puppy: { min: 1400, max: 2000 },
-      adult: { min: 1200, max: 1800 },
-      senior: { min: 1000, max: 1600 }
-    },
-    mealsPerDay: {
-      puppy: 3,
-      adult: 2,
-      senior: 2
-    },
-    notes: "High energy hunting breed, needs performance nutrition",
-    nutritionNotes: {
-      puppy: "Controlled growth important for joint development. Moderate protein (24-26%) prevents excessive growth rate.",
-      adult: "High energy needs for hunting/training. Higher protein (26-30%) and fat (14-18%) diet recommended for working dogs.",
-      senior: "Maintain muscle mass with quality protein (24-28%). Reduce calories if activity decreases. Joint supplements beneficial."
-    },
-    imageUrl: "https://images.unsplash.com/photo-1591946614720-90a587da4a36?q=80"
-  },
-  {
-    breed: "Weimaraner",
+    breed: "Golden Retriever",
     size: "Large",
-    dailyCalories: { min: 1400, max: 2200 },
+    dailyCalories: { min: 1300, max: 1700 },
     ageSpecificCalories: {
-      puppy: { min: 1600, max: 2400 },
-      adult: { min: 1400, max: 2200 },
-      senior: { min: 1200, max: 1800 }
+      puppy: { min: 1500, max: 1900 },
+      adult: { min: 1300, max: 1700 },
+      senior: { min: 1100, max: 1500 }
     },
     mealsPerDay: {
       puppy: 3,
       adult: 2,
       senior: 2
     },
-    notes: "Active hunting breed, prone to bloat",
+    notes: "Prone to obesity, monitor weight closely",
     nutritionNotes: {
-      puppy: "Slow growth essential for large breed health. Large breed puppy formula with 22-24% protein recommended.",
-      adult: "Risk of bloat - elevated feeding and multiple small meals recommended. Higher protein (25-28%) for working dogs.",
-      senior: "Moderate protein (22-26%) maintains muscle mass. Adjust calories if activity decreases. Joint support increasingly important."
+      puppy: "Large breed puppy formula recommended until 12-15 months. Moderate protein (22-24%) and balanced minerals for proper growth.",
+      adult: "Moderate protein (22-24%) sufficient. Monitor portion sizes carefully as breed is prone to obesity.",
+      senior: "Lower calorie density with maintained protein (20-22%). Joint supplements beneficial after 7 years. Cancer prevention nutrients advised."
     },
-    imageUrl: "https://images.unsplash.com/photo-1506702315536-dd8b83e2dcf9?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1552053831-71594a27632d?q=80"
   },
   {
-    breed: "English Setter",
-    size: "Medium",
-    dailyCalories: { min: 1200, max: 1800 },
-    ageSpecificCalories: {
-      puppy: { min: 1400, max: 2000 },
-      adult: { min: 1200, max: 1800 },
-      senior: { min: 1000, max: 1600 }
-    },
-    mealsPerDay: {
-      puppy: 3,
-      adult: 2,
-      senior: 2
-    },
-    notes: "Active hunting breed with high energy needs",
-    nutritionNotes: {
-      puppy: "Moderate growth rate ideal. Quality protein (24-26%) supports proper development. Monitor for food sensitivities.",
-      adult: "Active breed with variable energy needs. Adjust calories based on hunting/activity level. Coat-supporting nutrients beneficial.",
-      senior: "Moderate protein (22-24%) maintains muscle mass. Coat support remains important. Joint supplements recommended."
-    },
-    imageUrl: "https://images.unsplash.com/photo-1525891618908-24765267dab7?q=80"
-  },
-  {
-    breed: "Gordon Setter",
+    breed: "Labrador Retriever",
     size: "Large",
-    dailyCalories: { min: 1300, max: 2000 },
+    dailyCalories: { min: 1400, max: 1800 },
     ageSpecificCalories: {
-      puppy: { min: 1500, max: 2200 },
-      adult: { min: 1300, max: 2000 },
-      senior: { min: 1100, max: 1700 }
+      puppy: { min: 1600, max: 2000 },
+      adult: { min: 1400, max: 1800 },
+      senior: { min: 1200, max: 1600 }
     },
     mealsPerDay: {
       puppy: 3,
       adult: 2,
       senior: 2
     },
-    notes: "Working breed with moderate energy needs",
+    notes: "Very food motivated, strict portion control needed",
     nutritionNotes: {
-      puppy: "Controlled growth important for joint health. Large breed puppy formula with moderate protein (22-24%) recommended.",
-      adult: "Moderate to high energy needs based on work level. Quality protein (24-26%) supports coat health and energy needs.",
-      senior: "Moderate protein (22-24%) maintains muscle mass. Coat support remains important. Joint supplements beneficial."
+      puppy: "Large breed puppy formula recommended until 12-15 months. Moderate protein (22-24%) and controlled calcium (1.0-1.2%).",
+      adult: "Strong tendency toward obesity - strict portion control essential. Moderate protein (22-24%) sufficient.",
+      senior: "Lower calorie density with maintained protein (20-22%). Joint supplements beneficial after 7 years. L-carnitine may help metabolism."
     },
-    imageUrl: "https://images.unsplash.com/photo-1538736548623-fdd265a2fa8a?q=80"
-  },
-  {
-    breed: "Brittany",
-    size: "Medium",
-    dailyCalories: { min: 1000, max: 1600 },
-    ageSpecificCalories: {
-      puppy: { min: 1200, max: 1800 },
-      adult: { min: 1000, max: 1600 },
-      senior: { min: 800, max: 1400 }
-    },
-    mealsPerDay: {
-      puppy: 3,
-      adult: 2,
-      senior: 2
-    },
-    notes: "High energy hunting breed, needs quality nutrition",
-    nutritionNotes: {
-      puppy: "Moderate protein (24-26%) supports proper growth. Monitor for food sensitivities common in sporting breeds.",
-      adult: "High energy breed with variable caloric needs. Adjust based on hunting/activity level. Higher protein (26-28%) for working dogs.",
-      senior: "Moderate protein (22-24%) maintains muscle mass. Senior formula with joint support recommended after 7-8 years."
-    },
-    imageUrl: "https://images.unsplash.com/photo-1575425186775-b8de9a427e67?q=80"
-  },
-  {
-    breed: "Pointer",
-    size: "Large",
-    dailyCalories: { min: 1200, max: 1800 },
-    ageSpecificCalories: {
-      puppy: { min: 1400, max: 2000 },
-      adult: { min: 1200, max: 1800 },
-      senior: { min: 1000, max: 1600 }
-    },
-    mealsPerDay: {
-      puppy: 3,
-      adult: 2,
-      senior: 2
-    },
-    notes: "Athletic hunting breed with lean build",
-    nutritionNotes: {
-      puppy: "Controlled growth important for joint development. Moderate protein (24-26%) prevents excessive growth rate.",
-      adult: "Athletic breed needs quality nutrition. Higher protein (25-28%) for working dogs. Adjust calories based on activity level.",
-      senior: "Maintain lean muscle mass with quality protein (22-26%). Reduce calories if activity decreases. Joint support beneficial."
-    },
-    imageUrl: "https://images.unsplash.com/photo-1554692918-08fa0fdc9db3?q=80"
-  },
-  {
-    breed: "Irish Setter",
-    size: "Large",
-    dailyCalories: { min: 1300, max: 2000 },
-    ageSpecificCalories: {
-      puppy: { min: 1500, max: 2200 },
-      adult: { min: 1300, max: 2000 },
-      senior: { min: 1100, max: 1700 }
-    },
-    mealsPerDay: {
-      puppy: 3,
-      adult: 2,
-      senior: 2
-    },
-    notes: "Energy needs vary with activity level",
-    nutritionNotes: {
-      puppy: "Slow growth essential for joint health. Large breed puppy formula with moderate protein (22-24%) recommended.",
-      adult: "Energy needs vary with activity level. Coat support nutrients beneficial. Quality protein (24-26%) maintains muscle.",
-      senior: "Moderate protein (22-24%) maintains muscle mass. Coat support remains important. Joint supplements beneficial."
-    },
-    imageUrl: "https://images.unsplash.com/photo-1611611158876-41699b77a059?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1579213838757-c25c8997eb9a?q=80"
   },
   {
     breed: "English Springer Spaniel",
     size: "Medium",
-    dailyCalories: { min: 1000, max: 1600 },
+    dailyCalories: { min: 1000, max: 1400 },
     ageSpecificCalories: {
-      puppy: { min: 1200, max: 1800 },
-      adult: { min: 1000, max: 1600 },
-      senior: { min: 800, max: 1400 }
+      puppy: { min: 1200, max: 1600 },
+      adult: { min: 1000, max: 1400 },
+      senior: { min: 800, max: 1200 }
     },
     mealsPerDay: {
       puppy: 3,
       adult: 2,
       senior: 2
     },
-    notes: "Active sporting breed, prone to ear infections",
+    notes: "Active field dogs may need significantly more calories",
     nutritionNotes: {
-      puppy: "Moderate protein (24-26%) supports proper growth. Monitor for food allergies that may affect ear health.",
-      adult: "Active sporting breed with variable energy needs. Quality protein (24-26%) supports coat and energy needs.",
-      senior: "Moderate protein (22-24%) maintains muscle mass. Watch for weight gain as activity decreases with age."
+      puppy: "Balanced growth formula with moderate protein (24-26%). Monitor for proper weight gain and development.",
+      adult: "Field working dogs may need 20-40% more calories during hunting season. Adjust based on activity level.",
+      senior: "Joint support beneficial. Moderate protein (22-24%) with attention to ear and skin health which can decline with age."
     },
-    imageUrl: "https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1610041518868-a3c6631972b4?q=80"
+  },
+  {
+    breed: "German Shorthaired Pointer",
+    size: "Large",
+    dailyCalories: { min: 1300, max: 1800 },
+    ageSpecificCalories: {
+      puppy: { min: 1500, max: 2000 },
+      adult: { min: 1300, max: 1800 },
+      senior: { min: 1100, max: 1500 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "High energy hunting dog, adjust calories with activity",
+    nutritionNotes: {
+      puppy: "Focus on steady growth. Moderate protein (24-26%) to support muscle development without excessive growth rate.",
+      adult: "Working dogs may need 30-50% more calories during hunting season. Higher protein (26-30%) beneficial for working dogs.",
+      senior: "Maintain muscle with adequate protein (24-26%). Lower calories with decreased activity. Joint support important."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1529944618548-a8aca7941813?q=80"
+  },
+  {
+    breed: "Vizsla",
+    size: "Medium",
+    dailyCalories: { min: 1200, max: 1600 },
+    ageSpecificCalories: {
+      puppy: { min: 1400, max: 1800 },
+      adult: { min: 1200, max: 1600 },
+      senior: { min: 1000, max: 1400 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "High energy level, rarely overweight",
+    nutritionNotes: {
+      puppy: "Balanced growth with moderate protein (24-26%). Multiple meals until 6 months to support energy needs.",
+      adult: "Often needs more calories than similarly sized breeds due to high activity. Higher protein (24-28%) beneficial.",
+      senior: "Maintain muscle with adequate protein (22-24%). Senior formulas with joint support typically beneficial after 8 years."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1591946599868-6c7d208a8545?q=80"
+  },
+  {
+    breed: "Irish Setter",
+    size: "Large",
+    dailyCalories: { min: 1400, max: 1800 },
+    ageSpecificCalories: {
+      puppy: { min: 1600, max: 2000 },
+      adult: { min: 1400, max: 1800 },
+      senior: { min: 1200, max: 1500 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Deep-chested breed, bloat risk",
+    nutritionNotes: {
+      puppy: "Large breed puppy formula recommended. Moderate protein (22-24%) and controlled calcium for proper bone development.",
+      adult: "Elevated feeding position and multiple meals recommended to reduce bloat risk. Consider adding probiotics.",
+      senior: "Lower calorie density with maintained protein (20-22%). Joint support beneficial. Monitor ear health."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1636484231025-845c6dca8fb6?q=80"
+  },
+  {
+    breed: "Weimaraner",
+    size: "Large",
+    dailyCalories: { min: 1500, max: 1900 },
+    ageSpecificCalories: {
+      puppy: { min: 1700, max: 2100 },
+      adult: { min: 1500, max: 1900 },
+      senior: { min: 1300, max: 1600 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Very active breed, bloat risk",
+    nutritionNotes: {
+      puppy: "Controlled growth essential. Large breed puppy formula with moderate protein (22-24%) and balanced minerals.",
+      adult: "Deep-chested breed - elevated feeding and multiple smaller meals advised. High quality protein (24-28%) for active lifestyle.",
+      senior: "Joint support essential after 7-8 years. Maintain muscle with adequate protein (22-24%) while reducing calories."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1575068334092-37f7a8a4c49f?q=80"
+  },
+  {
+    breed: "Brittany",
+    size: "Medium",
+    dailyCalories: { min: 1000, max: 1500 },
+    ageSpecificCalories: {
+      puppy: { min: 1200, max: 1700 },
+      adult: { min: 1000, max: 1500 },
+      senior: { min: 800, max: 1300 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Extremely high energy hunting dog",
+    nutritionNotes: {
+      puppy: "Balanced growth with moderate protein (24-26%). Monitor for proper development without excessive weight gain.",
+      adult: "Working dogs need significantly more calories (30-40%) during hunting season. Higher protein (26-30%) beneficial for working dogs.",
+      senior: "Maintain muscle with adequate protein (22-26%). Senior care typically begins around 8-9 years."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1566703709349-a8cc01bdad6a?q=80"
+  },
+  {
+    breed: "English Cocker Spaniel",
+    size: "Medium",
+    dailyCalories: { min: 900, max: 1300 },
+    ageSpecificCalories: {
+      puppy: { min: 1100, max: 1500 },
+      adult: { min: 900, max: 1300 },
+      senior: { min: 750, max: 1100 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Prone to obesity and ear issues",
+    nutritionNotes: {
+      puppy: "Balanced growth with moderate protein (24-26%). Monitor ears for infection which can relate to food allergies.",
+      adult: "Prone to weight gain - strict portion control needed. Moderate protein (22-24%) sufficient. Monitor ear health.",
+      senior: "Lower calorie density needed as activity decreases. Omega fatty acids beneficial for coat and skin health in aging dogs."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80"
   },
   {
     breed: "Chesapeake Bay Retriever",
     size: "Large",
-    dailyCalories: { min: 1400, max: 2200 },
+    dailyCalories: { min: 1400, max: 1900 },
     ageSpecificCalories: {
-      puppy: { min: 1600, max: 2400 },
-      adult: { min: 1400, max: 2200 },
-      senior: { min: 1200, max: 1800 }
+      puppy: { min: 1600, max: 2100 },
+      adult: { min: 1400, max: 1900 },
+      senior: { min: 1200, max: 1600 }
     },
     mealsPerDay: {
       puppy: 3,
       adult: 2,
       senior: 2
     },
-    notes: "Working water dog, needs waterproof coat support",
+    notes: "Water retriever with waterproof coat needing nutritional support",
     nutritionNotes: {
-      puppy: "Slow growth essential for joint health. Large breed puppy formula with moderate protein (22-24%) recommended.",
-      adult: "Working water dog needs quality nutrition. Higher fat (14-18%) supports waterproof coat. Quality protein (25-28%) maintains energy.",
-      senior: "Moderate protein (22-26%) maintains muscle mass. Coat support remains important. Joint supplements beneficial."
+      puppy: "Large breed puppy formula until 12-15 months. Omega fatty acids important for coat development.",
+      adult: "Working dogs need significantly more calories during hunting season. Higher protein (24-28%) with omega fatty acids for coat maintenance.",
+      senior: "Joint support critical for water working breed. Maintain coat health with continued omega fatty acid supplementation."
     },
-    imageUrl: "https://images.unsplash.com/photo-1507146426996-ef05306b995a?q=80"
-  },
-  {
-    breed: "Flat-Coated Retriever",
-    size: "Large",
-    dailyCalories: { min: 1300, max: 2000 },
-    ageSpecificCalories: {
-      puppy: { min: 1500, max: 2200 },
-      adult: { min: 1300, max: 2000 },
-      senior: { min: 1100, max: 1700 }
-    },
-    mealsPerDay: {
-      puppy: 3,
-      adult: 2,
-      senior: 2
-    },
-    notes: "Energetic sporting breed, prone to cancer",
-    nutritionNotes: {
-      puppy: "Controlled growth important for joint health. Large breed puppy formula with moderate protein (22-24%) recommended.",
-      adult: "Energetic sporting breed with moderate energy needs. Quality protein (24-26%) supports coat and energy needs.",
-      senior: "Antioxidant-rich diet beneficial. Consider cancer-preventative nutrition after 7 years. Quality protein (22-24%) maintains muscle."
-    },
-    imageUrl: "https://images.unsplash.com/photo-1537204696486-967f1b7198c8?q=80"
+    imageUrl: "https://images.unsplash.com/photo-1525146021182-1cd2ee2912f3?q=80"
   }
 ];

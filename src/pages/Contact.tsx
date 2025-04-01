@@ -88,14 +88,68 @@ export function Contact() {
   // Handle contact form submission
   function onContactSubmit(data: ContactFormValues) {
     console.log("Contact form submitted:", data);
-    toast.success("Your message has been sent! We'll get back to you soon.");
+    
+    // Send data to Supabase edge function
+    fetch(`https://dtaivjcchgvuhpdjqtba.supabase.co/functions/v1/send-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        message: data.message
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(result => {
+        console.log("Email sent successfully:", result);
+        toast.success("Your message has been sent! We'll get back to you soon.");
+      })
+      .catch(error => {
+        console.error("Error sending email:", error);
+        toast.error("There was a problem sending your message. Please try again.");
+      });
+      
     contactForm.reset();
   }
   
   // Handle feedback form submission
   function onFeedbackSubmit(data: FeedbackFormValues) {
     console.log("Feedback form submitted:", data);
-    toast.success("Thank you for your feedback! We value your input.");
+    
+    // Send data to Supabase edge function
+    fetch(`https://dtaivjcchgvuhpdjqtba.supabase.co/functions/v1/send-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        message: `Pet Type: ${data.petType}\n\nFeedback: ${data.feedback}\n\nFeature Request: ${data.featureRequest || 'None'}`
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(result => {
+        console.log("Email sent successfully:", result);
+        toast.success("Thank you for your feedback! We value your input.");
+      })
+      .catch(error => {
+        console.error("Error sending email:", error);
+        toast.error("There was a problem sending your feedback. Please try again.");
+      });
+    
     feedbackForm.reset();
   }
 

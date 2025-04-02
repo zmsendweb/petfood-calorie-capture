@@ -1,7 +1,7 @@
 
 export * from './MotivationalTip';
 export * from './ProgressChart';
-export * from './WeeklyCalorieChart';
+export * from './CalorieChart';
 export * from './WeightProgressChart';
 export * from './PlanningActions';
 export * from './PetSelection';
@@ -10,3 +10,4 @@ export * from './NoPetsView';
 export * from './DashboardHeader';
 export * from './DashboardControls';
 export * from './DashboardContent';
+

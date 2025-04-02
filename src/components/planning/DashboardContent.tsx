@@ -3,7 +3,7 @@ import { PetProfile } from "@/data/types/petTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, Trophy, Zap, Heart } from "lucide-react";
 import { ProgressChart } from "./ProgressChart";
-import { WeeklyCalorieChart } from "./WeeklyCalorieChart";
+import { CalorieChart } from "./CalorieChart";
 import { MotivationalTip } from "./MotivationalTip";
 import { WeightProgressChart } from "./WeightProgressChart";
 import { PlanningActions } from "./PlanningActions";
@@ -29,7 +29,7 @@ export const DashboardContent = ({ pet, viewMode }: DashboardContentProps) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <WeeklyCalorieChart 
+              <CalorieChart 
                 petId={pet.id} 
                 targetCalories={pet.dailyCalorieTarget || 0}
                 viewMode={viewMode} 

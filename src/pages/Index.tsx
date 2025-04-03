@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Bell } from "lucide-react";
 import { Toaster } from "sonner";
 import { useNotifications } from "@/hooks/use-notifications";
-import { MainNavigation } from "@/components/MainNavigation";
 import { PageHeader } from "@/components/PageHeader";
 
 export function Index() {
@@ -52,7 +51,7 @@ export function Index() {
   }, [isDismissed, dismissNotification]);
   
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-4 max-w-6xl mx-auto">
       <PageHeader 
         title="Pet Nutrition Tracker"
         showBackButton={false}

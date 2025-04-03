@@ -18,13 +18,14 @@ const CatStandards = () => {
   const [showNutritionQuery, setShowNutritionQuery] = useState(false);
   const [ageFilter, setAgeFilter] = useState("adult");
 
+  // Fix: ensure case-sensitive matching for size categories
   const filteredStandards = catStandards.filter(cat =>
-    (selectedSize ? cat.size === selectedSize : true) &&
+    (selectedSize === null || cat.size === selectedSize) &&
     (cat.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cat.size.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  // Define the sizes based on the actual data in the cat standards
+  // Fix: Make sure these exactly match the size values in the data
   const sizes = ["Small", "Medium", "Large", "Exotic", "Rare"];
 
   const ageGroups = [
@@ -34,10 +35,10 @@ const CatStandards = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-6">
       <div className="container max-w-6xl">
         <PageHeader 
-          title="Cat Breed Feeding Standards" 
+          title="Cat Breed Standards" 
           backTo="/"
         />
 
@@ -57,8 +58,8 @@ const CatStandards = () => {
         {/* Add the BreedCounter component */}
         <BreedCounter petType="cat" />
 
-        <div className="space-y-6 mb-6">
-          <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+        <div className="space-y-4 mb-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <Input
@@ -78,7 +79,7 @@ const CatStandards = () => {
           </div>
 
           {showNutritionQuery && (
-            <div className="mb-6">
+            <div className="mb-4">
               <NutritionQuery defaultPetType="cat" />
             </div>
           )}
@@ -92,19 +93,17 @@ const CatStandards = () => {
               >
                 All Sizes
               </Button>
-              {sizes.map((size) => {
-                return (
-                  <Button
-                    key={size}
-                    variant={selectedSize === size ? "default" : "outline"}
-                    onClick={() => setSelectedSize(size)}
-                    className="rounded-full flex items-center gap-2"
-                  >
-                    <PawPrint className={`h-4 w-4 ${getSizeCategoryStyle(size).color}`} />
-                    {size} Cats
-                  </Button>
-                );
-              })}
+              {sizes.map((size) => (
+                <Button
+                  key={size}
+                  variant={selectedSize === size ? "default" : "outline"}
+                  onClick={() => setSelectedSize(size)}
+                  className="rounded-full flex items-center gap-2"
+                >
+                  <PawPrint className={`h-4 w-4 ${getSizeCategoryStyle(size).color}`} />
+                  {size}
+                </Button>
+              ))}
             </div>
             
             <Tabs defaultValue="adult" className="w-full sm:w-auto" onValueChange={setAgeFilter}>
@@ -168,7 +167,7 @@ const CatStandards = () => {
           </div>
         )}
 
-        <footer className="mt-12 border-t pt-6 text-xs text-gray-500">
+        <footer className="mt-10 border-t pt-4 text-xs text-gray-500">
           <p className="mb-2">
             Nutritional information provided is based on general guidelines. Sources include American College of Veterinary Nutrition (ACVN) and European Society of Veterinary and Comparative Nutrition (ESVCN).
           </p>

@@ -21,23 +21,23 @@ export function PageHeader({
   children 
 }: PageHeaderProps) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
       <div className="flex items-center gap-2">
         {showBackButton && (
           <Link to={backTo}>
-            <Button variant="ghost" size="icon" className="h-9 w-9">
+            <Button variant="ghost" size="icon" className="h-8 w-8">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
         )}
         <div>
-          <h1 className="text-2xl font-bold leading-tight">{title}</h1>
+          <h1 className="text-xl font-bold leading-tight">{title}</h1>
           {description && (
-            <p className="text-sm text-muted-foreground mt-1">{description}</p>
+            <p className="text-xs text-muted-foreground">{description}</p>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ml-auto">
         {children}
         <MainNavigation />
       </div>

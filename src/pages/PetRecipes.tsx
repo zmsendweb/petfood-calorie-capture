@@ -5,13 +5,13 @@ import { PageHeader } from "@/components/PageHeader";
 
 export function PetRecipes() {
   return (
-    <div className="container py-8 max-w-5xl mx-auto">
+    <div className="container py-6 max-w-5xl mx-auto">
       <PageHeader 
         title="Pet Food Recipes" 
-        description="Create custom, nutritionally-balanced food recipes for your pets"
+        description="Custom nutritionally-balanced recipes"
       />
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         <ReminderNotifications />
         <PetRecipeSuggestions />
       </div>

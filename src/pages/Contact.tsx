@@ -18,10 +18,10 @@ export function Contact() {
   const captchaNum2 = Math.floor(Math.random() * 10) + 1;
 
   return (
-    <div className="container py-8 max-w-5xl mx-auto">
+    <div className="container py-6 max-w-5xl mx-auto">
       <PageHeader 
         title="Contact Us" 
-        description="Get in touch with our support team"
+        description="Get in touch with our team"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -29,7 +29,7 @@ export function Contact() {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="contact">Contact Us</TabsTrigger>
-              <TabsTrigger value="feedback">Feedback & Feature Requests</TabsTrigger>
+              <TabsTrigger value="feedback">Feedback & Features</TabsTrigger>
             </TabsList>
             
             <TabsContent value="contact" className="mt-6">
@@ -37,7 +37,7 @@ export function Contact() {
                 <CardHeader>
                   <CardTitle>Get in Touch</CardTitle>
                   <CardDescription>
-                    Have a question about our pet nutrition platform? Send us a message and we'll get back to you as soon as possible.
+                    Have a question about our pet nutrition platform? Send us a message.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -51,7 +51,7 @@ export function Contact() {
                 <CardHeader>
                   <CardTitle>Share Your Feedback</CardTitle>
                   <CardDescription>
-                    We value your input! Let us know what you think about our platform and what features you'd like to see.
+                    We value your input! Let us know what you'd like to see.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

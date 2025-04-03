@@ -14,12 +14,29 @@ export async function semanticSearch(query: string, petType: string | null): Pro
     
     // Filter by pet type if specified
     const filteredEmbeddings = petType 
-      ? allEmbeddings.filter(item => item.petType === petType)
+      ? allEmbeddings.filter(item => 
+          item.petType === petType || 
+          item.petType === 'both' || 
+          !item.petType) // Include generic info with no specific pet type
       : allEmbeddings;
+    
+    if (filteredEmbeddings.length === 0) {
+      console.log(`No nutrition information found for pet type: ${petType}`);
+      // Return some generic info if no specific info for this pet type
+      return allEmbeddings.slice(0, 3);
+    }
     
     // Calculate similarity scores
     const resultsWithScores = filteredEmbeddings.map(item => {
-      const similarity = cosineSimilarity(queryEmbedding, item.embedding!);
+      // Safety check for missing embeddings
+      if (!item.embedding || item.embedding.length === 0 || !queryEmbedding || queryEmbedding.length === 0) {
+        return {
+          ...item,
+          similarity: 0
+        };
+      }
+      
+      const similarity = cosineSimilarity(queryEmbedding, item.embedding);
       return {
         ...item,
         similarity
@@ -34,6 +51,12 @@ export async function semanticSearch(query: string, petType: string | null): Pro
     return sortedResults;
   } catch (error) {
     console.error('Error in semanticSearch:', error);
-    throw error;
+    // Return a minimal fallback set rather than failing completely
+    try {
+      return (await createEmbeddings()).slice(0, 3);
+    } catch (fallbackError) {
+      console.error('Error in fallback search:', fallbackError);
+      throw error;
+    }
   }
 }

@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { RAGResponse } from "@/data/types/ragTypes";
 
 export type PetType = "dog" | "cat" | null;
@@ -15,23 +15,30 @@ export function useNutritionRAG() {
     setIsLoading(true);
     setError(null);
     try {
+      console.log(`Sending nutrition query: "${query}" for pet type: ${petType || 'both'}`);
+      
       const { data, error } = await supabase.functions.invoke('pet-nutrition-rag', {
         body: { query, petType }
       });
 
       if (error) {
-        throw new Error(error.message);
+        console.error("Supabase function error:", error);
+        throw new Error(error.message || 'Error contacting nutrition service');
       }
 
+      if (!data) {
+        throw new Error('No data returned from nutrition service');
+      }
+
+      console.log("Nutrition RAG response:", data);
       setResult(data as RAGResponse);
       return data as RAGResponse;
     } catch (err) {
+      console.error("Nutrition RAG error:", err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to get nutrition information';
       setError(errorMessage);
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: errorMessage,
-        variant: "destructive"
       });
       return null;
     } finally {

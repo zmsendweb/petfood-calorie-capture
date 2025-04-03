@@ -23,7 +23,9 @@ const CatStandards = () => {
     cat.size.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const sizes = ["Small", "Medium", "Large"];
+  // Define the sizes based on the actual data in the cat standards
+  const sizes = ["Small", "Medium", "Large", "Exotic", "Rare"];
+
   const ageGroups = [
     { id: "kitten", label: "Kitten" },
     { id: "adult", label: "Adult" },

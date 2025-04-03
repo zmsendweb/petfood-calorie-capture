@@ -5,11 +5,12 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, ArrowLeft, PawPrint } from "lucide-react";
+import { Search, PawPrint } from "lucide-react";
 import { catStandards } from "@/data/catStandards";
 import { NutritionQuery } from "@/components/NutritionQuery";
 import { getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
 import { BreedCounter } from "@/components/BreedCounter";
+import { PageHeader } from "@/components/PageHeader";
 
 const CatStandards = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,14 +36,10 @@ const CatStandards = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
       <div className="container max-w-6xl">
-        <div className="flex items-center gap-4 mb-8">
-          <Link to="/">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-bold">Cat Breed Feeding Standards</h1>
-        </div>
+        <PageHeader 
+          title="Cat Breed Feeding Standards" 
+          backTo="/"
+        />
 
         <div className="mb-4 flex flex-wrap gap-2">
           <Link to="/standards">
@@ -53,11 +50,6 @@ const CatStandards = () => {
           <Link to="/cat-standards">
             <Button variant="default">
               Cat Standards
-            </Button>
-          </Link>
-          <Link to="/">
-            <Button variant="outline">
-              Back to Home
             </Button>
           </Link>
         </div>
@@ -163,7 +155,6 @@ const CatStandards = () => {
                         {standard.nutritionNotes[ageFilter as keyof typeof standard.nutritionNotes]}
                       </p>
                     </div>
-                    {/* Source information removed */}
                   </div>
                 </CardContent>
               </Card>

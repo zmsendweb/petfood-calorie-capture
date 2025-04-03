@@ -1,7 +1,8 @@
 
-import { useMealChartData } from "./hooks/useMealChartData";
+import { useMealChartData, MealChartData } from "./hooks/useMealChartData";
 import { DailyCalorieChart } from "./charts/DailyCalorieChart";
 import { WeeklyCalorieChart } from "./charts/WeeklyCalorieChart";
+import { DailyChartData, WeeklyChartData } from "./hooks/utils/formatChartData";
 
 interface CalorieChartProps {
   petId: string;
@@ -14,13 +15,13 @@ export const CalorieChart = ({ petId, targetCalories, viewMode }: CalorieChartPr
   
   if (viewMode === "daily") {
     return <DailyCalorieChart 
-      chartData={chartData as Array<{hour: string; calories: number; target: number}>} 
+      chartData={chartData as DailyChartData[]} 
       targetCalories={targetCalories} 
     />;
   }
   
   return <WeeklyCalorieChart 
-    chartData={chartData as Array<{date: string; fullDate: string; calories: number; target: number; lowerBound: number; upperBound: number}>} 
+    chartData={chartData as WeeklyChartData[]} 
     targetCalories={targetCalories} 
   />;
 };

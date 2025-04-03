@@ -12,4 +12,3 @@ export * from './DashboardContent';
 export * from './charts/WeightProgressChart';
 export * from './charts/WeightChart';
 export * from './indicators/ProgressIndicator';
-

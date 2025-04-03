@@ -5,7 +5,7 @@ import { TrendingUp, Trophy, Zap, Heart } from "lucide-react";
 import { ProgressChart } from "./ProgressChart";
 import { CalorieChart } from "./CalorieChart";
 import { MotivationalTip } from "./MotivationalTip";
-import { WeightProgressChart } from "./WeightProgressChart";
+import { WeightProgressChart } from "./charts/WeightProgressChart";
 import { PlanningActions } from "./PlanningActions";
 
 interface DashboardContentProps {

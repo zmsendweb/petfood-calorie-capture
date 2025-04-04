@@ -18,15 +18,15 @@ const CatStandards = () => {
   const [showNutritionQuery, setShowNutritionQuery] = useState(false);
   const [ageFilter, setAgeFilter] = useState("adult");
 
-  // Fix: ensure case-sensitive matching for size categories
+  // Get unique sizes from the data to ensure we're using exact size values
+  const availableSizes = [...new Set(catStandards.map(cat => cat.size))].sort();
+
+  // Fixed filter function to use exact string matching on size
   const filteredStandards = catStandards.filter(cat =>
     (selectedSize === null || cat.size === selectedSize) &&
     (cat.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cat.size.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-
-  // Fix: Make sure these exactly match the size values in the data
-  const sizes = ["Small", "Medium", "Large", "Exotic", "Rare"];
 
   const ageGroups = [
     { id: "kitten", label: "Kitten" },
@@ -93,7 +93,7 @@ const CatStandards = () => {
               >
                 All Sizes
               </Button>
-              {sizes.map((size) => (
+              {availableSizes.map((size) => (
                 <Button
                   key={size}
                   variant={selectedSize === size ? "default" : "outline"}
@@ -181,3 +181,4 @@ const CatStandards = () => {
 };
 
 export default CatStandards;
+

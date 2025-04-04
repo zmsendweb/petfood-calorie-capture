@@ -6,7 +6,7 @@
 import { PawPrint } from "lucide-react";
 
 // Define the allowed size categories
-export type PetSize = "Small" | "Medium" | "Large";
+export type PetSize = "Small" | "Medium" | "Large" | "Exotic" | "Rare";
 
 export interface SizeCategory {
   color: string;
@@ -15,7 +15,7 @@ export interface SizeCategory {
 }
 
 // Size-based styling information for both cats and dogs
-export const sizeCategoryStyles: Record<PetSize, SizeCategory> = {
+export const sizeCategoryStyles: Record<string, SizeCategory> = {
   "Small": {
     color: "text-green-600",
     bgColor: "bg-green-100",
@@ -30,13 +30,23 @@ export const sizeCategoryStyles: Record<PetSize, SizeCategory> = {
     color: "text-purple-600",
     bgColor: "bg-purple-100",
     label: "Large"
+  },
+  "Exotic": {
+    color: "text-amber-600",
+    bgColor: "bg-amber-100",
+    label: "Exotic"
+  },
+  "Rare": {
+    color: "text-rose-600",
+    bgColor: "bg-rose-100",
+    label: "Rare"
   }
 };
 
 export const getSizeCategoryStyle = (size: string): SizeCategory => {
-  // Check if the provided size is a valid PetSize
+  // Check if the provided size is a valid category
   if (size in sizeCategoryStyles) {
-    return sizeCategoryStyles[size as PetSize];
+    return sizeCategoryStyles[size];
   }
   
   // Fallback to avoid "undefined" errors
@@ -46,3 +56,4 @@ export const getSizeCategoryStyle = (size: string): SizeCategory => {
     label: size
   };
 };
+

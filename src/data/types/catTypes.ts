@@ -1,7 +1,9 @@
 
+export type CatSize = "Small" | "Medium" | "Large" | "Exotic" | "Rare";
+
 export interface CatStandard {
   breed: string;
-  size: string;
+  size: CatSize;
   dailyCalories: {
     min: number;
     max: number;
@@ -26,3 +28,4 @@ export interface CatStandard {
   imageUrl: string;
   source?: string; // Make source optional
 }
+

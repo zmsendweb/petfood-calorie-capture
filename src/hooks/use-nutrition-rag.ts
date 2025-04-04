@@ -30,7 +30,14 @@ export function useNutritionRAG() {
         throw new Error('No data returned from nutrition service');
       }
 
+      // Even if the API returns an error object, we should still have an answer property
+      // due to our fallback mechanism in the edge function
       console.log("Nutrition RAG response:", data);
+      
+      if (data.error && !data.answer) {
+        throw new Error(data.error || 'Error processing nutrition information');
+      }
+      
       setResult(data as RAGResponse);
       return data as RAGResponse;
     } catch (err) {

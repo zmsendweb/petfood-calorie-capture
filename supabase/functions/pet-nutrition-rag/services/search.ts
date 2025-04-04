@@ -2,6 +2,7 @@
 import { createEmbeddings, getQueryEmbedding } from "./embeddings.ts";
 import { cosineSimilarity } from "../utils/similarity.ts";
 import { NutritionInfo } from "../data/types.ts";
+import { nutritionInfo } from "../data/nutritionInfo.ts";
 
 // Search for related content based on query
 export async function semanticSearch(query: string, petType: string | null): Promise<NutritionInfo[]> {
@@ -51,12 +52,24 @@ export async function semanticSearch(query: string, petType: string | null): Pro
     return sortedResults;
   } catch (error) {
     console.error('Error in semanticSearch:', error);
-    // Return a minimal fallback set rather than failing completely
-    try {
-      return (await createEmbeddings()).slice(0, 3);
-    } catch (fallbackError) {
-      console.error('Error in fallback search:', fallbackError);
-      throw error;
+    
+    // Return a simple filtered set based on pet type without embeddings
+    const fallbackItems = petType 
+      ? nutritionInfo.filter(item => 
+          item.petType === petType || 
+          item.petType === 'both' || 
+          !item.petType)
+      : nutritionInfo;
+    
+    // Get 3 random items
+    const randomItems = fallbackItems.length > 3 
+      ? fallbackItems.sort(() => 0.5 - Math.random()).slice(0, 3)
+      : fallbackItems;
+    
+    if (randomItems.length === 0) {
+      throw new Error('No nutrition information available for fallback');
     }
+    
+    return randomItems;
   }
 }

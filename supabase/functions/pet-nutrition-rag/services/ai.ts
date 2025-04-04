@@ -7,7 +7,7 @@ const SUPAVEC_API_KEY = Deno.env.get('SUPAVEC_API_KEY');
 export async function generateResponse(query: string, retrievedInfo: NutritionInfo[], petType: string | null): Promise<RAGResponse> {
   if (!SUPAVEC_API_KEY) {
     console.error('SUPAVEC_API_KEY is not defined in environment variables');
-    throw new Error('API key not configured');
+    return generateFallbackResponse(query, retrievedInfo, petType);
   }
   
   try {
@@ -44,14 +44,14 @@ export async function generateResponse(query: string, retrievedInfo: NutritionIn
     if (!response.ok) {
       const errorData = await response.text();
       console.error('Error from AI API:', errorData);
-      throw new Error(`Error generating response: ${response.status}`);
+      return generateFallbackResponse(query, retrievedInfo, petType);
     }
     
     const data = await response.json();
     
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       console.error('Unexpected API response format:', data);
-      throw new Error('Invalid response format from AI service');
+      return generateFallbackResponse(query, retrievedInfo, petType);
     }
     
     return {
@@ -60,6 +60,41 @@ export async function generateResponse(query: string, retrievedInfo: NutritionIn
     };
   } catch (error) {
     console.error('Error in generateResponse:', error);
-    throw error;
+    return generateFallbackResponse(query, retrievedInfo, petType);
   }
+}
+
+// Generate a fallback response when AI service is unavailable
+function generateFallbackResponse(query: string, retrievedInfo: NutritionInfo[], petType: string | null): RAGResponse {
+  // Extract keywords from the query to match with our info
+  const keywords = query.toLowerCase().split(/\s+/);
+  const petTypeStr = petType || "pet";
+  
+  // Basic canned response based on query keywords
+  let answer = `Based on general nutrition guidelines for ${petTypeStr}s, `;
+  
+  if (keywords.some(k => k.includes("protein") || k.includes("meat"))) {
+    answer += `high-quality protein is essential for ${petTypeStr}s. Good sources include lean meats, fish, and eggs. ${petTypeStr === 'dog' ? 'Dogs' : 'Cats'} typically need about 25-30% protein in their diet.`;
+  } else if (keywords.some(k => k.includes("fat") || k.includes("oil"))) {
+    answer += `healthy fats are important for energy and coat health. Good sources include fish oil and flaxseed. Too much fat can lead to obesity, so moderation is key.`;
+  } else if (keywords.some(k => k.includes("vitamin") || k.includes("mineral") || k.includes("supplement"))) {
+    answer += `vitamins and minerals are crucial for overall health. A balanced diet typically provides all necessary nutrients, but some ${petTypeStr}s may benefit from supplements based on veterinary advice.`;
+  } else if (keywords.some(k => k.includes("grain") || k.includes("carb") || k.includes("rice") || k.includes("wheat"))) {
+    answer += `${petTypeStr === 'dog' ? 'dogs can digest grains and carbohydrates, which provide energy and fiber.' : 'cats are obligate carnivores and don\'t require grains, though some can tolerate small amounts.'} The debate about grain-free diets is ongoing, so consult your veterinarian for specific advice.`;
+  } else if (keywords.some(k => k.includes("raw") || k.includes("barf") || k.includes("natural"))) {
+    answer += `raw diets have both advocates and critics. They may provide benefits but also carry risks of bacterial contamination and nutritional imbalances. Always consult a veterinarian before starting a raw diet.`;
+  } else if (keywords.some(k => k.includes("treat") || k.includes("snack"))) {
+    answer += `treats should make up no more than 10% of a ${petTypeStr}'s daily caloric intake. Healthy options include small pieces of lean meat, carrots (for dogs), or commercial treats formulated for ${petTypeStr}s.`;
+  } else if (keywords.some(k => k.includes("water") || k.includes("hydration"))) {
+    answer += `proper hydration is essential. Always provide fresh, clean water. ${petTypeStr === 'cat' ? 'Cats often have a low thirst drive, so wet food can help with hydration.' : 'Dogs need about 1 ounce of water per pound of body weight daily.'}`;
+  } else {
+    answer += `a balanced diet is essential. Look for foods that meet AAFCO standards and consult with your veterinarian about specific nutritional needs based on age, breed, and health status.`;
+  }
+  
+  answer += "\n\nPlease note: This is general information. For specific dietary advice, consult with your veterinarian.";
+  
+  return {
+    answer,
+    sources: retrievedInfo.map(info => ({ title: info.title, source: info.source }))
+  };
 }

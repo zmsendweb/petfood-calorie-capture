@@ -12,8 +12,13 @@ export function useNutritionRAG() {
   const [error, setError] = useState<string | null>(null);
 
   const getAnswer = async (query: string, petType: PetType = null) => {
+    if (!query.trim()) {
+      return null;
+    }
+    
     setIsLoading(true);
     setError(null);
+    
     try {
       console.log(`Sending nutrition query: "${query}" for pet type: ${petType || 'both'}`);
       
@@ -30,8 +35,6 @@ export function useNutritionRAG() {
         throw new Error('No data returned from nutrition service');
       }
 
-      // Even if the API returns an error object, we should still have an answer property
-      // due to our fallback mechanism in the edge function
       console.log("Nutrition RAG response:", data);
       
       if (data.error && !data.answer) {

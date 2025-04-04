@@ -51,6 +51,12 @@ function createOAuthParams(): Record<string, string> {
 // Call FatSecret API
 async function callFatSecretApi(method: string, params: Record<string, string>) {
   try {
+    // Validate API keys
+    if (!CONSUMER_KEY || !CONSUMER_SECRET) {
+      console.error("Missing FatSecret API credentials");
+      return { error: { message: "FatSecret API credentials are not configured" } };
+    }
+
     // Create base params
     const baseParams = createOAuthParams();
     const allParams = { ...baseParams, ...params };
@@ -65,6 +71,8 @@ async function callFatSecretApi(method: string, params: Record<string, string>) 
       formData.append(key, value);
     });
     
+    console.log(`Calling FatSecret API method: ${params.method}`);
+    
     const response = await fetch(FATSECRET_API_URL, {
       method: "POST",
       headers: {
@@ -74,13 +82,22 @@ async function callFatSecretApi(method: string, params: Record<string, string>) 
     });
     
     if (!response.ok) {
-      throw new Error(`FatSecret API error: ${response.status} ${response.statusText}`);
+      console.error(`FatSecret API HTTP error: ${response.status} ${response.statusText}`);
+      return { error: { message: `FatSecret API returned status ${response.status}` } };
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log(`FatSecret API response received for ${params.method}`);
+    
+    if (data.error) {
+      console.error("FatSecret API returned an error:", data.error);
+      return { error: { message: data.error.message || "Unknown API error" } };
+    }
+    
+    return data;
   } catch (error) {
     console.error("Error calling FatSecret API:", error);
-    throw error;
+    return { error: { message: error.message || "Failed to call FatSecret API" } };
   }
 }
 
@@ -95,22 +112,34 @@ serve(async (req) => {
     const action = url.pathname.split("/").pop();
     
     if (req.method === "POST") {
-      const { query, barcode, region, maxResults } = await req.json();
+      let requestBody;
+      
+      try {
+        requestBody = await req.json();
+      } catch (error) {
+        console.error("Failed to parse request body:", error);
+        return new Response(
+          JSON.stringify({ error: { message: "Invalid request body" } }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
+      const { query, barcode, region, maxResults } = requestBody;
       let result;
       
       switch (action) {
         case "search":
           if (!query) {
             return new Response(
-              JSON.stringify({ error: "Query is required" }),
-              { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+              JSON.stringify({ error: { message: "Query is required" } }),
+              { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
             );
           }
           
           result = await callFatSecretApi("POST", {
             method: "foods.search",
             search_expression: query,
-            max_results: maxResults?.toString() || "10",
+            max_results: maxResults?.toString() || "20",
             region: region || "US"
           });
           break;
@@ -118,8 +147,8 @@ serve(async (req) => {
         case "barcode":
           if (!barcode) {
             return new Response(
-              JSON.stringify({ error: "Barcode is required" }),
-              { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+              JSON.stringify({ error: { message: "Barcode is required" } }),
+              { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
             );
           }
           
@@ -132,8 +161,8 @@ serve(async (req) => {
         case "food":
           if (!query) {
             return new Response(
-              JSON.stringify({ error: "Food ID is required" }),
-              { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+              JSON.stringify({ error: { message: "Food ID is required" } }),
+              { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
             );
           }
           
@@ -146,8 +175,8 @@ serve(async (req) => {
         case "nlp":
           if (!query) {
             return new Response(
-              JSON.stringify({ error: "Text description is required" }),
-              { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+              JSON.stringify({ error: { message: "Text description is required" } }),
+              { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
             );
           }
           
@@ -160,26 +189,29 @@ serve(async (req) => {
           
         default:
           return new Response(
-            JSON.stringify({ error: "Invalid action" }),
-            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            JSON.stringify({ error: { message: "Invalid action" } }),
+            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
           );
       }
       
+      // Always return a 200 status even if there's an error in the response
       return new Response(
         JSON.stringify(result),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
     
     return new Response(
-      JSON.stringify({ error: "Method not allowed" }),
-      { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: { message: "Method not allowed" } }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
-    console.error("Error in function:", error);
+    console.error("Fatal error in function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ 
+        error: { message: error.message || "An unknown error occurred" }
+      }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

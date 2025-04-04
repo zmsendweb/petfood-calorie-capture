@@ -66,10 +66,6 @@ export async function semanticSearch(query: string, petType: string | null): Pro
       ? fallbackItems.sort(() => 0.5 - Math.random()).slice(0, 3)
       : fallbackItems;
     
-    if (randomItems.length === 0) {
-      throw new Error('No nutrition information available for fallback');
-    }
-    
     return randomItems;
   }
 }

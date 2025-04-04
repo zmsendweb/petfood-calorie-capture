@@ -3,3 +3,6 @@ project_id = "dtaivjcchgvuhpdjqtba"
 
 [functions.pet-nutrition-rag]
 verify_jwt = false
+
+[functions.fatsecret-api]
+verify_jwt = false

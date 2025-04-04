@@ -16,8 +16,11 @@ serve(async (req) => {
     
     if (!query) {
       return new Response(
-        JSON.stringify({ error: 'Query is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ 
+          error: 'Query is required',
+          answer: "Please provide a question about pet nutrition."
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
@@ -34,7 +37,7 @@ serve(async (req) => {
       
       return new Response(
         JSON.stringify(result),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     } catch (searchError) {
       console.error('Error in semantic search or AI generation:', searchError);
@@ -63,7 +66,7 @@ serve(async (req) => {
       
       return new Response(
         JSON.stringify(fallbackResult),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
   } catch (error) {
@@ -71,7 +74,8 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: error.message || 'An unknown error occurred',
-        answer: "I'm sorry, but I'm having trouble accessing nutrition information right now. Please try again later or contact support if this continues."
+        answer: "I'm sorry, but I'm having trouble accessing nutrition information right now. Please try again later or contact support if this continues.",
+        sources: []
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

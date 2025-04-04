@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useFatSecretAPI, FoodItem } from "@/hooks/use-fatsecret-api";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export function useFoodSearch() {
   const [query, setQuery] = useState("");
@@ -22,54 +22,83 @@ export function useFoodSearch() {
     e.preventDefault();
     
     if (searchMode === "keyword" && query.trim()) {
-      const result = await searchFoods(query);
-      if (result?.foods?.food) {
-        // Handle the case where there's only one food item (which comes as an object, not an array)
-        const foodArray = Array.isArray(result.foods.food) 
-          ? result.foods.food 
-          : [result.foods.food];
-        setSearchResults(foodArray);
-      } else {
-        setSearchResults([]);
+      try {
+        const result = await searchFoods(query);
+        if (result?.foods?.food) {
+          // Handle the case where there's only one food item (which comes as an object, not an array)
+          const foodArray = Array.isArray(result.foods.food) 
+            ? result.foods.food 
+            : [result.foods.food];
+          setSearchResults(foodArray);
+          
+          if (foodArray.length === 0) {
+            toast({
+              title: "No results found",
+              description: "Try a different search term"
+            });
+          }
+        } else {
+          setSearchResults([]);
+          toast({
+            title: "No results found",
+            description: "Try a different search term"
+          });
+        }
+      } catch (error) {
+        console.error("Food search error:", error);
         toast({
-          title: "No results found",
-          description: "Try a different search term"
+          title: "Search error",
+          description: "Unable to search for foods at this time"
         });
       }
     } else if (searchMode === "barcode" && barcodeValue.trim()) {
-      const result = await scanBarcode(barcodeValue);
-      if (result?.food_id) {
-        const foodDetails = await getFoodDetails(result.food_id);
-        if (foodDetails?.food) {
-          return foodDetails.food;
+      try {
+        const result = await scanBarcode(barcodeValue);
+        if (result?.food_id) {
+          const foodDetails = await getFoodDetails(result.food_id);
+          if (foodDetails?.food) {
+            return foodDetails.food;
+          }
+        } else {
+          toast({
+            title: "Barcode not found",
+            description: "This product is not in the FatSecret database"
+          });
         }
-      } else {
+      } catch (error) {
+        console.error("Barcode scan error:", error);
         toast({
-          title: "Barcode not found",
-          description: "This product is not in the FatSecret database",
-          variant: "destructive"
+          title: "Barcode scan error",
+          description: "Unable to scan barcode at this time"
         });
       }
     } else if (searchMode === "nlp" && nlpDescription.trim()) {
-      const result = await parseFoodDescription(nlpDescription);
-      if (result?.food) {
-        // Search for the food based on the NLP result
-        const searchResult = await searchFoods(result.food.food_name);
-        if (searchResult?.foods?.food) {
-          const foodArray = Array.isArray(searchResult.foods.food) 
-            ? searchResult.foods.food 
-            : [searchResult.foods.food];
-          setSearchResults(foodArray);
+      try {
+        const result = await parseFoodDescription(nlpDescription);
+        if (result?.food) {
+          // Search for the food based on the NLP result
+          const searchResult = await searchFoods(result.food.food_name);
+          if (searchResult?.foods?.food) {
+            const foodArray = Array.isArray(searchResult.foods.food) 
+              ? searchResult.foods.food 
+              : [searchResult.foods.food];
+            setSearchResults(foodArray);
+            toast({
+              title: "Food identified",
+              description: `Found "${result.food.food_name}" (${result.food.food_quantity} ${result.food.food_unit})`
+            });
+          }
+        } else {
           toast({
-            title: "Food identified",
-            description: `Found "${result.food.food_name}" (${result.food.food_quantity} ${result.food.food_unit})`
+            title: "Couldn't parse description",
+            description: "Try being more specific about the food item"
           });
         }
-      } else {
+      } catch (error) {
+        console.error("NLP description error:", error);
         toast({
-          title: "Couldn't parse description",
-          description: "Try being more specific about the food item",
-          variant: "destructive"
+          title: "Description parsing error",
+          description: "Unable to parse food description at this time"
         });
       }
     }

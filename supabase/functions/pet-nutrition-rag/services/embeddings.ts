@@ -10,16 +10,21 @@ const SUPAVEC_API_KEY = Deno.env.get('SUPAVEC_API_KEY');
 // Create embeddings for our nutrition information with improved error handling
 export async function createEmbeddings(): Promise<NutritionInfo[]> {
   try {
+    console.log('[embeddings] Starting creation of embeddings');
+    
     if (!SUPAVEC_API_KEY) {
-      console.error('SUPAVEC_API_KEY is not defined in environment variables');
+      console.error('[embeddings] SUPAVEC_API_KEY is not defined in environment variables');
       throw new Error('API key not configured');
     }
     
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log(`[embeddings] Creating embeddings for ${nutritionInfo.length} nutrition items`);
     
     // Create embeddings for each piece of nutrition information
     const embeddingPromises = nutritionInfo.map(async (info) => {
       try {
+        console.log(`[embeddings] Processing item ${info.id}: ${info.title}`);
+        
         const response = await fetch('https://api.supavec.io/embed', {
           method: 'POST',
           headers: {
@@ -34,44 +39,66 @@ export async function createEmbeddings(): Promise<NutritionInfo[]> {
         
         if (!response.ok) {
           const errorData = await response.text();
-          console.error('Error creating embedding:', errorData);
+          console.error(`[embeddings] Error creating embedding for item ${info.id}:`, errorData);
+          console.error(`[embeddings] Response status: ${response.status}, status text: ${response.statusText}`);
           throw new Error(`Error creating embedding: ${response.status}`);
         }
         
         const data = await response.json();
         
         if (!data.embedding) {
-          console.error('No embedding in response:', data);
+          console.error(`[embeddings] No embedding in response for item ${info.id}:`, data);
           throw new Error('Invalid embedding response format');
         }
         
+        console.log(`[embeddings] Successfully created embedding for item ${info.id}`);
         return {
           ...info,
           embedding: data.embedding
         };
       } catch (error) {
-        console.error(`Error creating embedding for item ${info.id}:`, error);
+        console.error(`[embeddings] Error creating embedding for item ${info.id}:`, error);
+        console.error('[embeddings] Error details:', {
+          message: error.message, 
+          stack: error.stack,
+          cause: error.cause,
+          name: error.name
+        });
         // Return a placeholder so we don't break the Promise.all
         return null;
       }
     });
     
     // Wait for all promises to resolve (whether successful or not)
+    console.log('[embeddings] Waiting for all embedding requests to complete');
     const results = await Promise.allSettled(embeddingPromises);
+    
+    // Log completion stats
+    const fulfilled = results.filter(r => r.status === 'fulfilled').length;
+    const rejected = results.filter(r => r.status === 'rejected').length;
+    console.log(`[embeddings] Embedding requests completed: ${fulfilled} succeeded, ${rejected} failed`);
     
     // Filter out rejected promises and null values
     const embeddings = results
       .filter(result => result.status === 'fulfilled' && result.value !== null)
       .map(result => (result as PromiseFulfilledResult<NutritionInfo>).value);
     
+    console.log(`[embeddings] Successfully created ${embeddings.length} embeddings`);
+    
     if (embeddings.length === 0) {
-      console.error('Failed to create any valid embeddings');
+      console.error('[embeddings] Failed to create any valid embeddings');
       throw new Error('No embeddings could be created');
     }
     
     return embeddings;
   } catch (error) {
-    console.error('Error in createEmbeddings:', error);
+    console.error('[embeddings] Error in createEmbeddings:', error);
+    console.error('[embeddings] Error details:', {
+      message: error.message, 
+      stack: error.stack,
+      cause: error.cause,
+      name: error.name
+    });
     // In case of a critical failure, return the nutrition info without embeddings
     // This will cause the similarity search to fall back to basic filtering
     throw error;
@@ -80,12 +107,14 @@ export async function createEmbeddings(): Promise<NutritionInfo[]> {
 
 // Get embedding for a query string with improved error handling
 export async function getQueryEmbedding(query: string): Promise<number[]> {
-  if (!SUPAVEC_API_KEY) {
-    console.error('SUPAVEC_API_KEY is not defined in environment variables');
-    throw new Error('API key not configured');
-  }
-  
   try {
+    console.log(`[embeddings] Getting embedding for query: "${query}"`);
+    
+    if (!SUPAVEC_API_KEY) {
+      console.error('[embeddings] SUPAVEC_API_KEY is not defined in environment variables');
+      throw new Error('API key not configured');
+    }
+    
     const response = await fetch('https://api.supavec.io/embed', {
       method: 'POST',
       headers: {
@@ -100,20 +129,28 @@ export async function getQueryEmbedding(query: string): Promise<number[]> {
     
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('Error creating query embedding:', errorData);
+      console.error('[embeddings] Error creating query embedding:', errorData);
+      console.error(`[embeddings] Response status: ${response.status}, status text: ${response.statusText}`);
       throw new Error(`Error creating query embedding: ${response.status}`);
     }
     
     const queryData = await response.json();
     
     if (!queryData.embedding) {
-      console.error('No embedding in response:', queryData);
+      console.error('[embeddings] No embedding in response for query:', queryData);
       throw new Error('Invalid embedding response format');
     }
     
+    console.log('[embeddings] Successfully created embedding for query');
     return queryData.embedding;
   } catch (error) {
-    console.error('Error in getQueryEmbedding:', error);
+    console.error('[embeddings] Error in getQueryEmbedding:', error);
+    console.error('[embeddings] Error details:', {
+      message: error.message, 
+      stack: error.stack,
+      cause: error.cause,
+      name: error.name
+    });
     throw error;
   }
 }

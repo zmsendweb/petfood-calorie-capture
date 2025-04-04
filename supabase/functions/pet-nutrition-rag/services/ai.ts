@@ -5,18 +5,24 @@ const SUPAVEC_API_KEY = Deno.env.get('SUPAVEC_API_KEY');
 
 // Generate AI response based on retrieved information
 export async function generateResponse(query: string, retrievedInfo: NutritionInfo[], petType: string | null): Promise<RAGResponse> {
-  if (!SUPAVEC_API_KEY) {
-    console.error('SUPAVEC_API_KEY is not defined in environment variables');
-    return generateFallbackResponse(query, retrievedInfo, petType);
-  }
-  
   try {
+    console.log(`[ai] Generating response for query: "${query}", pet type: ${petType || "general"}`);
+    console.log(`[ai] Using ${retrievedInfo.length} nutrition info items as context`);
+    
+    if (!SUPAVEC_API_KEY) {
+      console.error('[ai] SUPAVEC_API_KEY is not defined in environment variables');
+      console.log('[ai] Using fallback response generation');
+      return generateFallbackResponse(query, retrievedInfo, petType);
+    }
+    
     // Prepare context from retrieved information
     const context = retrievedInfo.length > 0 
       ? retrievedInfo.map(info => 
           `${info.title}: ${info.content} (Source: ${info.source})`
         ).join('\n\n')
       : "No specific information found for this query.";
+    
+    console.log('[ai] Context prepared, sending request to AI service');
     
     // Generate AI response using supavec completion API
     const response = await fetch('https://api.supavec.io/chat', {
@@ -43,29 +49,41 @@ export async function generateResponse(query: string, retrievedInfo: NutritionIn
     
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('Error from AI API:', errorData);
+      console.error('[ai] Error from AI API:', errorData);
+      console.error(`[ai] Response status: ${response.status}, status text: ${response.statusText}`);
+      console.log('[ai] Using fallback response generation');
       return generateFallbackResponse(query, retrievedInfo, petType);
     }
     
     const data = await response.json();
     
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      console.error('Unexpected API response format:', data);
+      console.error('[ai] Unexpected API response format:', data);
+      console.log('[ai] Using fallback response generation');
       return generateFallbackResponse(query, retrievedInfo, petType);
     }
     
+    console.log('[ai] Successfully generated AI response');
     return {
       answer: data.choices[0].message.content,
       sources: retrievedInfo.map(info => ({ title: info.title, source: info.source }))
     };
   } catch (error) {
-    console.error('Error in generateResponse:', error);
+    console.error('[ai] Error in generateResponse:', error);
+    console.error('[ai] Error details:', {
+      message: error.message, 
+      stack: error.stack,
+      cause: error.cause,
+      name: error.name
+    });
+    console.log('[ai] Using fallback response generation due to error');
     return generateFallbackResponse(query, retrievedInfo, petType);
   }
 }
 
 // Generate a fallback response when AI service is unavailable
 function generateFallbackResponse(query: string, retrievedInfo: NutritionInfo[], petType: string | null): RAGResponse {
+  console.log('[ai] Generating fallback response');
   // Extract keywords from the query to match with our info
   const keywords = query.toLowerCase().split(/\s+/);
   const petTypeStr = petType || "pet";
@@ -93,6 +111,7 @@ function generateFallbackResponse(query: string, retrievedInfo: NutritionInfo[],
   
   answer += "\n\nPlease note: This is general information. For specific dietary advice, consult with your veterinarian.";
   
+  console.log('[ai] Successfully generated fallback response');
   return {
     answer,
     sources: retrievedInfo.map(info => ({ title: info.title, source: info.source }))

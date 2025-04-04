@@ -10,6 +10,7 @@ import { NutritionQuery } from "@/components/NutritionQuery";
 import { dogStandards } from "@/data/dogStandards";
 import { getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
 import { BreedCounter } from "@/components/BreedCounter";
+import { DogStandard } from "@/data/types/dogTypes";
 
 const Standards = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,13 +18,19 @@ const Standards = () => {
   const [showNutritionQuery, setShowNutritionQuery] = useState(false);
   const [ageFilter, setAgeFilter] = useState("adult");
 
-  const filteredStandards = dogStandards.filter(dog =>
-    (selectedSize ? dog.size === selectedSize : true) &&
-    (dog.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    dog.size.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Get unique sizes from the data
+  const availableSizes = [...new Set(dogStandards.map(dog => dog.size))].sort();
 
-  const sizes = ["Small", "Medium", "Large"];
+  // Fixed filter function to use exact string matching on size
+  const filteredStandards = dogStandards.filter(dog => {
+    const matchesSize = selectedSize === null || dog.size === selectedSize;
+    const matchesSearch = 
+      dog.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      dog.size.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesSize && matchesSearch;
+  });
+
   const ageGroups = [
     { id: "puppy", label: "Puppy" },
     { id: "adult", label: "Adult" },
@@ -98,19 +105,17 @@ const Standards = () => {
               >
                 All Sizes
               </Button>
-              {sizes.map((size) => {
-                return (
-                  <Button
-                    key={size}
-                    variant={selectedSize === size ? "default" : "outline"}
-                    onClick={() => setSelectedSize(size)}
-                    className="rounded-full flex items-center gap-2"
-                  >
-                    <PawPrint className={`h-4 w-4 ${getSizeCategoryStyle(size).color}`} />
-                    {size} Dogs
-                  </Button>
-                );
-              })}
+              {availableSizes.map((size) => (
+                <Button
+                  key={size}
+                  variant={selectedSize === size ? "default" : "outline"}
+                  onClick={() => setSelectedSize(size)}
+                  className="rounded-full flex items-center gap-2"
+                >
+                  <PawPrint className={`h-4 w-4 ${getSizeCategoryStyle(size).color}`} />
+                  {size}
+                </Button>
+              ))}
             </div>
             
             <Tabs defaultValue="adult" className="w-full sm:w-auto" onValueChange={setAgeFilter}>
@@ -161,7 +166,6 @@ const Standards = () => {
                         {standard.nutritionNotes[ageFilter as keyof typeof standard.nutritionNotes]}
                       </p>
                     </div>
-                    {/* Source information removed */}
                   </div>
                 </CardContent>
               </Card>

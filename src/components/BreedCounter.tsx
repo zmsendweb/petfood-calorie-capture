@@ -86,4 +86,3 @@ export const BreedCounter = ({ petType }: BreedCounterProps) => {
     </div>
   );
 };
-

@@ -11,10 +11,11 @@ import { NutritionQuery } from "@/components/NutritionQuery";
 import { getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
 import { BreedCounter } from "@/components/BreedCounter";
 import { PageHeader } from "@/components/PageHeader";
+import { CatSize } from "@/data/types/catTypes";
 
 const CatStandards = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<CatSize | null>(null);
   const [showNutritionQuery, setShowNutritionQuery] = useState(false);
   const [ageFilter, setAgeFilter] = useState("adult");
 
@@ -22,11 +23,14 @@ const CatStandards = () => {
   const availableSizes = [...new Set(catStandards.map(cat => cat.size))].sort();
 
   // Fixed filter function to use exact string matching on size
-  const filteredStandards = catStandards.filter(cat =>
-    (selectedSize === null || cat.size === selectedSize) &&
-    (cat.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cat.size.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredStandards = catStandards.filter(cat => {
+    const matchesSize = selectedSize === null || cat.size === selectedSize;
+    const matchesSearch = 
+      cat.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      cat.size.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesSize && matchesSearch;
+  });
 
   const ageGroups = [
     { id: "kitten", label: "Kitten" },
@@ -181,4 +185,3 @@ const CatStandards = () => {
 };
 
 export default CatStandards;
-

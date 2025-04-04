@@ -32,22 +32,19 @@ export function useFoodSearch() {
           setSearchResults(foodArray);
           
           if (foodArray.length === 0) {
-            toast({
-              title: "No results found",
+            toast.error("No results found", {
               description: "Try a different search term"
             });
           }
         } else {
           setSearchResults([]);
-          toast({
-            title: "No results found",
+          toast.error("No results found", {
             description: "Try a different search term"
           });
         }
       } catch (error) {
         console.error("Food search error:", error);
-        toast({
-          title: "Search error",
+        toast.error("Search error", {
           description: "Unable to search for foods at this time"
         });
       }
@@ -60,15 +57,13 @@ export function useFoodSearch() {
             return foodDetails.food;
           }
         } else {
-          toast({
-            title: "Barcode not found",
+          toast.error("Barcode not found", {
             description: "This product is not in the FatSecret database"
           });
         }
       } catch (error) {
         console.error("Barcode scan error:", error);
-        toast({
-          title: "Barcode scan error",
+        toast.error("Barcode scan error", {
           description: "Unable to scan barcode at this time"
         });
       }
@@ -83,21 +78,18 @@ export function useFoodSearch() {
               ? searchResult.foods.food 
               : [searchResult.foods.food];
             setSearchResults(foodArray);
-            toast({
-              title: "Food identified",
+            toast.success("Food identified", {
               description: `Found "${result.food.food_name}" (${result.food.food_quantity} ${result.food.food_unit})`
             });
           }
         } else {
-          toast({
-            title: "Couldn't parse description",
+          toast.error("Couldn't parse description", {
             description: "Try being more specific about the food item"
           });
         }
       } catch (error) {
         console.error("NLP description error:", error);
-        toast({
-          title: "Description parsing error",
+        toast.error("Description parsing error", {
           description: "Unable to parse food description at this time"
         });
       }

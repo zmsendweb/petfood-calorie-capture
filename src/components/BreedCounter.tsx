@@ -37,10 +37,12 @@ export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCount
     onSizeSelect(size);
   };
   
-  // Create an array of available size categories based on pet type
-  const availableSizes: PetSize[] = petType === 'dog' 
-    ? ['Small', 'Medium', 'Large', 'Specialty', 'Rare'] 
-    : ['Small', 'Medium', 'Large', 'Exotic', 'Rare'];
+  // Define available sizes for each pet type
+  const dogSizes: PetSize[] = ['Small', 'Medium', 'Large', 'Rare'];
+  const catSizes: PetSize[] = ['Small', 'Medium', 'Large', 'Exotic', 'Rare'];
+  
+  // Use the correct array based on pet type
+  const availableSizes = petType === 'dog' ? dogSizes : catSizes;
   
   return (
     <div className="w-full rounded-lg bg-white/70 backdrop-blur-sm p-4 mb-6 shadow-sm">
@@ -88,20 +90,23 @@ export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCount
               break;
           }
           
-          // Capitalize first letter of category for display and for matching with PetSize
-          const displayKey = key.charAt(0).toUpperCase() + key.slice(1) as PetSize;
-          const isSelected = selectedSize === displayKey;
+          // Capitalize first letter of category for display
+          const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
           
-          // Skip size categories that don't apply to the current pet type
-          if (petType === 'dog' && displayKey === 'Exotic') return null;
-          if (petType === 'cat' && displayKey === 'Specialty') return null;
+          // Check if this size category is valid for the current pet type
+          const isValidSize = availableSizes.includes(displayKey as PetSize);
+          
+          // Skip display for categories that aren't applicable to the current pet
+          if (!isValidSize) return null;
+          
+          const isSelected = selectedSize === displayKey;
           
           return (
             <Badge 
               key={key} 
               variant={variant}
               className={`cursor-pointer hover:opacity-80 ${isSelected ? 'ring-2 ring-primary' : ''}`}
-              onClick={() => handleSizeClick(displayKey)}
+              onClick={() => handleSizeClick(displayKey as PetSize)}
             >
               {count} {displayKey}
             </Badge>

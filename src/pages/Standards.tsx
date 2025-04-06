@@ -8,34 +8,34 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, ArrowLeft, PawPrint } from "lucide-react";
 import { NutritionQuery } from "@/components/NutritionQuery";
 import { dogStandards } from "@/data/dogStandards";
-import { getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
+import { getSizeCategoryStyle, PetSize } from "@/utils/sizeCategoryImages";
 import { BreedCounter } from "@/components/BreedCounter";
 import { DogStandard } from "@/data/types/dogTypes";
 
 const Standards = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<PetSize | null>(null);
   const [showNutritionQuery, setShowNutritionQuery] = useState(false);
   const [ageFilter, setAgeFilter] = useState("adult");
 
-  // Get unique sizes from the data
-  const availableSizes = [...new Set(dogStandards.map(dog => dog.size))].sort();
+  console.log("Current selected size (dog):", selectedSize);
 
-  // Fixed filter function to use exact string matching on size
+  // Filter dogs based on search term and selected size
   const filteredStandards = dogStandards.filter(dog => {
-    const matchesSize = selectedSize === null || dog.size === selectedSize;
-    const matchesSearch = 
+    // Check if size matches (null means all sizes)
+    const sizeMatches = selectedSize === null || dog.size === selectedSize;
+    
+    // Check if search term matches breed or size
+    const searchMatches = 
+      searchTerm === "" || 
       dog.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
       dog.size.toLowerCase().includes(searchTerm.toLowerCase());
     
-    return matchesSize && matchesSearch;
+    return sizeMatches && searchMatches;
   });
 
-  const ageGroups = [
-    { id: "puppy", label: "Puppy" },
-    { id: "adult", label: "Adult" },
-    { id: "senior", label: "Senior" }
-  ];
+  console.log("Filtered dog standards count:", filteredStandards.length);
+  console.log("Filtered by size:", selectedSize);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
@@ -67,8 +67,12 @@ const Standards = () => {
           </Link>
         </div>
 
-        {/* Add the BreedCounter component */}
-        <BreedCounter petType="dog" />
+        {/* Pass the selectedSize and setSelectedSize function to BreedCounter */}
+        <BreedCounter 
+          petType="dog" 
+          selectedSize={selectedSize} 
+          onSizeSelect={setSelectedSize} 
+        />
 
         <div className="space-y-6 mb-6">
           <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
@@ -105,7 +109,8 @@ const Standards = () => {
               >
                 All Sizes
               </Button>
-              {availableSizes.map((size) => (
+              {/* Map over available dog sizes */}
+              {(["Small", "Medium", "Large", "Specialty", "Rare"] as PetSize[]).map((size) => (
                 <Button
                   key={size}
                   variant={selectedSize === size ? "default" : "outline"}

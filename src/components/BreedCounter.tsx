@@ -24,11 +24,25 @@ import { PetSize, getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
 
 interface BreedCounterProps {
   petType: 'dog' | 'cat';
+  onSizeSelect?: (size: PetSize | null) => void;
+  selectedSize: PetSize | null;
 }
 
-export const BreedCounter = ({ petType }: BreedCounterProps) => {
+export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCounterProps) => {
   const counts = petType === 'dog' ? getDogBreedCount() : getCatBreedCount();
   const totalCount = petType === 'dog' ? dogStandards.length : catStandards.length;
+  
+  const handleSizeClick = (size: string | null) => {
+    if (!onSizeSelect) return;
+    
+    if (size === null) {
+      onSizeSelect(null);
+      return;
+    }
+    
+    // Convert the size string to PetSize type
+    onSizeSelect(size as PetSize);
+  };
   
   return (
     <div className="w-full rounded-lg bg-white/70 backdrop-blur-sm p-4 mb-6 shadow-sm">
@@ -76,12 +90,29 @@ export const BreedCounter = ({ petType }: BreedCounterProps) => {
               break;
           }
           
+          // Capitalize first letter of category for display and for matching with PetSize
+          const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
+          const isSelected = selectedSize === displayKey;
+          
           return (
-            <Badge key={key} variant={variant}>
-              {count} {key.charAt(0).toUpperCase() + key.slice(1)}
+            <Badge 
+              key={key} 
+              variant={variant}
+              className={`cursor-pointer hover:opacity-80 ${isSelected ? 'ring-2 ring-primary' : ''}`}
+              onClick={() => handleSizeClick(displayKey)}
+            >
+              {count} {displayKey}
             </Badge>
           );
         })}
+        
+        <Badge 
+          variant="secondary"
+          className={`cursor-pointer hover:opacity-80 ${selectedSize === null ? 'ring-2 ring-primary' : ''}`}
+          onClick={() => handleSizeClick(null)}
+        >
+          View All
+        </Badge>
       </div>
     </div>
   );

@@ -8,35 +8,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, PawPrint } from "lucide-react";
 import { catStandards } from "@/data/catStandards";
 import { NutritionQuery } from "@/components/NutritionQuery";
-import { getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
+import { getSizeCategoryStyle, PetSize } from "@/utils/sizeCategoryImages";
 import { BreedCounter } from "@/components/BreedCounter";
 import { PageHeader } from "@/components/PageHeader";
 import { CatSize } from "@/data/types/catTypes";
 
 const CatStandards = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSize, setSelectedSize] = useState<CatSize | null>(null);
+  const [selectedSize, setSelectedSize] = useState<PetSize | null>(null);
   const [showNutritionQuery, setShowNutritionQuery] = useState(false);
   const [ageFilter, setAgeFilter] = useState("adult");
 
-  // Get unique sizes from the data to ensure we're using exact size values
-  const availableSizes = [...new Set(catStandards.map(cat => cat.size))].sort();
+  console.log("Current selected size:", selectedSize);
 
-  // Fixed filter function to use exact string matching on size
+  // Filter cats based on search term and selected size
   const filteredStandards = catStandards.filter(cat => {
-    const matchesSize = selectedSize === null || cat.size === selectedSize;
-    const matchesSearch = 
+    // Check if size matches (null means all sizes)
+    const sizeMatches = selectedSize === null || cat.size === selectedSize;
+    
+    // Check if search term matches breed or size
+    const searchMatches = 
+      searchTerm === "" || 
       cat.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cat.size.toLowerCase().includes(searchTerm.toLowerCase());
     
-    return matchesSize && matchesSearch;
+    return sizeMatches && searchMatches;
   });
 
-  const ageGroups = [
-    { id: "kitten", label: "Kitten" },
-    { id: "adult", label: "Adult" },
-    { id: "senior", label: "Senior" }
-  ];
+  console.log("Filtered cat standards count:", filteredStandards.length);
+  console.log("Filtered by size:", selectedSize);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-6">
@@ -59,8 +59,12 @@ const CatStandards = () => {
           </Link>
         </div>
 
-        {/* Add the BreedCounter component */}
-        <BreedCounter petType="cat" />
+        {/* Pass the selectedSize and setSelectedSize function to BreedCounter */}
+        <BreedCounter 
+          petType="cat" 
+          selectedSize={selectedSize} 
+          onSizeSelect={setSelectedSize} 
+        />
 
         <div className="space-y-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
@@ -97,7 +101,8 @@ const CatStandards = () => {
               >
                 All Sizes
               </Button>
-              {availableSizes.map((size) => (
+              {/* Map over all possible cat sizes from the CatSize type */}
+              {(["Small", "Medium", "Large", "Exotic", "Rare"] as CatSize[]).map((size) => (
                 <Button
                   key={size}
                   variant={selectedSize === size ? "default" : "outline"}

@@ -18,8 +18,6 @@ const Standards = () => {
   const [showNutritionQuery, setShowNutritionQuery] = useState(false);
   const [ageFilter, setAgeFilter] = useState("adult");
 
-  console.log("Current selected size (dog):", selectedSize);
-
   // Filter dogs based on search term and selected size
   const filteredStandards = dogStandards.filter(dog => {
     // Check if size matches (null means all sizes)
@@ -34,8 +32,10 @@ const Standards = () => {
     return sizeMatches && searchMatches;
   });
 
-  console.log("Filtered dog standards count:", filteredStandards.length);
-  console.log("Filtered by size:", selectedSize);
+  // Create a unique ID for each dog to prevent React key duplications
+  const getUniqueId = (dog: (typeof dogStandards)[0], index: number) => {
+    return `${dog.breed}-${dog.size}-${index}`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
@@ -134,10 +134,10 @@ const Standards = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredStandards.map((standard) => {
+          {filteredStandards.map((standard, index) => {
             const sizeStyle = getSizeCategoryStyle(standard.size);
             return (
-              <Card key={standard.breed} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
+              <Card key={getUniqueId(standard, index)} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex justify-between items-center">
                     <span className="text-xl">{standard.breed}</span>

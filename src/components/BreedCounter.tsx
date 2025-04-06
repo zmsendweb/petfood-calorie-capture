@@ -32,17 +32,15 @@ export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCount
   const counts = petType === 'dog' ? getDogBreedCount() : getCatBreedCount();
   const totalCount = petType === 'dog' ? dogStandards.length : catStandards.length;
   
-  const handleSizeClick = (size: string | null) => {
+  const handleSizeClick = (size: PetSize | null) => {
     if (!onSizeSelect) return;
-    
-    if (size === null) {
-      onSizeSelect(null);
-      return;
-    }
-    
-    // Convert the size string to PetSize type
-    onSizeSelect(size as PetSize);
+    onSizeSelect(size);
   };
+  
+  // Create an array of available size categories based on pet type
+  const availableSizes: PetSize[] = petType === 'dog' 
+    ? ['Small', 'Medium', 'Large', 'Specialty', 'Rare'] 
+    : ['Small', 'Medium', 'Large', 'Exotic', 'Rare'];
   
   return (
     <div className="w-full rounded-lg bg-white/70 backdrop-blur-sm p-4 mb-6 shadow-sm">
@@ -91,8 +89,12 @@ export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCount
           }
           
           // Capitalize first letter of category for display and for matching with PetSize
-          const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
+          const displayKey = key.charAt(0).toUpperCase() + key.slice(1) as PetSize;
           const isSelected = selectedSize === displayKey;
+          
+          // Skip size categories that don't apply to the current pet type
+          if (petType === 'dog' && displayKey === 'Exotic') return null;
+          if (petType === 'cat' && displayKey === 'Specialty') return null;
           
           return (
             <Badge 

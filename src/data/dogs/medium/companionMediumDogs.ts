@@ -67,5 +67,71 @@ export const companionMediumDogs: DogStandard[] = [
       senior: "Lower calorie density needed with age. Consider foods with glucosamine for joint health."
     },
     imageUrl: "https://images.unsplash.com/photo-1591769607592-e27c8e8c48f5?q=80"
+  },
+  {
+    breed: "English Springer Spaniel",
+    size: "Medium",
+    dailyCalories: { min: 850, max: 1250 },
+    ageSpecificCalories: {
+      puppy: { min: 950, max: 1350 },
+      adult: { min: 850, max: 1250 },
+      senior: { min: 750, max: 1150 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Working breed, adjust calories with activity",
+    nutritionNotes: {
+      puppy: "Support steady growth with quality protein (24-26%). Consider DHA for cognitive development.",
+      adult: "Adjust calories based on hunting/working activity. Omega fatty acids beneficial for coat health.",
+      senior: "Joint support increasingly important with age. Maintain coat health with omega supplements."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1579551054711-6b1c95b31d77?q=80"
+  },
+  {
+    breed: "Whippet",
+    size: "Medium",
+    dailyCalories: { min: 780, max: 1150 },
+    ageSpecificCalories: {
+      puppy: { min: 900, max: 1300 },
+      adult: { min: 780, max: 1150 },
+      senior: { min: 650, max: 950 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Lean build, may need higher fat content",
+    nutritionNotes: {
+      puppy: "Support lean muscle development. Higher fat (15-18%) than many puppies. Monitor for dry skin issues.",
+      adult: "Naturally lean body type. Higher fat content (14-18%) even for non-racing dogs. Quality protein essential (24-28%).",
+      senior: "Maintain muscle mass as activity decreases. Moderate fat (12-16%) and quality protein (22-26%)."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1503256207526-0d5d80fa2f47?q=80"
+  },
+  {
+    breed: "Samoyed",
+    size: "Medium",
+    dailyCalories: { min: 900, max: 1350 },
+    ageSpecificCalories: {
+      puppy: { min: 1050, max: 1500 },
+      adult: { min: 900, max: 1350 },
+      senior: { min: 750, max: 1100 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Dense coat requires nutritional support",
+    nutritionNotes: {
+      puppy: "Support coat development with omega fatty acids. Quality protein (24-26%) for proper growth.",
+      adult: "Coat health paramount - omega 3 and 6 balance important. Higher caloric needs in cold weather.",
+      senior: "Maintain coat quality with continued fatty acid support. Joint supplements beneficial as activity decreases."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1529429617124-95b109e86bb8?q=80"
   }
-];
+]

@@ -89,5 +89,49 @@ export const rareHoundDogs: DogStandard[] = [
       senior: "Joint support increasingly important. Moderate protein (24-26%) with omega-3 fatty acids for aging joints and coat."
     },
     imageUrl: "https://images.unsplash.com/photo-1511876484235-da7cf9ea2ef2?q=80"
+  },
+  {
+    breed: "Pharaoh Hound",
+    size: "Medium",
+    dailyCalories: { min: 700, max: 1150 },
+    ageSpecificCalories: {
+      puppy: { min: 850, max: 1300 },
+      adult: { min: 700, max: 1150 },
+      senior: { min: 600, max: 950 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Ancient Mediterranean sighthound. Moderate protein (24-28%) with adequate fat (12-16%) for energy. Consider dental health.",
+    nutritionNotes: {
+      puppy: "Support lean muscle development. Multiple small meals until 6 months. Monitor for food sensitivities.",
+      adult: "Naturally lean build. Quality protein sources important. Consider dental health in kibble selection.",
+      senior: "Maintain muscle mass with continued protein quality. Joint supplements may benefit aging sighthounds."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1546894809-0911ca9c5c5a?q=80"
+  },
+  {
+    breed: "Ibizan Hound",
+    size: "Medium",
+    dailyCalories: { min: 730, max: 1200 },
+    ageSpecificCalories: {
+      puppy: { min: 880, max: 1400 },
+      adult: { min: 730, max: 1200 },
+      senior: { min: 620, max: 980 }
+    },
+    mealsPerDay: {
+      puppy: 3,
+      adult: 2,
+      senior: 2
+    },
+    notes: "Ancient Mediterranean sighthound. Moderate protein (24-28%) with adequate fat (12-16%) for energy. Watch for food sensitivities.",
+    nutritionNotes: {
+      puppy: "Support lean muscle development. Multiple small meals until 6 months. Monitor for food sensitivities.",
+      adult: "Naturally lean build. Quality protein sources important. Some may have sensitive digestion.",
+      senior: "Maintain muscle mass with continued protein quality. Joint supplements may benefit aging sighthounds."
+    },
+    imageUrl: "https://images.unsplash.com/photo-1551730459-92db2a308d6a?q=80"
   }
-];
+]

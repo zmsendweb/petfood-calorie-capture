@@ -38,7 +38,7 @@ export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCount
   };
   
   // Define available sizes for each pet type
-  const dogSizes: PetSize[] = ['Small', 'Medium', 'Large', 'Rare'];
+  const dogSizes: PetSize[] = ['Small', 'Medium', 'Large', 'Specialty', 'Rare'];
   const catSizes: PetSize[] = ['Small', 'Medium', 'Large', 'Exotic', 'Rare'];
   
   // Use the correct array based on pet type

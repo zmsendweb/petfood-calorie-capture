@@ -1,4 +1,3 @@
-
 /**
  * Utility for size-based styling and labeling of pet breeds
  */
@@ -6,7 +5,7 @@
 import { PawPrint } from "lucide-react";
 
 // Define the allowed size categories
-export type PetSize = "Small" | "Medium" | "Large" | "Exotic" | "Rare";
+export type PetSize = "Small" | "Medium" | "Large" | "Exotic" | "Rare" | "Specialty";
 
 export interface SizeCategory {
   color: string;
@@ -56,4 +55,3 @@ export const getSizeCategoryStyle = (size: string): SizeCategory => {
     label: size
   };
 };
-

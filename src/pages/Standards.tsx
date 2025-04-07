@@ -22,13 +22,18 @@ const Standards = () => {
     // Check if size matches (null means all sizes)
     const sizeMatches = selectedSize === null || dog.size === selectedSize;
     
+    // Special case for "Specialty" size which isn't a real size property
+    // This is because specialty dogs are a separate collection with varied sizes
+    const isSpecialtyDog = (dog as any).isSpecialty === true;
+    const specialtyMatches = selectedSize === "Specialty" ? isSpecialtyDog : true;
+    
     // Check if search term matches breed or size
     const searchMatches = 
       searchTerm === "" || 
       dog.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
       dog.size.toLowerCase().includes(searchTerm.toLowerCase());
     
-    return sizeMatches && searchMatches;
+    return sizeMatches && specialtyMatches && searchMatches;
   });
 
   // Create a unique ID for each dog to prevent React key duplications

@@ -1,10 +1,15 @@
 
-import { useState } from "react";
-import { Search, PawPrint } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PetSize, getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { PetSize } from "@/utils/sizeCategoryImages";
 
 interface DogBreedFiltersProps {
   searchTerm: string;
@@ -25,59 +30,61 @@ export const DogBreedFilters = ({
   showNutritionQuery,
   setShowNutritionQuery,
   ageFilter,
-  setAgeFilter,
+  setAgeFilter
 }: DogBreedFiltersProps) => {
-  
   return (
-    <div className="space-y-6 mb-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+    <div className="mb-6 flex flex-col space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
-            className="pl-10"
-            placeholder="Search by breed..."
+            type="text"
+            placeholder="Search breeds..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 bg-white"
           />
         </div>
-        <Button 
-          onClick={() => setShowNutritionQuery(!showNutritionQuery)}
-          variant="outline"
-          className="whitespace-nowrap"
-        >
-          {showNutritionQuery ? "Hide Nutrition Assistant" : "Show Nutrition Assistant"}
-        </Button>
-      </div>
-
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={selectedSize === null ? "default" : "outline"}
-            onClick={() => setSelectedSize(null)}
-            className="rounded-full"
-          >
-            All Sizes
-          </Button>
-          {(["Small", "Medium", "Large", "Specialty", "Rare"] as PetSize[]).map((size) => (
-            <Button
-              key={size}
-              variant={selectedSize === size ? "default" : "outline"}
-              onClick={() => setSelectedSize(size)}
-              className="rounded-full flex items-center gap-2"
-            >
-              <PawPrint className={`h-4 w-4 ${getSizeCategoryStyle(size).color}`} />
-              {size}
-            </Button>
-          ))}
-        </div>
         
-        <Tabs defaultValue={ageFilter} className="w-full sm:w-auto" onValueChange={setAgeFilter}>
-          <TabsList className="grid grid-cols-3 w-full sm:w-[300px]">
-            <TabsTrigger value="puppy">Puppy</TabsTrigger>
-            <TabsTrigger value="adult">Adult</TabsTrigger>
-            <TabsTrigger value="senior">Senior</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <Select 
+          value={selectedSize || "all"} 
+          onValueChange={(val) => setSelectedSize(val === "all" ? null : val as PetSize)}
+        >
+          <SelectTrigger className="bg-white">
+            <SelectValue placeholder="Filter by size" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Sizes</SelectItem>
+            <SelectItem value="Small">Small</SelectItem>
+            <SelectItem value="Medium">Medium</SelectItem>
+            <SelectItem value="Large">Large</SelectItem>
+            <SelectItem value="Specialty">Specialty</SelectItem>
+            <SelectItem value="Rare">Rare</SelectItem>
+          </SelectContent>
+        </Select>
+        
+        <Select 
+          value={ageFilter} 
+          onValueChange={setAgeFilter}
+        >
+          <SelectTrigger className="bg-white">
+            <SelectValue placeholder="Select age group" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="puppy">Puppy</SelectItem>
+            <SelectItem value="adult">Adult</SelectItem>
+            <SelectItem value="senior">Senior</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      
+      <div className="flex justify-end">
+        <Button
+          variant={showNutritionQuery ? "default" : "outline"}
+          onClick={() => setShowNutritionQuery(!showNutritionQuery)}
+        >
+          {showNutritionQuery ? "Hide Nutrition Search" : "Show Nutrition Search"}
+        </Button>
       </div>
     </div>
   );

@@ -36,4 +36,5 @@ export interface DogStandard {
     senior: string;
   };
   imageUrl: string;
+  isSpecialty?: boolean;
 }

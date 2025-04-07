@@ -11,5 +11,5 @@ export const specialtyDogs: DogStandard[] = [
 
 // Mark all specialty dogs with the isSpecialty flag
 specialtyDogs.forEach(dog => {
-  (dog as any).isSpecialty = true;
+  dog.isSpecialty = true;
 });

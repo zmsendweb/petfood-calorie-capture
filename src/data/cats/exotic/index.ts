@@ -7,3 +7,8 @@ export const exoticCats: CatStandard[] = [
   ...exoticShorthairs,
   ...exoticLonghairs
 ];
+
+// Mark all exotic cats with isExotic flag
+exoticCats.forEach(cat => {
+  cat.isExotic = true;
+});

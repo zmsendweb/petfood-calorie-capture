@@ -10,7 +10,19 @@ interface CatBreedCardProps {
 }
 
 export const CatBreedCard = ({ cat, ageFilter }: CatBreedCardProps) => {
-  const sizeStyle = getSizeCategoryStyle(cat.size);
+  // Determine cat's display category
+  let displayCategory: string;
+  
+  if (cat.isExotic) {
+    displayCategory = "Exotic";
+  } else if (cat.isRare) {
+    displayCategory = "Rare";
+  } else {
+    displayCategory = cat.size;
+  }
+  
+  // Get the appropriate style for the category
+  const sizeStyle = getSizeCategoryStyle(displayCategory);
   
   return (
     <Card className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
@@ -19,7 +31,7 @@ export const CatBreedCard = ({ cat, ageFilter }: CatBreedCardProps) => {
           <span className="text-xl">{cat.breed}</span>
           <span className={`inline-flex items-center gap-2 text-sm font-normal px-3 py-1.5 rounded-full ${sizeStyle.bgColor} ${sizeStyle.color}`}>
             <PawPrint className="h-4 w-4" />
-            {cat.size}
+            {displayCategory}
           </span>
         </CardTitle>
       </CardHeader>

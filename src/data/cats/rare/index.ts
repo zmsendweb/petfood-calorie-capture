@@ -9,3 +9,8 @@ export const rareCats: CatStandard[] = [
   ...rareLonghairs,
   ...rareExoticBreeds
 ];
+
+// Mark all rare cats with isRare flag
+rareCats.forEach(cat => {
+  cat.isRare = true;
+});

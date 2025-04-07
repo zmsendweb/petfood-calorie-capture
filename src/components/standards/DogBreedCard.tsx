@@ -10,11 +10,19 @@ interface DogBreedCardProps {
 }
 
 export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
-  // Determine if dog is a specialty breed
-  const isSpecialtyDog = (dog as any).isSpecialty === true;
+  // Determine dog's display category
+  let displayCategory: string;
   
-  // Get the size style, using "Specialty" for specialty dogs regardless of their actual size
-  const sizeStyle = getSizeCategoryStyle(isSpecialtyDog ? "Specialty" : dog.size);
+  if (dog.isSpecialty) {
+    displayCategory = "Specialty";
+  } else if (dog.isRare) {
+    displayCategory = "Rare";
+  } else {
+    displayCategory = dog.size;
+  }
+  
+  // Get the appropriate style for the category
+  const sizeStyle = getSizeCategoryStyle(displayCategory);
   
   return (
     <Card className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
@@ -23,7 +31,7 @@ export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
           <span className="text-xl">{dog.breed}</span>
           <span className={`inline-flex items-center gap-2 text-sm font-normal px-3 py-1.5 rounded-full ${sizeStyle.bgColor} ${sizeStyle.color}`}>
             <PawPrint className="h-4 w-4" />
-            {isSpecialtyDog ? "Specialty" : dog.size}
+            {displayCategory}
           </span>
         </CardTitle>
       </CardHeader>

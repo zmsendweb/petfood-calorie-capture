@@ -19,16 +19,26 @@ const CatStandards = () => {
 
   // Filter cats based on search term and selected size
   const filteredStandards = catStandards.filter(cat => {
-    // Check if size matches (null means all sizes)
-    const sizeMatches = selectedSize === null || cat.size === selectedSize;
-    
     // Check if search term matches breed or size
     const searchMatches = 
       searchTerm === "" || 
       cat.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cat.size.toLowerCase().includes(searchTerm.toLowerCase());
     
-    return sizeMatches && searchMatches;
+    if (!searchMatches) return false;
+    
+    // Handle size filtering
+    if (selectedSize === null) return true;
+    
+    if (selectedSize === "Exotic") {
+      return cat.isExotic === true;
+    }
+    
+    if (selectedSize === "Rare") {
+      return cat.isRare === true;
+    }
+    
+    return cat.size === selectedSize;
   });
 
   // Create a unique ID for each cat to prevent React key duplications

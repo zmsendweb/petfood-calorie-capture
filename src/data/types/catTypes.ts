@@ -27,5 +27,6 @@ export interface CatStandard {
   };
   imageUrl: string;
   source?: string; // Make source optional
+  isExotic?: boolean;
+  isRare?: boolean;
 }
-

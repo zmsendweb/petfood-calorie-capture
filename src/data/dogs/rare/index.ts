@@ -11,3 +11,8 @@ export const rareDogs: DogStandard[] = [
   ...rareWorkingDogs,
   ...rareSportingDogs
 ];
+
+// Mark all rare dogs with isRare flag
+rareDogs.forEach(dog => {
+  dog.isRare = true;
+});

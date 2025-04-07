@@ -3,21 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { 
   getCatBreedCount, 
   catStandards,
-  smallCatBreeds,
-  mediumCatBreeds,
-  largeCatBreeds,
-  exoticCatBreeds,
-  rareCatBreeds
 } from "@/data/catStandards";
 
 import {
   getDogBreedCount,
   dogStandards,
-  smallDogBreeds,
-  mediumDogBreeds,
-  largeDogBreeds,
-  specialtyDogBreeds,
-  rareDogBreeds
 } from "@/data/dogStandards";
 
 import { PetSize, getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
@@ -40,6 +30,14 @@ export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCount
   // Define available sizes for each pet type
   const dogSizes: PetSize[] = ['Small', 'Medium', 'Large', 'Specialty', 'Rare'];
   const catSizes: PetSize[] = ['Small', 'Medium', 'Large', 'Exotic', 'Rare'];
+  
+  // Calculate accurate counts for specialty/exotic and rare categories
+  const standards = petType === 'dog' ? dogStandards : catStandards;
+  const specialtyExoticCount = petType === 'dog' 
+    ? standards.filter(s => (s as any).isSpecialty === true).length
+    : standards.filter(s => (s as any).isExotic === true).length;
+    
+  const rareCount = standards.filter(s => (s as any).isRare === true).length;
   
   // Use the correct array based on pet type
   const availableSizes = petType === 'dog' ? dogSizes : catSizes;
@@ -99,6 +97,16 @@ export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCount
           // Skip display for categories that aren't applicable to the current pet
           if (!isValidSize) return null;
           
+          // Use accurate counts for specialty/exotic and rare
+          let displayCount = count;
+          if (displayKey === 'Specialty' && petType === 'dog') {
+            displayCount = specialtyExoticCount;
+          } else if (displayKey === 'Exotic' && petType === 'cat') {
+            displayCount = specialtyExoticCount;
+          } else if (displayKey === 'Rare') {
+            displayCount = rareCount;
+          }
+          
           const isSelected = selectedSize === displayKey;
           
           return (
@@ -108,7 +116,7 @@ export const BreedCounter = ({ petType, onSizeSelect, selectedSize }: BreedCount
               className={`cursor-pointer hover:opacity-80 ${isSelected ? 'ring-2 ring-primary' : ''}`}
               onClick={() => handleSizeClick(displayKey as PetSize)}
             >
-              {count} {displayKey}
+              {displayCount} {displayKey}
             </Badge>
           );
         })}

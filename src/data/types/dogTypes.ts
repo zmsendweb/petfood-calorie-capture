@@ -37,4 +37,5 @@ export interface DogStandard {
   };
   imageUrl: string;
   isSpecialty?: boolean;
+  isRare?: boolean;
 }

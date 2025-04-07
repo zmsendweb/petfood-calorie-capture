@@ -8,3 +8,8 @@ export const specialtyDogs: DogStandard[] = [
   ...sportingDogs,
   ...workingDogs
 ];
+
+// Mark all specialty dogs with the isSpecialty flag
+specialtyDogs.forEach(dog => {
+  (dog as any).isSpecialty = true;
+});

@@ -1,3 +1,4 @@
+
 /**
  * Utility for size-based styling and labeling of pet breeds
  */
@@ -39,6 +40,11 @@ export const sizeCategoryStyles: Record<string, SizeCategory> = {
     color: "text-rose-600",
     bgColor: "bg-rose-100",
     label: "Rare"
+  },
+  "Specialty": {
+    color: "text-cyan-600",
+    bgColor: "bg-cyan-100",
+    label: "Specialty"
   }
 };
 

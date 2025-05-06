@@ -2,25 +2,48 @@
 import { PetProfile } from "@/data/types/petTypes";
 import { Progress } from "@/components/ui/progress";
 import { Check, Clock } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface ProgressChartProps {
   pet: PetProfile;
 }
 
 export const ProgressChart = ({ pet }: ProgressChartProps) => {
-  // Combine short-term and long-term goals
+  // Load completed goals from localStorage
+  const [completedGoals, setCompletedGoals] = useState<string[]>(() => {
+    const savedCompletedGoals = localStorage.getItem(`pet-completed-goals-${pet.id}`);
+    return savedCompletedGoals ? JSON.parse(savedCompletedGoals) : [];
+  });
+  
+  // Define a listener for goal completion events from PlanningActions
+  useEffect(() => {
+    const checkForUpdates = () => {
+      const savedCompletedGoals = localStorage.getItem(`pet-completed-goals-${pet.id}`);
+      if (savedCompletedGoals) {
+        const parsed = JSON.parse(savedCompletedGoals);
+        setCompletedGoals(parsed);
+      }
+    };
+    
+    // Check for updates every 5 seconds
+    const interval = setInterval(checkForUpdates, 5000);
+    
+    return () => clearInterval(interval);
+  }, [pet.id]);
+
+  // Combine short-term and long-term goals with progress information
   const allGoals = [
     ...(pet.shortTermGoals || []).map(goal => ({ 
       text: goal, 
       isShortTerm: true,
-      // Mock progress values (in a real app, this would come from tracked data)
-      progress: Math.floor(Math.random() * 101) 
+      // Calculate progress based on whether the goal is marked as complete
+      progress: completedGoals.includes(goal) ? 100 : Math.floor(Math.random() * 70) + 10
     })),
     ...(pet.longTermGoals || []).map(goal => ({ 
       text: goal, 
       isShortTerm: false,
       // Long term goals typically have lower progress
-      progress: Math.floor(Math.random() * 51) 
+      progress: completedGoals.includes(goal) ? 100 : Math.floor(Math.random() * 40) + 5
     }))
   ];
 

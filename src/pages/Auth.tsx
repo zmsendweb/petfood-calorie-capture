@@ -18,7 +18,14 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">My Pet Calorie Calculator</h1>
+          <div className="flex justify-center mb-4">
+            <img 
+              src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
+              alt="mypetcal logo" 
+              className="h-20 w-auto"
+            />
+          </div>
+          <h1 className="text-3xl font-bold">mypetcal</h1>
           <p className="text-muted-foreground mt-2">Sign in to manage your pet's nutrition</p>
         </div>
         

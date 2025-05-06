@@ -11,7 +11,14 @@ export const DashboardHeader = () => {
           <ArrowLeft className="h-5 w-5" />
         </Button>
       </Link>
-      <h1 className="text-3xl font-bold">Planning Dashboard</h1>
+      <div className="flex items-center gap-3">
+        <img 
+          src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
+          alt="mypetcal logo" 
+          className="h-8 w-auto hidden sm:block" 
+        />
+        <h1 className="text-3xl font-bold">Planning Dashboard</h1>
+      </div>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { SearchIcon, RefreshCw, Cat, Dog, AlertCircle } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { VoiceInput } from "./voice/VoiceInput";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface NutritionQueryProps {
   defaultPetType?: PetType;
@@ -17,6 +18,7 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
   const [query, setQuery] = useState("");
   const [petType, setPetType] = useState<PetType>(defaultPetType);
   const { getAnswer, isLoading, result, error } = useNutritionRAG();
+  const isMobile = useIsMobile();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +41,7 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
   return (
     <div className="w-full space-y-6">
       <Card className="bg-white/80 backdrop-blur-sm">
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle>Nutrition Assistant</CardTitle>
           <CardDescription>
             Ask any question about pet nutrition and get answers based on veterinary standards
@@ -63,7 +65,7 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
           </div>
           
           <form onSubmit={handleSubmit} className="flex flex-col md:flex-row items-start gap-2">
-            <div className="flex-1 w-full">
+            <div className="flex-1 w-full relative">
               <Input
                 placeholder={petType === "dog" 
                   ? "What nutritional needs do Labradors have?" 
@@ -72,20 +74,23 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
                     : "Ask about pet nutrition..."}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full"
+                className="w-full pr-10"
                 disabled={isLoading}
               />
             </div>
-            <div className="flex gap-2">
-              <VoiceInput 
-                onTranscription={handleVoiceInput}
-                placeholder="Ask a question..."
-                isProcessing={isLoading}
-              />
+            
+            <div className="flex gap-2 w-full md:w-auto">
+              <div className="flex-shrink-0">
+                <VoiceInput 
+                  onTranscription={handleVoiceInput}
+                  placeholder=""
+                  isProcessing={isLoading}
+                />
+              </div>
               <Button 
                 type="submit" 
                 disabled={isLoading || !query.trim()}
-                className="whitespace-nowrap"
+                className="whitespace-nowrap flex-1 md:flex-none"
               >
                 {isLoading ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <SearchIcon className="h-4 w-4 mr-2" />}
                 {isLoading ? "Searching..." : "Ask"}

@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Camera } from "lucide-react";
@@ -7,6 +6,7 @@ import { CameraComponent } from "@/components/Camera";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FoodItem } from "@/hooks/use-fatsecret-api";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FoodSelectionFormProps {
   photo: string;
@@ -44,6 +44,7 @@ export function FoodSelectionForm({
   handleServingChange
 }: FoodSelectionFormProps) {
   const { petProfiles } = usePetProfiles();
+  const isMobile = useIsMobile();
 
   const handleCapture = (imageData: string) => {
     setPhoto(imageData);
@@ -82,14 +83,14 @@ export function FoodSelectionForm({
       
       <div className="space-y-2">
         <Label>Meal Type</Label>
-        <div className="flex gap-2 flex-wrap">
+        <div className="grid grid-cols-2 gap-2">
           {["breakfast", "lunch", "dinner", "snack"].map((type) => (
             <Button
               key={type}
               type="button"
               variant={mealType === type ? "default" : "outline"}
               onClick={() => setMealType(type)}
-              className="flex-1 capitalize"
+              className="capitalize"
             >
               {type}
             </Button>
@@ -146,6 +147,7 @@ export function FoodSelectionForm({
               size="sm" 
               className="absolute bottom-2 right-2 bg-white/80"
               onClick={() => setShowCamera(true)}
+              type="button"
             >
               Retake
             </Button>
@@ -153,7 +155,7 @@ export function FoodSelectionForm({
         )}
       </div>
       
-      <div className="flex space-x-2">
+      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
         <Button
           type="button"
           className="flex-1"

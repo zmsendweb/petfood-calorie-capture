@@ -2,13 +2,14 @@
 import { useState } from "react";
 import { Card } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Camera, Image, Search, Plus } from "lucide-react";
+import { Camera, Search, Plus } from "lucide-react";
 import { FoodItem } from "@/hooks/use-fatsecret-api";
 import { toast } from "sonner";
 import { MealEntry } from "@/types/mealTypes";
 import { CameraTab } from "./CameraTab";
 import { SearchTab } from "./SearchTab";
 import { ManualTab } from "./ManualTab";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface MealEntryFormProps {
   onSave: (meal: MealEntry) => void;
@@ -23,37 +24,44 @@ export const MealEntryForm = ({ onSave }: MealEntryFormProps) => {
   const [selectedServing, setSelectedServing] = useState<string>("");
   const [showCamera, setShowCamera] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState<string>("");
+  const isMobile = useIsMobile();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const meal: MealEntry = {
-      id: Date.now().toString(),
-      type: mealType,
-      calories: Number(calories),
-      photo: photo || "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80",
-      timestamp: new Date(),
-      ...(selectedPetId && { petId: selectedPetId })
-    };
+    try {
+      console.log("Saving meal with photo:", photo ? "Photo exists" : "No photo");
+      const meal: MealEntry = {
+        id: Date.now().toString(),
+        type: mealType,
+        calories: Number(calories),
+        photo: photo || "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80",
+        timestamp: new Date(),
+        ...(selectedPetId && { petId: selectedPetId })
+      };
 
-    // Add food information if available
-    if (selectedFood) {
-      meal.foodName = selectedFood.food_name;
-      meal.brandName = selectedFood.brand_name;
-      
-      if (selectedFood.servings) {
-        const servings = Array.isArray(selectedFood.servings.serving) ? 
-          selectedFood.servings.serving : [selectedFood.servings.serving];
+      // Add food information if available
+      if (selectedFood) {
+        meal.foodName = selectedFood.food_name;
+        meal.brandName = selectedFood.brand_name;
         
-        const serving = servings.find(s => s.serving_id === selectedServing);
-        if (serving) {
-          meal.serving = serving.serving_description;
+        if (selectedFood.servings) {
+          const servings = Array.isArray(selectedFood.servings.serving) ? 
+            selectedFood.servings.serving : [selectedFood.servings.serving];
+          
+          const serving = servings.find(s => s.serving_id === selectedServing);
+          if (serving) {
+            meal.serving = serving.serving_description;
+          }
         }
       }
-    }
 
-    onSave(meal);
-    resetForm();
-    toast.success("Meal added successfully!");
+      onSave(meal);
+      resetForm();
+      toast.success("Meal added successfully!");
+    } catch (error) {
+      console.error("Error saving meal:", error);
+      toast.error("Failed to save meal");
+    }
   };
 
   const resetForm = () => {
@@ -68,20 +76,20 @@ export const MealEntryForm = ({ onSave }: MealEntryFormProps) => {
   };
 
   return (
-    <Card className="p-6 mx-auto bg-white/80 backdrop-blur-sm shadow-lg">
+    <Card className="p-4 sm:p-6 mx-auto bg-white/80 backdrop-blur-sm shadow-lg">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full mb-4">
-          <TabsTrigger value="camera" className="flex-1">
+        <TabsList className="w-full mb-4 grid grid-cols-3 gap-2">
+          <TabsTrigger value="camera" className="flex items-center justify-center">
             <Camera className="h-4 w-4 mr-2" />
-            Camera
+            {!isMobile && "Camera"}
           </TabsTrigger>
-          <TabsTrigger value="search" className="flex-1">
+          <TabsTrigger value="search" className="flex items-center justify-center">
             <Search className="h-4 w-4 mr-2" />
-            Food Search
+            {!isMobile && "Food Search"}
           </TabsTrigger>
-          <TabsTrigger value="manual" className="flex-1">
+          <TabsTrigger value="manual" className="flex items-center justify-center">
             <Plus className="h-4 w-4 mr-2" />
-            Manual Entry
+            {!isMobile && "Manual Entry"}
           </TabsTrigger>
         </TabsList>
         

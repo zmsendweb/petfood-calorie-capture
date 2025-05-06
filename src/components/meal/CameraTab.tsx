@@ -8,6 +8,7 @@ import { CameraComponent } from "../Camera";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { MealEntry } from "@/types/mealTypes";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CameraTabProps {
   photo: string;
@@ -37,8 +38,10 @@ export const CameraTab = ({
   handleSubmit
 }: CameraTabProps) => {
   const { petProfiles } = usePetProfiles();
+  const isMobile = useIsMobile();
 
   const handleCapture = (imageData: string) => {
+    console.log("Photo captured in CameraTab, setting photo...");
     setPhoto(imageData);
     setShowCamera(false);
   };
@@ -49,6 +52,7 @@ export const CameraTab = ({
         <Button 
           onClick={() => setShowCamera(true)} 
           className="w-full h-48 border-2 border-dashed border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all duration-300"
+          type="button"
         >
           <Camera className="h-6 w-6 mr-2" />
           Take Photo of Your Meal
@@ -57,16 +61,19 @@ export const CameraTab = ({
         <CameraComponent onCapture={handleCapture} />
       ) : (
         <div className="relative">
-          <img 
-            src={photo} 
-            alt="Captured meal" 
-            className="w-full h-48 object-cover rounded-md"
-          />
+          {photo && (
+            <img 
+              src={photo} 
+              alt="Captured meal" 
+              className="w-full h-48 object-cover rounded-md"
+            />
+          )}
           <Button 
             variant="outline" 
             size="sm" 
             className="absolute bottom-2 right-2 bg-white/80"
             onClick={() => setShowCamera(true)}
+            type="button"
           >
             Retake
           </Button>
@@ -95,14 +102,14 @@ export const CameraTab = ({
 
           <div className="space-y-2">
             <Label>Meal Type</Label>
-            <div className="flex gap-2 flex-wrap">
+            <div className="grid grid-cols-2 gap-2">
               {["breakfast", "lunch", "dinner", "snack"].map((type) => (
                 <Button
                   key={type}
                   type="button"
                   variant={mealType === type ? "default" : "outline"}
                   onClick={() => setMealType(type)}
-                  className="flex-1 capitalize"
+                  className="capitalize"
                 >
                   {type}
                 </Button>

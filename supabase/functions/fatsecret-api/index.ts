@@ -1,7 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createHmac } from "https://deno.land/std@0.168.0/crypto/mod.ts";
-import { corsHeaders } from "../pet-nutrition-rag/utils/cors.ts";
+import { corsHeaders } from "./utils/cors.ts";
 
 // FatSecret API credentials from environment variables
 const CONSUMER_KEY = Deno.env.get("FATSECRET_CONSUMER_KEY");

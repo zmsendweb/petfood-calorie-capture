@@ -62,8 +62,8 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
             </ToggleGroup>
           </div>
           
-          <form onSubmit={handleSubmit} className="flex items-start gap-2">
-            <div className="flex-1">
+          <form onSubmit={handleSubmit} className="flex flex-col md:flex-row items-start gap-2">
+            <div className="flex-1 w-full">
               <Input
                 placeholder={petType === "dog" 
                   ? "What nutritional needs do Labradors have?" 
@@ -72,7 +72,7 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
                     : "Ask about pet nutrition..."}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="flex-1"
+                className="w-full"
                 disabled={isLoading}
               />
             </div>

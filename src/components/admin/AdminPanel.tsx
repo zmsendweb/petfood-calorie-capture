@@ -21,21 +21,15 @@ export function AdminPanel() {
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
-        const { count: usersCount, error: usersError } = await supabase
-          .from('auth.users')
-          .select('*', { count: 'exact', head: true });
-          
-        if (usersError) throw usersError;
-        
-        // Since we don't have actual tables yet, we'll just show the user count
-        // In a real app, you would fetch data from your actual tables
+        // This approach doesn't work as we can't query auth.users directly with the client
+        // Get estimated user count by calling a function or using a view if needed
+        // For now, we'll just set a placeholder value
         
         setStats({
-          totalUsers: usersCount || 0,
+          totalUsers: 1, // We know we have at least the admin user
           totalProfiles: 0,
           totalMeals: 0
         });
-        
       } catch (error) {
         console.error("Error fetching admin data:", error);
         toast.error("Failed to load admin data");
@@ -128,7 +122,29 @@ export function AdminPanel() {
               <CardDescription>Configure global site settings</CardDescription>
             </CardHeader>
             <CardContent>
-              <p>Site settings would be implemented here</p>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-medium mb-2">Create Admin User</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Initialize the admin user (email: admin@mypetcal.com) if it doesn't exist
+                  </p>
+                  <Button onClick={async () => {
+                    try {
+                      const { data, error } = await supabase.functions.invoke('create-admin-user', {
+                        body: { adminPassword: "Jfgefi$6823hJHDvcdc" }
+                      });
+                      
+                      if (error) throw error;
+                      toast.success(data.message || "Admin user setup completed");
+                    } catch (error) {
+                      console.error("Error creating admin user:", error);
+                      toast.error("Failed to create admin user");
+                    }
+                  }}>
+                    Create Admin User
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

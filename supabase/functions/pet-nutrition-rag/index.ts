@@ -5,6 +5,8 @@ import { semanticSearch } from "./services/search.ts";
 import { generateResponse } from "./services/ai.ts";
 import { nutritionInfo } from "./data/nutritionInfo.ts";
 
+const SUPPORT_EMAIL = "support@mypetcal.com";
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -93,7 +95,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: error.message || 'An unknown error occurred',
-        answer: "I'm sorry, but I'm having trouble accessing nutrition information right now. Please try again later or contact support if this continues.",
+        answer: `I'm sorry, but I'm having trouble accessing nutrition information right now. Please try again later or contact ${SUPPORT_EMAIL} if this continues.`,
         sources: []
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

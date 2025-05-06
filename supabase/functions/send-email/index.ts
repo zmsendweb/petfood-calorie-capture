@@ -6,6 +6,7 @@ import { renderAsync } from "npm:@react-email/components@0.0.22";
 import { ContactConfirmationEmail } from "./_templates/contact-confirmation.tsx";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const SUPPORT_EMAIL = "support@mypetcal.com";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -38,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     const userEmailResponse = await resend.emails.send({
-      from: "My Pet Calorie Calculator <support@mypetcal.com>",
+      from: `My Pet Calorie Calculator <${SUPPORT_EMAIL}>`,
       to: [email],
       subject: "We received your message!",
       html: emailHtml
@@ -48,8 +49,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send notification to site admin
     const adminEmailResponse = await resend.emails.send({
-      from: "My Pet Calorie Calculator <support@mypetcal.com>",
-      to: ["support@mypetcal.com"],
+      from: `My Pet Calorie Calculator <${SUPPORT_EMAIL}>`,
+      to: [SUPPORT_EMAIL],
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <h1>New Contact Form Submission</h1>

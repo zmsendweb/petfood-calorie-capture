@@ -62,27 +62,35 @@ export function NutritionQuery({ defaultPetType = null }: NutritionQueryProps) {
             </ToggleGroup>
           </div>
           
-          <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <Input
-              placeholder={petType === "dog" 
-                ? "What nutritional needs do Labradors have?" 
-                : petType === "cat" 
-                  ? "What nutritional needs do Maine Coons have?"
-                  : "Ask about pet nutrition..."}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="flex-1"
-              disabled={isLoading}
-            />
-            <VoiceInput 
-              onTranscription={handleVoiceInput}
-              placeholder="Ask a question..."
-              isProcessing={isLoading}
-            />
-            <Button type="submit" disabled={isLoading || !query.trim()}>
-              {isLoading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <SearchIcon className="h-4 w-4" />}
-              {isLoading ? "Searching..." : "Ask"}
-            </Button>
+          <form onSubmit={handleSubmit} className="flex items-start gap-2">
+            <div className="flex-1">
+              <Input
+                placeholder={petType === "dog" 
+                  ? "What nutritional needs do Labradors have?" 
+                  : petType === "cat" 
+                    ? "What nutritional needs do Maine Coons have?"
+                    : "Ask about pet nutrition..."}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="flex-1"
+                disabled={isLoading}
+              />
+            </div>
+            <div className="flex gap-2">
+              <VoiceInput 
+                onTranscription={handleVoiceInput}
+                placeholder="Ask a question..."
+                isProcessing={isLoading}
+              />
+              <Button 
+                type="submit" 
+                disabled={isLoading || !query.trim()}
+                className="whitespace-nowrap"
+              >
+                {isLoading ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <SearchIcon className="h-4 w-4 mr-2" />}
+                {isLoading ? "Searching..." : "Ask"}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

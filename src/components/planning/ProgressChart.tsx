@@ -1,49 +1,39 @@
 
 import { PetProfile } from "@/data/types/petTypes";
 import { Progress } from "@/components/ui/progress";
-import { Check, Clock } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Check, Clock, Loader2 } from "lucide-react";
+import { usePetGoals } from "@/hooks/use-pet-goals";
 
 interface ProgressChartProps {
   pet: PetProfile;
 }
 
 export const ProgressChart = ({ pet }: ProgressChartProps) => {
-  // Load completed goals from localStorage
-  const [completedGoals, setCompletedGoals] = useState<string[]>(() => {
-    const savedCompletedGoals = localStorage.getItem(`pet-completed-goals-${pet.id}`);
-    return savedCompletedGoals ? JSON.parse(savedCompletedGoals) : [];
-  });
-  
-  // Define a listener for goal completion events from PlanningActions
-  useEffect(() => {
-    const checkForUpdates = () => {
-      const savedCompletedGoals = localStorage.getItem(`pet-completed-goals-${pet.id}`);
-      if (savedCompletedGoals) {
-        const parsed = JSON.parse(savedCompletedGoals);
-        setCompletedGoals(parsed);
-      }
-    };
-    
-    // Check for updates every 5 seconds
-    const interval = setInterval(checkForUpdates, 5000);
-    
-    return () => clearInterval(interval);
-  }, [pet.id]);
+  const { goals, loading } = usePetGoals(pet.id);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span className="ml-2 text-sm text-gray-500">Loading goals...</span>
+      </div>
+    );
+  }
+
+  // Get pet's goals from profile and merge with completed goals from database
+  const completedGoalTexts = goals.filter(g => g.is_completed).map(g => g.goal_text);
+  
   // Combine short-term and long-term goals with progress information
   const allGoals = [
     ...(pet.shortTermGoals || []).map(goal => ({ 
       text: goal, 
       isShortTerm: true,
-      // Calculate progress based on whether the goal is marked as complete
-      progress: completedGoals.includes(goal) ? 100 : Math.floor(Math.random() * 70) + 10
+      progress: completedGoalTexts.includes(goal) ? 100 : Math.floor(Math.random() * 70) + 10
     })),
     ...(pet.longTermGoals || []).map(goal => ({ 
       text: goal, 
       isShortTerm: false,
-      // Long term goals typically have lower progress
-      progress: completedGoals.includes(goal) ? 100 : Math.floor(Math.random() * 40) + 5
+      progress: completedGoalTexts.includes(goal) ? 100 : Math.floor(Math.random() * 40) + 5
     }))
   ];
 

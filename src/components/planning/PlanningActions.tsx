@@ -1,23 +1,16 @@
 
 import { Button } from "@/components/ui/button";
 import { PetProfile } from "@/data/types/petTypes";
-import { AlertTriangle, Calendar, Check, Clock, ExternalLink, X } from "lucide-react";
+import { AlertTriangle, Calendar, Check, Clock, ExternalLink, X, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useNotifications } from "@/hooks/use-notifications";
+import { usePetGoals } from "@/hooks/use-pet-goals";
+import { usePetReminders } from "@/hooks/use-pet-reminders";
 
 interface PlanningActionsProps {
   pet: PetProfile;
   viewMode: "daily" | "weekly";
-}
-
-interface Reminder {
-  id: string;
-  petId: string;
-  title: string;
-  description?: string;
-  date: Date;
-  completed: boolean;
 }
 
 export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
@@ -25,24 +18,8 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
   const [showMissedOpportunity, setShowMissedOpportunity] = useState(true);
   const MISSED_OPPORTUNITY_ID = `missed-opportunity-${pet.id}`;
   
-  // States for tracking reminders and completed goals
-  const [reminders, setReminders] = useState<Reminder[]>(() => {
-    const savedReminders = localStorage.getItem(`pet-reminders-${pet.id}`);
-    return savedReminders ? JSON.parse(savedReminders) : [];
-  });
-  const [completedGoals, setCompletedGoals] = useState<string[]>(() => {
-    const savedCompletedGoals = localStorage.getItem(`pet-completed-goals-${pet.id}`);
-    return savedCompletedGoals ? JSON.parse(savedCompletedGoals) : [];
-  });
-  
-  // Save reminders and completed goals to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem(`pet-reminders-${pet.id}`, JSON.stringify(reminders));
-  }, [reminders, pet.id]);
-  
-  useEffect(() => {
-    localStorage.setItem(`pet-completed-goals-${pet.id}`, JSON.stringify(completedGoals));
-  }, [completedGoals, pet.id]);
+  const { goals, loading: goalsLoading, markGoalComplete } = usePetGoals(pet.id);
+  const { reminders, loading: remindersLoading, addReminder } = usePetReminders(pet.id);
   
   // Check if notification was dismissed in the last 7 days
   useEffect(() => {
@@ -58,17 +35,15 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
       : "Pets with daily tracked nutrition are 3x more likely to avoid health issues. Don't miss this opportunity!";
 
   const handleSetReminder = () => {
-    // Create a new reminder
-    const newReminder: Reminder = {
-      id: Date.now().toString(),
-      petId: pet.id,
+    const newReminder = {
+      pet_id: pet.id,
       title: "Pet Health Checkup",
       description: `Remember to track ${pet.name}'s nutrition and activity`,
       date: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
       completed: false
     };
     
-    setReminders(prev => [...prev, newReminder]);
+    addReminder(newReminder);
     
     toast.success("Reminder set! We'll help you stay on track with your pet's health goals.", {
       description: `Reminder for ${pet.name} scheduled for ${newReminder.date.toLocaleDateString()}`
@@ -87,16 +62,15 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
     const checkupDate = new Date();
     checkupDate.setDate(checkupDate.getDate() + 14); // Two weeks from now
     
-    const newReminder: Reminder = {
-      id: Date.now().toString(),
-      petId: pet.id,
+    const newReminder = {
+      pet_id: pet.id,
       title: "Vet Checkup",
       description: `Schedule a checkup for ${pet.name}`,
       date: checkupDate,
       completed: false
     };
     
-    setReminders(prev => [...prev, newReminder]);
+    addReminder(newReminder);
     
     toast.success(`Vet checkup scheduled for ${pet.name}`, {
       description: `Set for ${checkupDate.toLocaleDateString()}`
@@ -111,26 +85,24 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
     const dinner = new Date();
     dinner.setHours(18, 0, 0, 0);
     
-    const newReminders: Reminder[] = [
-      {
-        id: `breakfast-${Date.now()}`,
-        petId: pet.id,
-        title: "Breakfast Time",
-        description: `Time to feed ${pet.name} breakfast`,
-        date: breakfast,
-        completed: false
-      },
-      {
-        id: `dinner-${Date.now()}`,
-        petId: pet.id,
-        title: "Dinner Time",
-        description: `Time to feed ${pet.name} dinner`,
-        date: dinner,
-        completed: false
-      }
-    ];
+    const breakfastReminder = {
+      pet_id: pet.id,
+      title: "Breakfast Time",
+      description: `Time to feed ${pet.name} breakfast`,
+      date: breakfast,
+      completed: false
+    };
     
-    setReminders(prev => [...prev, ...newReminders]);
+    const dinnerReminder = {
+      pet_id: pet.id,
+      title: "Dinner Time", 
+      description: `Time to feed ${pet.name} dinner`,
+      date: dinner,
+      completed: false
+    };
+    
+    addReminder(breakfastReminder);
+    addReminder(dinnerReminder);
     
     toast.success(`Meal reminders set for ${pet.name}`, {
       description: "Daily breakfast and dinner reminders created"
@@ -141,39 +113,48 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
     // Generate a summary of the pet's progress
     const allGoals = [...(pet.shortTermGoals || []), ...(pet.longTermGoals || [])];
     const totalGoals = allGoals.length;
+    const completedGoals = goals.filter(g => g.is_completed);
     const completedCount = completedGoals.length;
     const completionPercentage = totalGoals > 0 ? Math.round((completedCount / totalGoals) * 100) : 0;
     
     const progressSummary = `
-      Pet: ${pet.name} (${pet.breed || pet.type})
-      Progress: ${completionPercentage}% complete
-      ${completedCount} out of ${totalGoals} goals accomplished
-      
-      Weight: ${pet.weight} ${pet.weightUnit}
-      Daily Calorie Target: ${pet.dailyCalorieTarget || "Not set"}
-      Activity Level: ${pet.activityLevel}
-      
-      Thank you for using mypetcal to track your pet's health!
-    `;
+Pet: ${pet.name} (${pet.breed || pet.type})
+Progress: ${completionPercentage}% complete
+${completedCount} out of ${totalGoals} goals accomplished
+
+Weight: ${pet.weight} ${pet.weightUnit}
+Daily Calorie Target: ${pet.dailyCalorieTarget || "Not set"}
+Activity Level: ${pet.activityLevel}
+
+Thank you for using mypetcal to track your pet's health!
+    `.trim();
     
-    // In a real app, this would send the report via email or generate a shareable link
-    // For now, we'll just show it in a toast
     navigator.clipboard.writeText(progressSummary).then(() => {
       toast.success("Progress report copied to clipboard", {
         description: "You can now share it with your vet or friends"
       });
+    }).catch(() => {
+      toast.error("Failed to copy to clipboard");
     });
   };
   
   const handleMarkGoalComplete = () => {
-    // For now, we'll just mark a random goal as complete
-    // In a real app, this would open a modal to select which goal to mark
+    // Get incomplete goals from pet profile
     const allGoals = [...(pet.shortTermGoals || []), ...(pet.longTermGoals || [])];
-    const incompleteGoals = allGoals.filter(goal => !completedGoals.includes(goal));
+    const completedGoalTexts = goals.filter(g => g.is_completed).map(g => g.goal_text);
+    const incompleteGoals = allGoals.filter(goal => !completedGoalTexts.includes(goal));
     
     if (incompleteGoals.length > 0) {
       const goalToComplete = incompleteGoals[0];
-      setCompletedGoals(prev => [...prev, goalToComplete]);
+      
+      // Find existing goal or create completion record
+      const existingGoal = goals.find(g => g.goal_text === goalToComplete);
+      
+      if (existingGoal) {
+        markGoalComplete(existingGoal.id, goalToComplete);
+      } else {
+        markGoalComplete(undefined, goalToComplete);
+      }
       
       toast.success(`Goal marked as complete for ${pet.name}`, {
         description: goalToComplete
@@ -184,6 +165,15 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
       });
     }
   };
+
+  if (goalsLoading || remindersLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span className="ml-2 text-sm text-gray-500">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -243,7 +233,7 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
                   {reminder.title}
                 </span>
                 <span className="text-xs text-gray-500">
-                  {new Date(reminder.date).toLocaleDateString()}
+                  {reminder.date.toLocaleDateString()}
                 </span>
               </li>
             ))}

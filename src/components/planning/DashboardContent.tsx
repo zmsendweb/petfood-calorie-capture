@@ -1,12 +1,13 @@
 
 import { PetProfile } from "@/data/types/petTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, Trophy, Zap, Heart } from "lucide-react";
+import { TrendingUp, Trophy, Zap, Heart, Settings } from "lucide-react";
 import { ProgressChart } from "./ProgressChart";
 import { CalorieChart } from "./CalorieChart";
 import { MotivationalTip } from "./MotivationalTip";
 import { WeightProgressChart } from "./charts/WeightProgressChart";
 import { PlanningActions } from "./PlanningActions";
+import { StorageSettings } from "./StorageSettings";
 
 interface DashboardContentProps {
   pet: PetProfile;
@@ -55,6 +56,9 @@ export const DashboardContent = ({ pet, viewMode }: DashboardContentProps) => {
               </CardContent>
             </Card>
           )}
+
+          {/* Storage Settings */}
+          <StorageSettings />
         </div>
 
         {/* Right Column - Goals Progress & Actions */}

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Dog, Cat, Camera, ArrowRight } from "lucide-react";
+import { Dog, Cat, ArrowRight } from "lucide-react";
+import { PetImageAnalysis } from "../PetImageAnalysis";
+import { PetAnalysis } from "@/hooks/use-pet-image-analysis";
 
 const basicInfoSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -57,9 +58,51 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
     },
   });
 
+  const handleAnalysisComplete = (analysis: PetAnalysis) => {
+    // Auto-populate form fields based on AI analysis
+    if (analysis.type) form.setValue("type", analysis.type);
+    if (analysis.breed) form.setValue("breed", analysis.breed);
+    if (analysis.activityLevel) form.setValue("activityLevel", analysis.activityLevel);
+    if (analysis.weightUnit) form.setValue("weightUnit", analysis.weightUnit);
+    
+    // Try to extract numeric age from estimated age string
+    const ageMatch = analysis.estimatedAge.match(/(\d+)/);
+    if (ageMatch) {
+      const estimatedAge = parseInt(ageMatch[1]);
+      form.setValue("age", estimatedAge);
+      
+      // Set age unit based on the age value
+      if (estimatedAge < 2) {
+        form.setValue("ageUnit", "months");
+      } else {
+        form.setValue("ageUnit", "years");
+      }
+    }
+
+    // Add AI insights to notes
+    const aiNotes = [
+      `AI Analysis: ${analysis.breed} (${analysis.confidence} confidence)`,
+      analysis.additionalNotes,
+      analysis.nutritionRecommendations
+    ].filter(Boolean).join('\n\n');
+    
+    form.setValue("notes", aiNotes);
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Basic Information</h2>
+      
+      {/* AI Pet Analysis Section */}
+      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-4 rounded-lg">
+        <h3 className="text-lg font-semibold mb-3">AI-Powered Pet Analysis</h3>
+        <PetImageAnalysis 
+          photo={photo}
+          onAnalysisComplete={handleAnalysisComplete}
+          onPhotoCapture={onPhotoChange}
+        />
+      </div>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onNext)} className="space-y-4">
           <FormField

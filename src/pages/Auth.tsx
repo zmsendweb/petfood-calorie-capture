@@ -22,10 +22,9 @@ export default function Auth() {
             <img 
               src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
               alt="mypetcal logo" 
-              className="h-20 w-auto"
+              className="h-25 w-auto"
             />
           </div>
-          <h1 className="text-3xl font-bold">mypetcal</h1>
           <p className="text-muted-foreground mt-2">Sign in to manage your pet's nutrition</p>
         </div>
         

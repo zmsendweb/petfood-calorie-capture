@@ -1,6 +1,6 @@
 
-import { MainNavigation } from "./MainNavigation";
+import { ModernNavigation } from "./navigation/ModernNavigation";
 
 export function AppNavigation() {
-  return <MainNavigation />;
+  return <ModernNavigation />;
 }

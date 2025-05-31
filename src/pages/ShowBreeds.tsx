@@ -16,7 +16,6 @@ export default function ShowBreeds() {
       <PageHeader 
         title="Show Breed Standards" 
         showBackButton={true}
-        icon={Trophy}
       />
       
       <div className="mb-6">

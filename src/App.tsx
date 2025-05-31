@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { Index } from "./pages/Index";
 import Standards from "./pages/Standards";
 import CatStandards from "./pages/CatStandards";
+import ShowBreeds from "./pages/ShowBreeds";
 import PetProfiles from "./pages/PetProfiles";
 import PlanningDashboard from "./pages/PlanningDashboard";
 import { PetRecipes } from "./pages/PetRecipes";
@@ -24,6 +25,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/standards" element={<Standards />} />
         <Route path="/cat-standards" element={<CatStandards />} />
+        <Route path="/show-breeds" element={<ShowBreeds />} />
         <Route 
           path="/pet-profiles" 
           element={

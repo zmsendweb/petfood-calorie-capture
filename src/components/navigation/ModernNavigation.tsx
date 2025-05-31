@@ -24,7 +24,8 @@ import {
   Mail,
   Shield,
   LogOut,
-  User
+  User,
+  Trophy
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -32,6 +33,7 @@ const navigationItems = [
   { name: "Home", href: "/", icon: Home },
   { name: "Dog Standards", href: "/standards", icon: BookOpen },
   { name: "Cat Standards", href: "/cat-standards", icon: Heart },
+  { name: "Show Breeds", href: "/show-breeds", icon: Trophy },
   { name: "Pet Profiles", href: "/pet-profiles", icon: User, protected: true },
   { name: "Planning", href: "/planning", icon: Calendar, protected: true },
   { name: "Pet Recipes", href: "/pet-recipes", icon: ChefHat, protected: true },

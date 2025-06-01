@@ -14,27 +14,34 @@ export function PetRecipes() {
   const [petType, setPetType] = useState<"dog" | "cat">("dog");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIngredients, setSelectedIngredients] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [recipe, setRecipe] = useState("");
 
   const generateRecipe = () => {
     // Recipe generation logic would go here
     console.log("Generating recipe for:", recipePrompt);
   };
 
-  const addToRecipe = (ingredient: any) => {
-    setSelectedIngredients(prev => [...prev, ingredient]);
+  const addIngredient = (ingredient: any) => {
+    setIngredients(prev => [...prev, ingredient]);
   };
 
-  const removeFromRecipe = (ingredient: any) => {
-    setSelectedIngredients(prev => prev.filter(item => item.id !== ingredient.id));
+  const removeIngredient = (ingredientId: string) => {
+    setIngredients(prev => prev.filter(item => item.food_id !== ingredientId));
   };
 
-  const generateNutritionAnalysis = () => {
-    // Nutrition analysis logic would go here
-    console.log("Generating nutrition analysis");
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSearching(true);
+    // Search logic would go here
+    console.log("Searching for:", searchQuery);
+    setIsSearching(false);
   };
 
-  const handlePetTypeChange = (type: string) => {
-    setPetType(type as "dog" | "cat");
+  const handlePetTypeChange = (type: "dog" | "cat") => {
+    setPetType(type);
   };
 
   return (
@@ -67,10 +74,9 @@ export function PetRecipes() {
                 setRecipePrompt={setRecipePrompt}
                 ingredients={ingredients}
                 generateRecipe={generateRecipe}
+                isLoading={isLoading}
+                recipe={recipe}
                 petType={petType}
-                setPetType={handlePetTypeChange}
-                selectedIngredients={selectedIngredients}
-                addToRecipe={addToRecipe}
               />
             </TabsContent>
             <TabsContent value="ingredients">
@@ -79,12 +85,12 @@ export function PetRecipes() {
                 setPetType={handlePetTypeChange}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                selectedIngredients={selectedIngredients}
-                addToRecipe={addToRecipe}
-                removeFromRecipe={removeFromRecipe}
-                generateNutritionAnalysis={generateNutritionAnalysis}
-                nutritionAnalysis={null}
-                isGenerating={false}
+                searchResults={searchResults}
+                handleSearch={handleSearch}
+                isSearching={isSearching}
+                ingredients={ingredients}
+                addIngredient={addIngredient}
+                removeIngredient={removeIngredient}
               />
             </TabsContent>
           </CardContent>

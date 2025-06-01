@@ -1,100 +1,49 @@
-
 import { useState } from "react";
-import { NutritionQuery } from "@/components/NutritionQuery";
+import { DogStandardsHeader } from "@/components/standards/DogStandardsHeader";
+import { DogBreedFilters } from "@/components/standards/DogBreedFilters";
+import { DogBreedCard } from "@/components/standards/DogBreedCard";
+import { StandardsFooter } from "@/components/standards/StandardsFooter";
+import { AppNavigation } from "@/components/AppNavigation";
 import { dogStandards } from "@/data/dogStandards";
-import { PetSize } from "@/utils/sizeCategoryImages";
-import { BreedCounter } from "@/components/BreedCounter";
-import { 
-  DogBreedCard, 
-  DogBreedFilters, 
-  DogStandardsHeader,
-  StandardsFooter 
-} from "@/components/standards";
 
-const Standards = () => {
+export default function Standards() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSize, setSelectedSize] = useState<PetSize | null>(null);
-  const [showNutritionQuery, setShowNutritionQuery] = useState(false);
-  const [ageFilter, setAgeFilter] = useState("adult");
+  const [sizeFilter, setSizeFilter] = useState("all");
+  const [energyLevelFilter, setEnergyLevelFilter] = useState("all");
 
-  // Filter dogs based on search term and selected size
-  const filteredStandards = dogStandards.filter(dog => {
-    // Check if search term matches breed or size
-    const searchMatches = 
-      searchTerm === "" || 
-      dog.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      dog.size.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    if (!searchMatches) return false;
-    
-    // Handle size filtering
-    if (selectedSize === null) return true;
-    
-    if (selectedSize === "Specialty") {
-      return dog.isSpecialty === true;
-    }
-    
-    if (selectedSize === "Rare") {
-      return dog.isRare === true;
-    }
-    
-    return dog.size === selectedSize;
+  const filteredBreeds = dogStandards.filter((breed) => {
+    const matchesSearch =
+      searchTerm === "" ||
+      breed.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSize =
+      sizeFilter === "all" || breed.size.toLowerCase() === sizeFilter;
+    const matchesEnergy =
+      energyLevelFilter === "all" ||
+      breed.energyLevel.toLowerCase() === energyLevelFilter;
+
+    return matchesSearch && matchesSize && matchesEnergy;
   });
 
-  // Create a unique ID for each dog to prevent React key duplications
-  const getUniqueId = (dog: (typeof dogStandards)[0], index: number) => {
-    return `${dog.breed}-${dog.size}-${index}`;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
-      <div className="container max-w-6xl">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      <AppNavigation />
+      <div className="container mx-auto px-4 py-8">
         <DogStandardsHeader />
-
-        {/* Pass the selectedSize and setSelectedSize function to BreedCounter */}
-        <BreedCounter 
-          petType="dog" 
-          selectedSize={selectedSize} 
-          onSizeSelect={setSelectedSize} 
-        />
-
         <DogBreedFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
-          selectedSize={selectedSize}
-          setSelectedSize={setSelectedSize}
-          showNutritionQuery={showNutritionQuery}
-          setShowNutritionQuery={setShowNutritionQuery}
-          ageFilter={ageFilter}
-          setAgeFilter={setAgeFilter}
+          sizeFilter={sizeFilter}
+          setSizeFilter={setSizeFilter}
+          energyLevelFilter={energyLevelFilter}
+          setEnergyLevelFilter={setEnergyLevelFilter}
         />
-
-        {showNutritionQuery && (
-          <div className="mb-6">
-            <NutritionQuery defaultPetType="dog" />
-          </div>
-        )}
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredStandards.map((standard, index) => (
-            <DogBreedCard 
-              key={getUniqueId(standard, index)} 
-              dog={standard} 
-              ageFilter={ageFilter} 
-            />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredBreeds.map((breed) => (
+            <DogBreedCard key={breed.id} breed={breed} />
           ))}
         </div>
-
-        {filteredStandards.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-500">No breeds found matching your search.</p>
-          </div>
-        )}
-
         <StandardsFooter />
       </div>
     </div>
   );
-};
-
-export default Standards;
+}

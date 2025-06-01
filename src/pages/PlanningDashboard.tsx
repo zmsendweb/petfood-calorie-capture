@@ -1,46 +1,14 @@
 
-import { useState, useMemo } from "react";
-import { usePetProfiles } from "@/hooks/use-pet-profiles";
-import { 
-  NoPetsView, 
-  DashboardHeader, 
-  DashboardControls, 
-  DashboardContent 
-} from "@/components/planning";
+import { AppNavigation } from "@/components/AppNavigation";
+import { DashboardContent } from "@/components/planning/DashboardContent";
 
-const PlanningDashboard = () => {
-  const { petProfiles } = usePetProfiles();
-  const [selectedPetId, setSelectedPetId] = useState<string>(petProfiles.length > 0 ? petProfiles[0].id : "");
-  const [viewMode, setViewMode] = useState<"daily" | "weekly">("daily");
-  
-  const selectedPet = useMemo(() => 
-    petProfiles.find(pet => pet.id === selectedPetId),
-    [petProfiles, selectedPetId]
-  );
-
-  // Handle no pets scenario
-  if (petProfiles.length === 0) {
-    return <NoPetsView />;
-  }
-
+export default function PlanningDashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
-      <div className="container max-w-6xl">
-        <DashboardHeader />
-
-        {/* Pet Selection and View Mode */}
-        <DashboardControls 
-          petProfiles={petProfiles}
-          selectedPetId={selectedPetId}
-          setSelectedPetId={setSelectedPetId}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-        />
-
-        {selectedPet && <DashboardContent pet={selectedPet} viewMode={viewMode} />}
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+      <AppNavigation />
+      <div className="container mx-auto px-4 py-8">
+        <DashboardContent />
       </div>
     </div>
   );
-};
-
-export default PlanningDashboard;
+}

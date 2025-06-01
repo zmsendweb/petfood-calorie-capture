@@ -1,100 +1,48 @@
-
 import { useState } from "react";
+import { CatStandardsHeader } from "@/components/standards/CatStandardsHeader";
+import { CatBreedFilters } from "@/components/standards/CatBreedFilters";
+import { CatBreedCard } from "@/components/standards/CatBreedCard";
+import { StandardsFooter } from "@/components/standards/StandardsFooter";
+import { AppNavigation } from "@/components/AppNavigation";
 import { catStandards } from "@/data/catStandards";
-import { PetSize } from "@/utils/sizeCategoryImages";
-import { BreedCounter } from "@/components/BreedCounter";
-import { NutritionQuery } from "@/components/NutritionQuery";
-import { 
-  CatBreedCard, 
-  CatBreedFilters, 
-  CatStandardsHeader,
-  StandardsFooter 
-} from "@/components/standards";
 
-const CatStandards = () => {
+export default function CatStandards() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSize, setSelectedSize] = useState<PetSize | null>(null);
-  const [showNutritionQuery, setShowNutritionQuery] = useState(false);
-  const [ageFilter, setAgeFilter] = useState("adult");
+  const [sizeFilter, setSizeFilter] = useState("all");
+  const [energyLevelFilter, setEnergyLevelFilter] = useState("all");
+  const [groomingNeedsFilter, setGroomingNeedsFilter] = useState("all");
 
-  // Filter cats based on search term and selected size
-  const filteredStandards = catStandards.filter(cat => {
-    // Check if search term matches breed or size
-    const searchMatches = 
-      searchTerm === "" || 
-      cat.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cat.size.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    if (!searchMatches) return false;
-    
-    // Handle size filtering
-    if (selectedSize === null) return true;
-    
-    if (selectedSize === "Exotic") {
-      return cat.isExotic === true;
-    }
-    
-    if (selectedSize === "Rare") {
-      return cat.isRare === true;
-    }
-    
-    return cat.size === selectedSize;
+  const filteredBreeds = catStandards.filter(breed => {
+    const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSize = sizeFilter === "all" || breed.size === sizeFilter;
+    const matchesEnergyLevel = energyLevelFilter === "all" || breed.energyLevel === energyLevelFilter;
+    const matchesGroomingNeeds = groomingNeedsFilter === "all" || breed.groomingNeeds === groomingNeedsFilter;
+
+    return matchesSearch && matchesSize && matchesEnergyLevel && matchesGroomingNeeds;
   });
 
-  // Create a unique ID for each cat to prevent React key duplications
-  const getUniqueId = (cat: (typeof catStandards)[0], index: number) => {
-    return `${cat.breed}-${cat.size}-${index}`;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
-      <div className="container max-w-6xl">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+      <AppNavigation />
+      <div className="container mx-auto px-4 py-8">
         <CatStandardsHeader />
-
-        {/* Pass the selectedSize and setSelectedSize function to BreedCounter */}
-        <BreedCounter 
-          petType="cat" 
-          selectedSize={selectedSize} 
-          onSizeSelect={setSelectedSize} 
-        />
-
         <CatBreedFilters
           searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          selectedSize={selectedSize}
-          setSelectedSize={setSelectedSize}
-          showNutritionQuery={showNutritionQuery}
-          setShowNutritionQuery={setShowNutritionQuery}
-          ageFilter={ageFilter}
-          setAgeFilter={setAgeFilter}
+          onSearchChange={setSearchTerm}
+          sizeFilter={sizeFilter}
+          onSizeChange={setSizeFilter}
+          energyLevelFilter={energyLevelFilter}
+          onEnergyLevelChange={setEnergyLevelFilter}
+          groomingNeedsFilter={groomingNeedsFilter}
+          onGroomingNeedsChange={setGroomingNeedsFilter}
         />
-
-        {showNutritionQuery && (
-          <div className="mb-6">
-            <NutritionQuery defaultPetType="cat" />
-          </div>
-        )}
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredStandards.map((standard, index) => (
-            <CatBreedCard 
-              key={getUniqueId(standard, index)} 
-              cat={standard} 
-              ageFilter={ageFilter} 
-            />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredBreeds.map(breed => (
+            <CatBreedCard key={breed.name} breed={breed} />
           ))}
         </div>
-
-        {filteredStandards.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-500">No breeds found matching your search.</p>
-          </div>
-        )}
-
         <StandardsFooter />
       </div>
     </div>
   );
-};
-
-export default CatStandards;
+}

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Toaster } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { ContactForm } from "@/components/contact/ContactForm";
 import { FeedbackForm } from "@/components/contact/FeedbackForm";
 import { ContactSidebar } from "@/components/contact/ContactSidebar";
 import { PageHeader } from "@/components/PageHeader";
+import { AppNavigation } from "@/components/AppNavigation";
 
 export function Contact() {
   const [activeTab, setActiveTab] = useState("contact");
@@ -18,55 +18,58 @@ export function Contact() {
   const captchaNum2 = Math.floor(Math.random() * 10) + 1;
 
   return (
-    <div className="container py-6 max-w-5xl mx-auto">
-      <PageHeader 
-        title="Contact Us" 
-        description="Get in touch with our team"
-      />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      <AppNavigation />
+      <div className="container mx-auto px-4 py-8">
+        <PageHeader 
+          title="Contact Us" 
+          description="Get in touch with our team"
+        />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="contact">Contact Us</TabsTrigger>
-              <TabsTrigger value="feedback">Feedback & Features</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="contact" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Get in Touch</CardTitle>
-                  <CardDescription>
-                    Have a question about our pet nutrition platform? Send us a message.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ContactForm captchaNum1={captchaNum1} captchaNum2={captchaNum2} />
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="feedback" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Share Your Feedback</CardTitle>
-                  <CardDescription>
-                    We value your input! Let us know what you'd like to see.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <FeedbackForm captchaNum1={captchaNum1} captchaNum2={captchaNum2} />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="contact">Contact Us</TabsTrigger>
+                <TabsTrigger value="feedback">Feedback & Features</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="contact" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Get in Touch</CardTitle>
+                    <CardDescription>
+                      Have a question about our pet nutrition platform? Send us a message.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ContactForm captchaNum1={captchaNum1} captchaNum2={captchaNum2} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="feedback" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Share Your Feedback</CardTitle>
+                    <CardDescription>
+                      We value your input! Let us know what you'd like to see.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <FeedbackForm captchaNum1={captchaNum1} captchaNum2={captchaNum2} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+          
+          <div>
+            <ContactSidebar />
+          </div>
         </div>
-        
-        <div>
-          <ContactSidebar />
-        </div>
+        <Toaster position="top-right" />
       </div>
-      <Toaster position="top-right" />
     </div>
   );
 }

@@ -1,89 +1,150 @@
-
 import { Link } from "react-router-dom";
-import { Toaster } from "sonner";
-import { ArrowLeft, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { MainNavigation } from "@/components/MainNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { AppNavigation } from "@/components/AppNavigation";
+import { 
+  Calculator, 
+  Camera, 
+  BarChart3, 
+  Bell, 
+  Calendar, 
+  Shield,
+  Smartphone,
+  Database,
+  Users,
+  Zap,
+  Heart,
+  Trophy
+} from "lucide-react";
 
-const featuresList = [
+const features = [
   {
-    id: "nutrition-tracking",
-    title: "Pet Nutrition Tracking",
-    description: "Track your pet's daily nutrition and calorie intake",
-    icon: "🍽️",
+    id: "calorie-calculator",
+    title: "Calorie Calculator",
+    description: "Calculate your pet's daily calorie needs based on their weight, age, and activity level.",
+    icon: Calculator,
+    href: "/features/calorie-calculator",
+    status: "stable",
+  },
+  {
+    id: "image-recognition",
+    title: "Image Recognition",
+    description: "Identify different dog and cat breeds using image recognition technology.",
+    icon: Camera,
+    href: "/features/image-recognition",
+    status: "beta",
+  },
+  {
+    id: "progress-tracking",
+    title: "Progress Tracking",
+    description: "Track your pet's progress over time with detailed charts and graphs.",
+    icon: BarChart3,
+    href: "/features/progress-tracking",
+    status: "alpha",
+  },
+  {
+    id: "reminders",
+    title: "Reminders",
+    description: "Set reminders for feeding, medication, and vet appointments.",
+    icon: Bell,
+    href: "/features/reminders",
+    status: "stable",
+  },
+  {
+    id: "planning-tools",
+    title: "Planning Tools",
+    description: "Plan your pet's meals and activities for the week.",
+    icon: Calendar,
+    href: "/features/planning-tools",
+    status: "stable",
   },
   {
     id: "breed-standards",
     title: "Breed Standards",
-    description: "Comprehensive information about different dog and cat breeds",
-    icon: "🐾",
+    description: "Access breed standards and information for various dog and cat breeds.",
+    icon: Shield,
+    href: "/features/breed-standards",
+    status: "stable",
   },
   {
-    id: "meal-planning",
-    title: "Meal Planning",
-    description: "Plan balanced and nutritious meals for your pets",
-    icon: "📅",
+    id: "mobile-app",
+    title: "Mobile App",
+    description: "Access all features on the go with our mobile app.",
+    icon: Smartphone,
+    href: "/features/mobile-app",
+    status: "planned",
   },
   {
-    id: "nutrition-assistant",
-    title: "Nutrition Assistant",
-    description: "AI-powered assistant to answer questions about pet nutrition",
-    icon: "🤖",
+    id: "data-analysis",
+    title: "Data Analysis",
+    description: "Analyze your pet's data to identify trends and patterns.",
+    icon: Database,
+    href: "/features/data-analysis",
+    status: "alpha",
+  },
+   {
+    id: "community-forums",
+    title: "Community Forums",
+    description: "Connect with other pet owners and share tips and advice.",
+    icon: Users,
+    href: "/features/community-forums",
+    status: "planned",
   },
   {
-    id: "pet-profiles",
-    title: "Pet Profiles",
-    description: "Create and manage detailed profiles for all your pets",
-    icon: "📝",
+    id: "ai-recommendations",
+    title: "AI Recommendations",
+    description: "Get personalized recommendations for your pet based on their data.",
+    icon: Zap,
+    href: "/features/ai-recommendations",
+    status: "beta",
   },
   {
-    id: "pet-recipes",
-    title: "Pet Recipes",
-    description: "Browse and create homemade pet food recipes",
-    icon: "🍳",
+    id: "favorite-breeds",
+    title: "Favorite Breeds",
+    description: "Discover and compare your favorite dog and cat breeds.",
+    icon: Heart,
+    href: "/features/favorite-breeds",
+    status: "stable",
+  },
+  {
+    id: "show-breeds",
+    title: "Showcase of Breeds",
+    description: "Explore a detailed showcase of various dog and cat breeds.",
+    icon: Trophy,
+    href: "/features/show-breeds",
+    status: "stable",
   },
 ];
 
 export function Features() {
   return (
-    <div className="container py-8 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <Link to="/">
-            <Button variant="ghost" size="sm" className="mr-2">
-              <ArrowLeft className="h-4 w-4 mr-1" /> Back to Home
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-bold tracking-tight">Features</h1>
-        </div>
-        
-        <MainNavigation />
-      </div>
-
-      <div className="space-y-8">
-        <p className="text-muted-foreground">
-          Explore the powerful features available in our Pet Nutrition Platform. Click on any feature to learn more about how it works.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {featuresList.map((feature) => (
-            <Link key={feature.id} to={`/features/${feature.id}`}>
-              <Card className="h-full hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <div className="text-3xl mb-2">{feature.icon}</div>
-                  <CardTitle>{feature.title}</CardTitle>
-                  <CardDescription>{feature.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="outline" className="w-full">Learn More</Button>
-                </CardContent>
-              </Card>
-            </Link>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      <AppNavigation />
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature) => (
+            <Card key={feature.id} className="transform hover:scale-105 transition-transform duration-200">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    <feature.icon className="h-5 w-5" />
+                    {feature.title}
+                  </CardTitle>
+                  {feature.status && (
+                    <Badge variant="secondary">{feature.status}</Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>{feature.description}</CardDescription>
+                <Link to={feature.href} className="inline-block mt-4 text-primary hover:underline">
+                  Learn More
+                </Link>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
-      <Toaster position="top-right" />
     </div>
   );
 }

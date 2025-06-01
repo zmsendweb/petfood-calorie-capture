@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from "sonner";
 import { PetOnboarding } from "@/components/PetOnboarding";
 import { PetProfileDisplay } from "@/components/PetProfileDisplay";
+import { AppNavigation } from "@/components/AppNavigation";
 
 const PetProfiles = () => {
   const { petProfiles, addPetProfile, updatePetProfile, deletePetProfile } = usePetProfiles();
@@ -44,8 +45,9 @@ const PetProfiles = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary/30 to-primary/30 py-8">
-      <div className="container max-w-6xl">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+      <AppNavigation />
+      <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Link to="/">
             <Button variant="ghost" size="icon">

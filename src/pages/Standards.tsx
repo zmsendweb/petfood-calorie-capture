@@ -6,23 +6,22 @@ import { DogBreedCard } from "@/components/standards/DogBreedCard";
 import { StandardsFooter } from "@/components/standards/StandardsFooter";
 import { AppNavigation } from "@/components/AppNavigation";
 import { dogStandards } from "@/data/dogStandards";
+import { PetSize } from "@/utils/sizeCategoryImages";
 
 export default function Standards() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sizeFilter, setSizeFilter] = useState("all");
-  const [energyLevelFilter, setEnergyLevelFilter] = useState("all");
+  const [selectedSize, setSelectedSize] = useState<PetSize | null>(null);
+  const [showNutritionQuery, setShowNutritionQuery] = useState(false);
+  const [ageFilter, setAgeFilter] = useState("adult");
 
   const filteredBreeds = dogStandards.filter((breed) => {
     const matchesSearch =
       searchTerm === "" ||
       breed.breed.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSize =
-      sizeFilter === "all" || breed.size.toLowerCase() === sizeFilter;
-    const matchesEnergy =
-      energyLevelFilter === "all" ||
-      breed.energyLevel.toLowerCase() === energyLevelFilter;
+      selectedSize === null || breed.size === selectedSize;
 
-    return matchesSearch && matchesSize && matchesEnergy;
+    return matchesSearch && matchesSize;
   });
 
   return (
@@ -33,14 +32,16 @@ export default function Standards() {
         <DogBreedFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
-          selectedSize={sizeFilter}
-          setSelectedSize={setSizeFilter}
-          selectedEnergyLevel={energyLevelFilter}
-          setSelectedEnergyLevel={setEnergyLevelFilter}
+          selectedSize={selectedSize}
+          setSelectedSize={setSelectedSize}
+          showNutritionQuery={showNutritionQuery}
+          setShowNutritionQuery={setShowNutritionQuery}
+          ageFilter={ageFilter}
+          setAgeFilter={setAgeFilter}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBreeds.map((breed, index) => (
-            <DogBreedCard key={breed.breed || index} {...breed} />
+            <DogBreedCard key={breed.breed || index} dog={breed} ageFilter={ageFilter} />
           ))}
         </div>
         <StandardsFooter />

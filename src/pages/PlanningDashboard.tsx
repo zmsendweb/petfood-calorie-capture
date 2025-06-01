@@ -2,19 +2,25 @@
 import { useState } from "react";
 import { AppNavigation } from "@/components/AppNavigation";
 import { DashboardContent } from "@/components/planning/DashboardContent";
+import { PetProfile } from "@/data/types/petTypes";
 
 export default function PlanningDashboard() {
   const [viewMode, setViewMode] = useState<"daily" | "weekly">("daily");
   
   // Mock pet data - in a real app this would come from a data store
-  const mockPet = {
+  const mockPet: PetProfile = {
     id: "1",
     name: "Buddy",
     type: "dog",
     breed: "Golden Retriever",
     weight: 30,
+    weightUnit: "kg",
     age: 3,
-    activityLevel: "moderate"
+    ageUnit: "years",
+    gender: "male",
+    activityLevel: "moderate",
+    createdAt: new Date(),
+    updatedAt: new Date()
   };
 
   return (

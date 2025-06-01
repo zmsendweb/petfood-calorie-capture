@@ -11,7 +11,7 @@ export function PetRecipes() {
   const [activeTab, setActiveTab] = useState("generator");
   const [recipePrompt, setRecipePrompt] = useState("");
   const [ingredients, setIngredients] = useState<any[]>([]);
-  const [petType, setPetType] = useState("dog");
+  const [petType, setPetType] = useState<"dog" | "cat">("dog");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIngredients, setSelectedIngredients] = useState<any[]>([]);
 
@@ -31,6 +31,10 @@ export function PetRecipes() {
   const generateNutritionAnalysis = () => {
     // Nutrition analysis logic would go here
     console.log("Generating nutrition analysis");
+  };
+
+  const handlePetTypeChange = (type: string) => {
+    setPetType(type as "dog" | "cat");
   };
 
   return (
@@ -64,7 +68,7 @@ export function PetRecipes() {
                 ingredients={ingredients}
                 generateRecipe={generateRecipe}
                 petType={petType}
-                setPetType={setPetType}
+                setPetType={handlePetTypeChange}
                 selectedIngredients={selectedIngredients}
                 addToRecipe={addToRecipe}
               />
@@ -72,7 +76,7 @@ export function PetRecipes() {
             <TabsContent value="ingredients">
               <IngredientsTab 
                 petType={petType}
-                setPetType={setPetType}
+                setPetType={handlePetTypeChange}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 selectedIngredients={selectedIngredients}

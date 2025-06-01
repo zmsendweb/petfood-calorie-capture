@@ -6,20 +6,19 @@ import { CatBreedCard } from "@/components/standards/CatBreedCard";
 import { StandardsFooter } from "@/components/standards/StandardsFooter";
 import { AppNavigation } from "@/components/AppNavigation";
 import { catStandards } from "@/data/catStandards";
+import { PetSize } from "@/utils/sizeCategoryImages";
 
 export default function CatStandards() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sizeFilter, setSizeFilter] = useState("all");
-  const [energyLevelFilter, setEnergyLevelFilter] = useState("all");
-  const [groomingNeedsFilter, setGroomingNeedsFilter] = useState("all");
+  const [selectedSize, setSelectedSize] = useState<PetSize | null>(null);
+  const [showNutritionQuery, setShowNutritionQuery] = useState(false);
+  const [ageFilter, setAgeFilter] = useState("adult");
 
   const filteredBreeds = catStandards.filter(breed => {
     const matchesSearch = breed.breed.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSize = sizeFilter === "all" || breed.size === sizeFilter;
-    const matchesEnergyLevel = energyLevelFilter === "all" || breed.energyLevel === energyLevelFilter;
-    const matchesGroomingNeeds = groomingNeedsFilter === "all" || breed.groomingNeeds === groomingNeedsFilter;
+    const matchesSize = selectedSize === null || breed.size === selectedSize;
 
-    return matchesSearch && matchesSize && matchesEnergyLevel && matchesGroomingNeeds;
+    return matchesSearch && matchesSize;
   });
 
   return (
@@ -30,16 +29,16 @@ export default function CatStandards() {
         <CatBreedFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
-          sizeFilter={sizeFilter}
-          setSizeFilter={setSizeFilter}
-          energyLevelFilter={energyLevelFilter}
-          setEnergyLevelFilter={setEnergyLevelFilter}
-          groomingNeedsFilter={groomingNeedsFilter}
-          setGroomingNeedsFilter={setGroomingNeedsFilter}
+          selectedSize={selectedSize}
+          setSelectedSize={setSelectedSize}
+          showNutritionQuery={showNutritionQuery}
+          setShowNutritionQuery={setShowNutritionQuery}
+          ageFilter={ageFilter}
+          setAgeFilter={setAgeFilter}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBreeds.map((breed, index) => (
-            <CatBreedCard key={breed.breed || index} {...breed} />
+            <CatBreedCard key={breed.breed || index} cat={breed} ageFilter={ageFilter} />
           ))}
         </div>
         <StandardsFooter />

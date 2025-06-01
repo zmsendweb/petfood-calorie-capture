@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,6 +9,29 @@ import { ChefHat, Sparkles, Heart } from "lucide-react";
 
 export function PetRecipes() {
   const [activeTab, setActiveTab] = useState("generator");
+  const [recipePrompt, setRecipePrompt] = useState("");
+  const [ingredients, setIngredients] = useState<any[]>([]);
+  const [petType, setPetType] = useState("dog");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIngredients, setSelectedIngredients] = useState<any[]>([]);
+
+  const generateRecipe = () => {
+    // Recipe generation logic would go here
+    console.log("Generating recipe for:", recipePrompt);
+  };
+
+  const addToRecipe = (ingredient: any) => {
+    setSelectedIngredients(prev => [...prev, ingredient]);
+  };
+
+  const removeFromRecipe = (ingredient: any) => {
+    setSelectedIngredients(prev => prev.filter(item => item.id !== ingredient.id));
+  };
+
+  const generateNutritionAnalysis = () => {
+    // Nutrition analysis logic would go here
+    console.log("Generating nutrition analysis");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
@@ -34,10 +58,30 @@ export function PetRecipes() {
           </CardHeader>
           <CardContent>
             <TabsContent value="generator" className="space-y-4">
-              <RecipeGenerator />
+              <RecipeGenerator 
+                recipePrompt={recipePrompt}
+                setRecipePrompt={setRecipePrompt}
+                ingredients={ingredients}
+                generateRecipe={generateRecipe}
+                petType={petType}
+                setPetType={setPetType}
+                selectedIngredients={selectedIngredients}
+                addToRecipe={addToRecipe}
+              />
             </TabsContent>
             <TabsContent value="ingredients">
-              <IngredientsTab />
+              <IngredientsTab 
+                petType={petType}
+                setPetType={setPetType}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                selectedIngredients={selectedIngredients}
+                addToRecipe={addToRecipe}
+                removeFromRecipe={removeFromRecipe}
+                generateNutritionAnalysis={generateNutritionAnalysis}
+                nutritionAnalysis={null}
+                isGenerating={false}
+              />
             </TabsContent>
           </CardContent>
         </Card>

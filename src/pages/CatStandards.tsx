@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { CatStandardsHeader } from "@/components/standards/CatStandardsHeader";
 import { CatBreedFilters } from "@/components/standards/CatBreedFilters";
@@ -13,7 +14,7 @@ export default function CatStandards() {
   const [groomingNeedsFilter, setGroomingNeedsFilter] = useState("all");
 
   const filteredBreeds = catStandards.filter(breed => {
-    const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = breed.breed.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSize = sizeFilter === "all" || breed.size === sizeFilter;
     const matchesEnergyLevel = energyLevelFilter === "all" || breed.energyLevel === energyLevelFilter;
     const matchesGroomingNeeds = groomingNeedsFilter === "all" || breed.groomingNeeds === groomingNeedsFilter;
@@ -28,17 +29,17 @@ export default function CatStandards() {
         <CatStandardsHeader />
         <CatBreedFilters
           searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
+          setSearchTerm={setSearchTerm}
           sizeFilter={sizeFilter}
-          onSizeChange={setSizeFilter}
+          setSizeFilter={setSizeFilter}
           energyLevelFilter={energyLevelFilter}
-          onEnergyLevelChange={setEnergyLevelFilter}
+          setEnergyLevelFilter={setEnergyLevelFilter}
           groomingNeedsFilter={groomingNeedsFilter}
-          onGroomingNeedsChange={setGroomingNeedsFilter}
+          setGroomingNeedsFilter={setGroomingNeedsFilter}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBreeds.map(breed => (
-            <CatBreedCard key={breed.name} breed={breed} />
+          {filteredBreeds.map((breed, index) => (
+            <CatBreedCard key={breed.breed || index} {...breed} />
           ))}
         </div>
         <StandardsFooter />

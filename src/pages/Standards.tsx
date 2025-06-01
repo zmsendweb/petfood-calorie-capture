@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { DogStandardsHeader } from "@/components/standards/DogStandardsHeader";
 import { DogBreedFilters } from "@/components/standards/DogBreedFilters";
@@ -14,7 +15,7 @@ export default function Standards() {
   const filteredBreeds = dogStandards.filter((breed) => {
     const matchesSearch =
       searchTerm === "" ||
-      breed.name.toLowerCase().includes(searchTerm.toLowerCase());
+      breed.breed.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSize =
       sizeFilter === "all" || breed.size.toLowerCase() === sizeFilter;
     const matchesEnergy =
@@ -32,14 +33,14 @@ export default function Standards() {
         <DogBreedFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
-          sizeFilter={sizeFilter}
-          setSizeFilter={setSizeFilter}
-          energyLevelFilter={energyLevelFilter}
-          setEnergyLevelFilter={setEnergyLevelFilter}
+          selectedSize={sizeFilter}
+          setSelectedSize={setSizeFilter}
+          selectedEnergyLevel={energyLevelFilter}
+          setSelectedEnergyLevel={setEnergyLevelFilter}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBreeds.map((breed) => (
-            <DogBreedCard key={breed.id} breed={breed} />
+          {filteredBreeds.map((breed, index) => (
+            <DogBreedCard key={breed.breed || index} {...breed} />
           ))}
         </div>
         <StandardsFooter />

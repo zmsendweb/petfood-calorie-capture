@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -5,7 +6,7 @@ import { ShowDogBreeds } from "@/components/show-breeds/ShowDogBreeds";
 import { ShowCatBreeds } from "@/components/show-breeds/ShowCatBreeds";
 import { BreedComparison } from "@/components/show-breeds/BreedComparison";
 import { AppNavigation } from "@/components/AppNavigation";
-import { Trophy } from "lucide-react";
+import { Trophy, Sparkles } from "lucide-react";
 
 export default function ShowBreeds() {
   const [selectedBreed, setSelectedBreed] = useState<any>(null);

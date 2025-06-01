@@ -16,10 +16,11 @@ export default function ShowBreeds() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
       <AppNavigation />
       <div className="container mx-auto px-4 py-8">
-        <PageHeader 
-          title="Show Breeds" 
-          showBackButton={true}
-        />
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h1 className="text-xl font-bold leading-tight">Show Breeds</h1>
+          </div>
+        </div>
         
         <div className="mb-6">
           <p className="text-muted-foreground">

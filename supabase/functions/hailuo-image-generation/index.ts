@@ -30,80 +30,40 @@ serve(async (req) => {
 
     console.log(`Generating image for: ${imagePrompt}`);
 
-    // Try the correct Hailuo API endpoint - using a more generic approach
-    // Since the exact endpoint structure isn't clear, let's try common AI image generation formats
-    const response = await fetch('https://api.hailuo.ai/v1/text2img', {
+    // Use the correct Minimax (Hailuo) API endpoint
+    const response = await fetch('https://api.minimax.chat/v1/text_to_image', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${HAILUO_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        model: "abab6.5-chat",
         prompt: imagePrompt,
-        width: 1024,
-        height: 1024,
-        steps: 20,
-        cfg_scale: 7
+        aspect_ratio: "1:1",
+        response_format: "url"
       }),
     });
 
     if (!response.ok) {
-      // If that doesn't work, try alternative endpoint structures
-      const altResponse = await fetch('https://api.hailuo.ai/api/v1/images/generate', {
-        method: 'POST',
-        headers: {
-          'X-API-Key': HAILUO_API_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: imagePrompt,
-          size: "1024x1024"
-        }),
-      });
-
-      if (!altResponse.ok) {
-        // Try one more common format
-        const finalResponse = await fetch('https://api.hailuo.ai/generate', {
-          method: 'POST',
-          headers: {
-            'apikey': HAILUO_API_KEY,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: imagePrompt,
-            model: "hailuo-v1"
-          }),
-        });
-
-        if (!finalResponse.ok) {
-          const errorData = await response.text();
-          console.error('All Hailuo API attempts failed. Latest error:', errorData);
-          throw new Error(`Hailuo API error: ${response.status} - ${errorData}`);
-        }
-
-        const finalData = await finalResponse.json();
-        return new Response(JSON.stringify({ 
-          imageUrl: finalData.image_url || finalData.url || finalData.data?.url,
-          prompt: imagePrompt 
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-
-      const altData = await altResponse.json();
-      return new Response(JSON.stringify({ 
-        imageUrl: altData.image_url || altData.url || altData.data?.url,
-        prompt: imagePrompt 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      const errorData = await response.text();
+      console.error('Minimax API error:', errorData);
+      throw new Error(`Minimax API error: ${response.status} - ${errorData}`);
     }
 
     const data = await response.json();
-    console.log('Image generated successfully');
+    console.log('Image generated successfully:', data);
+
+    // Extract image URL from Minimax response format
+    const imageUrl = data.data?.[0]?.url || data.url;
+    
+    if (!imageUrl) {
+      console.error('No image URL in response:', data);
+      throw new Error('No image URL received from Minimax API');
+    }
 
     return new Response(JSON.stringify({ 
-      imageUrl: data.image_url || data.url || data.data?.url || data.images?.[0]?.url,
+      imageUrl: imageUrl,
       prompt: imagePrompt 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

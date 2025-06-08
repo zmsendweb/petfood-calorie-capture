@@ -20,9 +20,9 @@ serve(async (req) => {
       throw new Error('Either prompt or breedName is required');
     }
 
-    const HAILUO_API_KEY = Deno.env.get('HAILUO_API_KEY');
-    if (!HAILUO_API_KEY) {
-      throw new Error('Hailuo API key not configured');
+    const RUNWARE_API_KEY = Deno.env.get('RUNWARE_API_KEY');
+    if (!RUNWARE_API_KEY) {
+      throw new Error('Runware API key not configured');
     }
 
     // Create a detailed prompt for breed images
@@ -30,36 +30,49 @@ serve(async (req) => {
 
     console.log(`Generating image for: ${imagePrompt}`);
 
-    // Use the correct Minimax (Hailuo) API endpoint
-    const response = await fetch('https://api.minimax.chat/v1/text_to_image', {
+    // Use Runware API
+    const response = await fetch('https://api.runware.ai/v1', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${HAILUO_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: "abab6.5-chat",
-        prompt: imagePrompt,
-        aspect_ratio: "1:1",
-        response_format: "url"
-      }),
+      body: JSON.stringify([
+        {
+          taskType: "authentication",
+          apiKey: RUNWARE_API_KEY
+        },
+        {
+          taskType: "imageInference",
+          taskUUID: crypto.randomUUID(),
+          positivePrompt: imagePrompt,
+          width: 1024,
+          height: 1024,
+          model: "runware:100@1",
+          numberResults: 1,
+          outputFormat: "WEBP",
+          CFGScale: 1,
+          scheduler: "FlowMatchEulerDiscreteScheduler",
+          strength: 0.8
+        }
+      ]),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('Minimax API error:', errorData);
-      throw new Error(`Minimax API error: ${response.status} - ${errorData}`);
+      console.error('Runware API error:', errorData);
+      throw new Error(`Runware API error: ${response.status} - ${errorData}`);
     }
 
     const data = await response.json();
     console.log('Image generated successfully:', data);
 
-    // Extract image URL from Minimax response format
-    const imageUrl = data.data?.[0]?.url || data.url;
+    // Extract image URL from Runware response format
+    const imageResult = data.data?.find((item: any) => item.taskType === "imageInference");
+    const imageUrl = imageResult?.imageURL;
     
     if (!imageUrl) {
       console.error('No image URL in response:', data);
-      throw new Error('No image URL received from Minimax API');
+      throw new Error('No image URL received from Runware API');
     }
 
     return new Response(JSON.stringify({ 
@@ -70,7 +83,7 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Error in hailuo-image-generation function:', error);
+    console.error('Error in image generation function:', error);
     return new Response(JSON.stringify({ 
       error: error.message || 'Failed to generate image' 
     }), {

@@ -6,6 +6,7 @@ import { CatBreedCard } from "@/components/standards/CatBreedCard";
 import { StandardsFooter } from "@/components/standards/StandardsFooter";
 import { AppNavigation } from "@/components/AppNavigation";
 import { useCatStandardsFilter } from "@/hooks/useCatStandardsFilter";
+import { useState } from "react";
 
 export default function CatStandards() {
   const {
@@ -17,36 +18,34 @@ export default function CatStandards() {
     filteredCount
   } = useCatStandardsFilter();
 
+  const [showNutritionQuery, setShowNutritionQuery] = useState(false);
+  const [ageFilter, setAgeFilter] = useState("adult");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50">
       <AppNavigation />
       <div className="container mx-auto px-4 py-8">
         <PageHeader 
           title="Cat Breed Standards" 
-          subtitle="Comprehensive guide to cat breed characteristics and standards"
+          description="Comprehensive guide to cat breed characteristics and standards"
         />
         
         <CatStandardsHeader />
         
         <CatBreedFilters
-          selectedSizes={filters.size}
-          selectedTemperaments={filters.temperament}
-          selectedCoatLengths={filters.coatLength}
-          selectedCategories={filters.category}
           searchTerm={filters.searchTerm}
-          onSizeChange={(sizes) => updateFilter('size', sizes)}
-          onTemperamentChange={(temperaments) => updateFilter('temperament', temperaments)}
-          onCoatLengthChange={(coatLengths) => updateFilter('coatLength', coatLengths)}
-          onCategoryChange={(categories) => updateFilter('category', categories)}
-          onSearchChange={(term) => updateFilter('searchTerm', term)}
-          onClearFilters={clearFilters}
-          totalBreeds={totalBreeds}
-          filteredCount={filteredCount}
+          setSearchTerm={(term) => updateFilter('searchTerm', term)}
+          selectedSize={null}
+          setSelectedSize={() => {}}
+          showNutritionQuery={showNutritionQuery}
+          setShowNutritionQuery={setShowNutritionQuery}
+          ageFilter={ageFilter}
+          setAgeFilter={setAgeFilter}
         />
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {filteredBreeds.map((breed, index) => (
-            <CatBreedCard key={`${breed.name}-${index}`} breed={breed} />
+            <CatBreedCard key={`${breed.breed}-${index}`} cat={breed} ageFilter={ageFilter} />
           ))}
         </div>
         

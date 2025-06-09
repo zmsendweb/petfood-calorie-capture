@@ -8,6 +8,7 @@ import { MainNavigation } from "@/components/MainNavigation";
 interface PageHeaderProps {
   title: string;
   description?: string;
+  subtitle?: string;
   showBackButton?: boolean;
   backTo?: string;
   children?: ReactNode;
@@ -16,6 +17,7 @@ interface PageHeaderProps {
 export function PageHeader({ 
   title, 
   description, 
+  subtitle,
   showBackButton = true, 
   backTo = "/", 
   children 
@@ -32,8 +34,8 @@ export function PageHeader({
         )}
         <div>
           <h1 className="text-xl font-bold leading-tight">{title}</h1>
-          {description && (
-            <p className="text-xs text-muted-foreground">{description}</p>
+          {(description || subtitle) && (
+            <p className="text-xs text-muted-foreground">{description || subtitle}</p>
           )}
         </div>
       </div>

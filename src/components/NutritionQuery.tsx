@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 export function NutritionQuery() {
   const [query, setQuery] = useState("");
-  const { data, loading, error, queryNutrition } = useNutritionRAG();
+  const { getAnswer, isLoading, result, error } = useNutritionRAG();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ export function NutritionQuery() {
       return;
     }
     
-    await queryNutrition(query);
+    await getAnswer(query);
   };
 
   const quickQuestions = [
@@ -53,10 +53,10 @@ export function NutritionQuery() {
             />
             <Button 
               type="submit" 
-              disabled={loading || !query.trim()}
+              disabled={isLoading || !query.trim()}
               className="w-full"
             >
-              {loading ? (
+              {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Analyzing...
@@ -99,7 +99,7 @@ export function NutritionQuery() {
         </Card>
       )}
 
-      {data && (
+      {result && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Nutrition Advice</CardTitle>
@@ -107,14 +107,14 @@ export function NutritionQuery() {
           <CardContent>
             <div className="prose prose-sm max-w-none">
               <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                {data.answer}
+                {result.answer}
               </div>
               
-              {data.sources && data.sources.length > 0 && (
+              {result.sources && result.sources.length > 0 && (
                 <div className="mt-6 pt-4 border-t">
                   <h4 className="font-medium text-gray-900 mb-2">Sources & References:</h4>
                   <ul className="space-y-1">
-                    {data.sources.map((source, index) => (
+                    {result.sources.map((source, index) => (
                       <li key={index} className="text-sm text-gray-600">
                         • {source}
                       </li>

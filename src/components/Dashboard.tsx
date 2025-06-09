@@ -4,13 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PetOnboarding } from "./PetOnboarding";
 import { NutritionQuery } from "./NutritionQuery";
-import { EnhancedMealEntry } from "./EnhancedMealEntry";
+import { EnhancedMealEntryForm } from "./EnhancedMealEntry";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
 import { PlusCircle, Sparkles, UtensilsCrossed, User } from "lucide-react";
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState<"profiles" | "nutrition" | "meals">("profiles");
-  const { profiles } = usePetProfiles();
+  const { petProfiles, addPetProfile } = usePetProfiles();
 
   const tabs = [
     { id: "profiles", label: "Pet Profiles", icon: User },
@@ -42,7 +42,7 @@ export function Dashboard() {
       <div className="min-h-[500px]">
         {activeTab === "profiles" && (
           <div className="space-y-6">
-            {profiles.length === 0 ? (
+            {petProfiles.length === 0 ? (
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center space-y-4">
@@ -62,11 +62,11 @@ export function Dashboard() {
               <div className="text-center space-y-4">
                 <h3 className="text-lg font-semibold">Your Pet Profiles</h3>
                 <p className="text-gray-600">
-                  You have {profiles.length} pet profile{profiles.length !== 1 ? 's' : ''} created.
+                  You have {petProfiles.length} pet profile{petProfiles.length !== 1 ? 's' : ''} created.
                 </p>
               </div>
             )}
-            <PetOnboarding />
+            <PetOnboarding onComplete={addPetProfile} />
           </div>
         )}
 
@@ -74,7 +74,7 @@ export function Dashboard() {
 
         {activeTab === "meals" && (
           <div className="space-y-6">
-            {profiles.length === 0 ? (
+            {petProfiles.length === 0 ? (
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center space-y-4">
@@ -91,7 +91,7 @@ export function Dashboard() {
                 </CardContent>
               </Card>
             ) : (
-              <EnhancedMealEntry />
+              <EnhancedMealEntryForm />
             )}
           </div>
         )}

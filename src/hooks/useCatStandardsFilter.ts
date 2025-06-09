@@ -25,8 +25,8 @@ export function useCatStandardsFilter() {
     // Apply search term filter
     if (filters.searchTerm) {
       filtered = filtered.filter(breed =>
-        breed.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        breed.origin.toLowerCase().includes(filters.searchTerm.toLowerCase())
+        breed.breed.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        breed.origin?.toLowerCase().includes(filters.searchTerm.toLowerCase())
       );
     }
 
@@ -51,7 +51,7 @@ export function useCatStandardsFilter() {
     if (filters.temperament.length > 0) {
       filtered = filtered.filter(breed =>
         filters.temperament.some(temp =>
-          breed.temperament.some(breedTemp =>
+          breed.personality?.some(breedTemp =>
             breedTemp.toLowerCase().includes(temp.toLowerCase())
           )
         )
@@ -62,7 +62,7 @@ export function useCatStandardsFilter() {
     if (filters.coatLength.length > 0) {
       filtered = filtered.filter(breed =>
         filters.coatLength.some(coat => {
-          const breedCoat = breed.coatLength.toLowerCase();
+          const breedCoat = breed.coatType?.toLowerCase() || '';
           const filterCoat = coat.toLowerCase();
           
           // Handle coat length variations
@@ -80,32 +80,12 @@ export function useCatStandardsFilter() {
       filtered = filtered.filter(breed => {
         return filters.category.some(category => {
           const cat = category.toLowerCase();
-          const breedOrigin = breed.origin.toLowerCase();
-          const breedName = breed.name.toLowerCase();
+          const breedOrigin = breed.origin?.toLowerCase() || '';
+          const breedName = breed.breed.toLowerCase();
           
-          // Define exotic breeds
-          const exoticBreeds = [
-            'bengal', 'savannah', 'serval', 'egyptian mau', 'ocicat', 
-            'toyger', 'chausie', 'pixie-bob', 'highlander', 'safari'
-          ];
-          
-          // Define rare breeds
-          const rareBreeds = [
-            'lykoi', 'peterbald', 'donskoy', 'ukrainian levkoy', 'minskin',
-            'bambino', 'dwelf', 'elf cat', 'korat', 'khao manee', 'lapenotiere'
-          ];
-          
-          if (cat === 'exotic') {
-            return exoticBreeds.some(exotic => 
-              breedName.includes(exotic) || breedOrigin.includes('wild') || breedOrigin.includes('hybrid')
-            );
-          }
-          
-          if (cat === 'rare') {
-            return rareBreeds.some(rare => breedName.includes(rare)) || 
-                   breedOrigin.includes('experimental') || 
-                   breedOrigin.includes('developing');
-          }
+          // Check for exotic and rare flags
+          if (cat === 'exotic' && breed.isExotic) return true;
+          if (cat === 'rare' && breed.isRare) return true;
           
           // For other categories, check if it matches breed characteristics
           return breedName.includes(cat) || breedOrigin.includes(cat);

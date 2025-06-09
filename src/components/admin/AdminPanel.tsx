@@ -2,12 +2,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { UserManagement } from "./UserManagement";
+import { ImageManagement } from "./ImageManagement";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Users, Image, Settings, BarChart3 } from "lucide-react";
 
 export function AdminPanel() {
   const { isAdmin } = useAuth();
@@ -54,7 +56,10 @@ export function AdminPanel() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle>Total Users</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Total Users
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">{loading ? "..." : stats.totalUsers}</p>
@@ -63,7 +68,10 @@ export function AdminPanel() {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle>Pet Profiles</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Pet Profiles
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">{loading ? "..." : stats.totalProfiles}</p>
@@ -72,7 +80,10 @@ export function AdminPanel() {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle>Total Meals</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Total Meals
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">{loading ? "..." : stats.totalMeals}</p>
@@ -82,37 +93,26 @@ export function AdminPanel() {
       
       <Tabs defaultValue="users">
         <TabsList className="mb-4">
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsTrigger value="users" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Users
+          </TabsTrigger>
+          <TabsTrigger value="images" className="flex items-center gap-2">
+            <Image className="h-4 w-4" />
+            Images
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Settings
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="users">
-          <Card>
-            <CardHeader>
-              <CardTitle>Registered Users</CardTitle>
-              <CardDescription>List of all registered users in the system</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <p>Loading user data...</p>
-              ) : (
-                <p>User data would display here in a real implementation</p>
-              )}
-            </CardContent>
-          </Card>
+          <UserManagement />
         </TabsContent>
         
-        <TabsContent value="content">
-          <Card>
-            <CardHeader>
-              <CardTitle>Content Management</CardTitle>
-              <CardDescription>Manage site content</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Content management would be implemented here</p>
-            </CardContent>
-          </Card>
+        <TabsContent value="images">
+          <ImageManagement />
         </TabsContent>
         
         <TabsContent value="settings">

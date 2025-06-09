@@ -116,7 +116,7 @@ export function NutritionQuery() {
                   <ul className="space-y-1">
                     {result.sources.map((source, index) => (
                       <li key={index} className="text-sm text-gray-600">
-                        • {source}
+                        • {typeof source === 'string' ? source : source.title || source.source}
                       </li>
                     ))}
                   </ul>

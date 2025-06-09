@@ -26,7 +26,7 @@ export function useCatStandardsFilter() {
     if (filters.searchTerm) {
       filtered = filtered.filter(breed =>
         breed.breed.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        breed.origin?.toLowerCase().includes(filters.searchTerm.toLowerCase())
+        breed.country?.toLowerCase().includes(filters.searchTerm.toLowerCase())
       );
     }
 
@@ -51,7 +51,7 @@ export function useCatStandardsFilter() {
     if (filters.temperament.length > 0) {
       filtered = filtered.filter(breed =>
         filters.temperament.some(temp =>
-          breed.personality?.some(breedTemp =>
+          breed.temperament?.some((breedTemp: string) =>
             breedTemp.toLowerCase().includes(temp.toLowerCase())
           )
         )
@@ -62,7 +62,7 @@ export function useCatStandardsFilter() {
     if (filters.coatLength.length > 0) {
       filtered = filtered.filter(breed =>
         filters.coatLength.some(coat => {
-          const breedCoat = breed.coatType?.toLowerCase() || '';
+          const breedCoat = breed.coat?.toLowerCase() || '';
           const filterCoat = coat.toLowerCase();
           
           // Handle coat length variations
@@ -80,7 +80,7 @@ export function useCatStandardsFilter() {
       filtered = filtered.filter(breed => {
         return filters.category.some(category => {
           const cat = category.toLowerCase();
-          const breedOrigin = breed.origin?.toLowerCase() || '';
+          const breedCountry = breed.country?.toLowerCase() || '';
           const breedName = breed.breed.toLowerCase();
           
           // Check for exotic and rare flags
@@ -88,7 +88,7 @@ export function useCatStandardsFilter() {
           if (cat === 'rare' && breed.isRare) return true;
           
           // For other categories, check if it matches breed characteristics
-          return breedName.includes(cat) || breedOrigin.includes(cat);
+          return breedName.includes(cat) || breedCountry.includes(cat);
         });
       });
     }

@@ -7,6 +7,8 @@ import { NutritionQuery } from "./NutritionQuery";
 import { EnhancedMealEntryForm } from "./EnhancedMealEntry";
 import { usePetProfiles } from "@/hooks/use-pet-profiles";
 import { PlusCircle, Sparkles, UtensilsCrossed, User } from "lucide-react";
+import { MealEntry } from "@/types/mealTypes";
+import { toast } from "sonner";
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState<"profiles" | "nutrition" | "meals">("profiles");
@@ -17,6 +19,14 @@ export function Dashboard() {
     { id: "nutrition", label: "Nutrition Assistant", icon: Sparkles },
     { id: "meals", label: "Meal Tracker", icon: UtensilsCrossed },
   ];
+
+  const handleAddMeal = (meal: MealEntry) => {
+    // Store meal in localStorage for now
+    const existingMeals = JSON.parse(localStorage.getItem('meals') || '[]');
+    const updatedMeals = [...existingMeals, meal];
+    localStorage.setItem('meals', JSON.stringify(updatedMeals));
+    toast.success("Meal added successfully!");
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -91,7 +101,7 @@ export function Dashboard() {
                 </CardContent>
               </Card>
             ) : (
-              <EnhancedMealEntryForm />
+              <EnhancedMealEntryForm onSave={handleAddMeal} />
             )}
           </div>
         )}

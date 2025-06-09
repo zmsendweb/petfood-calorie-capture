@@ -33,9 +33,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .eq('role', 'admin')
         .single();
       
+      console.log('Admin role check:', { data, error, userId });
+      
       if (!error && data) {
+        console.log('User is admin');
         setIsAdmin(true);
       } else {
+        console.log('User is not admin');
         setIsAdmin(false);
       }
     } catch (error) {
@@ -45,15 +49,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        console.log('Auth state change:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check admin role when user signs in
         if (session?.user) {
-          checkAdminRole(session.user.id);
+          await checkAdminRole(session.user.id);
         } else {
           setIsAdmin(false);
         }
@@ -61,16 +64,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (event === 'SIGNED_OUT') {
           navigate('/auth');
         }
+        
+        setLoading(false);
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        checkAdminRole(session.user.id);
+        await checkAdminRole(session.user.id);
       } else {
         setIsAdmin(false);
       }

@@ -40,22 +40,32 @@ export function useCatStandardsFilter() {
           if (filterSize === 'small' && (breedSize.includes('small') || breedSize.includes('petite'))) return true;
           if (filterSize === 'medium' && breedSize.includes('medium')) return true;
           if (filterSize === 'large' && (breedSize.includes('large') || breedSize.includes('substantial'))) return true;
+          if (filterSize === 'exotic' && breed.isExotic) return true;
+          if (filterSize === 'rare' && breed.isRare) return true;
           
           return breedSize.includes(filterSize);
         })
       );
     }
 
-    // Apply temperament filter - using breed name as fallback since temperament may not be available
+    // Apply temperament filter - search in breed name since temperament data structure varies
     if (filters.temperament.length > 0) {
       filtered = filtered.filter(breed =>
-        filters.temperament.some(temp =>
-          breed.breed.toLowerCase().includes(temp.toLowerCase())
-        )
+        filters.temperament.some(temp => {
+          const tempLower = temp.toLowerCase();
+          const breedLower = breed.breed.toLowerCase();
+          
+          // Common temperament keywords to search for in breed names
+          if (tempLower === 'gentle' && (breedLower.includes('gentle') || breedLower.includes('calm'))) return true;
+          if (tempLower === 'active' && (breedLower.includes('active') || breedLower.includes('energetic'))) return true;
+          if (tempLower === 'friendly' && (breedLower.includes('friendly') || breedLower.includes('social'))) return true;
+          
+          return breedLower.includes(tempLower);
+        })
       );
     }
 
-    // Apply coat length filter - using breed name as fallback since coat may not be available
+    // Apply coat length filter - search in breed name for coat indicators
     if (filters.coatLength.length > 0) {
       filtered = filtered.filter(breed =>
         filters.coatLength.some(coat => {

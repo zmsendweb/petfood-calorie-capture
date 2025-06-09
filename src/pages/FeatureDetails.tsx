@@ -1,212 +1,310 @@
 
-import { Link, useParams } from "react-router-dom";
-import { Toaster } from "sonner";
-import { ArrowLeft } from "lucide-react";
+import { useParams, Link } from "react-router-dom";
+import { AppNavigation } from "@/components/AppNavigation";
+import { PageHeader } from "@/components/PageHeader";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MainNavigation } from "@/components/MainNavigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Calculator, 
+  Camera, 
+  BarChart3, 
+  Utensils, 
+  Users,
+  ArrowRight,
+  CheckCircle,
+  Star
+} from "lucide-react";
 
-// Feature details content mapped by ID
-const featureContent: Record<string, { title: string; icon: string; content: React.ReactNode }> = {
-  "nutrition-tracking": {
-    title: "Pet Nutrition Tracking",
-    icon: "🍽️",
-    content: (
-      <div className="space-y-4">
-        <p>Our Pet Nutrition Tracking system helps you monitor your pet's daily calorie intake and nutritional balance.</p>
-        
-        <h3 className="text-lg font-medium mt-4">How it works:</h3>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Log each meal your pet consumes</li>
-          <li>Track calories, protein, fat, and carbohydrate intake</li>
-          <li>View nutritional trends over time with intuitive charts</li>
-          <li>Receive recommendations based on your pet's specific needs</li>
-          <li>Set nutritional goals and monitor progress</li>
-        </ul>
-        
-        <h3 className="text-lg font-medium mt-4">Benefits:</h3>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Prevent overfeeding and obesity</li>
-          <li>Ensure balanced nutrition</li>
-          <li>Address specific dietary requirements</li>
-          <li>Manage weight-related health issues</li>
-        </ul>
-      </div>
-    ),
+const featureData = {
+  "calorie-calculator": {
+    title: "Pet Calorie Calculator",
+    description: "Advanced calorie calculation system for optimal pet nutrition",
+    icon: Calculator,
+    status: "stable",
+    overview: "Our intelligent calorie calculator takes into account your pet's breed, age, weight, activity level, and health conditions to provide precise daily caloric needs.",
+    features: [
+      "Breed-specific metabolic calculations",
+      "Age and life stage adjustments",
+      "Activity level customization",
+      "Weight management goals",
+      "Special dietary requirements",
+      "Portion size recommendations"
+    ],
+    benefits: [
+      "Prevent obesity and malnutrition",
+      "Optimize energy levels",
+      "Support healthy growth",
+      "Extend lifespan",
+      "Reduce veterinary costs"
+    ],
+    howItWorks: [
+      "Enter your pet's basic information",
+      "Select activity level and goals",
+      "Get personalized calorie recommendations",
+      "Receive portion size guidance",
+      "Track progress over time"
+    ]
   },
-  "breed-standards": {
-    title: "Breed Standards",
-    icon: "🐾",
-    content: (
-      <div className="space-y-4">
-        <p>Our comprehensive Breed Standards database provides detailed information about different dog and cat breeds.</p>
-        
-        <h3 className="text-lg font-medium mt-4">Features:</h3>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Detailed nutritional requirements by breed</li>
-          <li>Size categorization (Small, Medium, Large)</li>
-          <li>Common health considerations</li>
-          <li>Breed-specific dietary recommendations</li>
-          <li>Exercise requirements</li>
-        </ul>
-        
-        <h3 className="text-lg font-medium mt-4">How to use:</h3>
-        <p>Navigate to the Breed Standards section and select either dog or cat breeds. Browse through the list or use the search function to find specific breeds.</p>
-      </div>
-    ),
+  "image-recognition": {
+    title: "AI Breed Identification",
+    description: "Advanced computer vision for accurate pet breed identification",
+    icon: Camera,
+    status: "beta",
+    overview: "Upload a photo of any dog or cat and our AI will identify the breed with detailed information about characteristics, care needs, and health considerations.",
+    features: [
+      "500+ breed recognition",
+      "Mixed breed analysis",
+      "Confidence scoring",
+      "Detailed breed profiles",
+      "Care recommendations",
+      "Health predispositions"
+    ],
+    benefits: [
+      "Understand your pet better",
+      "Tailored care recommendations",
+      "Early health screening",
+      "Proper nutrition planning",
+      "Behavioral insights"
+    ],
+    howItWorks: [
+      "Take or upload a clear photo",
+      "AI analyzes facial features and body structure",
+      "Receive breed identification results",
+      "Get detailed breed information",
+      "Access personalized care tips"
+    ]
+  },
+  "progress-tracking": {
+    title: "Health Progress Tracking",
+    description: "Comprehensive health monitoring and progress visualization",
+    icon: BarChart3,
+    status: "stable",
+    overview: "Track your pet's health metrics over time with detailed charts, trends, and insights to ensure optimal wellbeing.",
+    features: [
+      "Weight tracking charts",
+      "Activity monitoring",
+      "Feeding history",
+      "Health milestone tracking",
+      "Veterinary visit logs",
+      "Medication schedules"
+    ],
+    benefits: [
+      "Early problem detection",
+      "Data-driven decisions",
+      "Veterinary collaboration",
+      "Peace of mind",
+      "Better health outcomes"
+    ],
+    howItWorks: [
+      "Log daily measurements",
+      "View progress charts",
+      "Set health goals",
+      "Receive trend alerts",
+      "Share data with veterinarian"
+    ]
   },
   "meal-planning": {
-    title: "Meal Planning",
-    icon: "📅",
-    content: (
-      <div className="space-y-4">
-        <p>Plan balanced and nutritious meals for your pets with our Meal Planning feature.</p>
-        
-        <h3 className="text-lg font-medium mt-4">Capabilities:</h3>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Create weekly meal plans</li>
-          <li>Calculate portion sizes based on pet's needs</li>
-          <li>Balance macronutrients and micronutrients</li>
-          <li>Generate shopping lists</li>
-          <li>Save favorite meal combinations</li>
-        </ul>
-        
-        <h3 className="text-lg font-medium mt-4">Getting started:</h3>
-        <p>Access the Planning dashboard from the main navigation. Input your pet's profile information to receive personalized recommendations.</p>
-      </div>
-    ),
+    title: "Smart Meal Planning",
+    description: "Intelligent meal planning with nutritional optimization",
+    icon: Utensils,
+    status: "stable",
+    overview: "Create balanced meal plans that meet your pet's specific nutritional needs while considering preferences, allergies, and health conditions.",
+    features: [
+      "Custom meal plans",
+      "Nutritional analysis",
+      "Portion control",
+      "Allergy considerations",
+      "Feeding schedules",
+      "Shopping lists"
+    ],
+    benefits: [
+      "Balanced nutrition",
+      "Cost optimization",
+      "Time savings",
+      "Reduced food waste",
+      "Better health outcomes"
+    ],
+    howItWorks: [
+      "Set dietary preferences",
+      "Choose meal frequency",
+      "Generate meal plans",
+      "Get portion recommendations",
+      "Track feeding success"
+    ]
   },
-  "nutrition-assistant": {
-    title: "Nutrition Assistant",
-    icon: "🤖",
-    content: (
-      <div className="space-y-4">
-        <p>Our AI-powered Nutrition Assistant helps answer your questions about pet nutrition.</p>
-        
-        <h3 className="text-lg font-medium mt-4">Capabilities:</h3>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Answer questions about pet diet and nutrition</li>
-          <li>Provide information on food ingredients</li>
-          <li>Offer guidance on dietary transitions</li>
-          <li>Suggest alternatives for pets with allergies</li>
-          <li>Help interpret nutritional labels</li>
-        </ul>
-        
-        <h3 className="text-lg font-medium mt-4">How to use:</h3>
-        <p>Find the Nutrition Assistant in the dashboard. Simply type your nutrition-related question, and the assistant will provide an evidence-based response.</p>
-      </div>
-    ),
-  },
-  "pet-profiles": {
-    title: "Pet Profiles",
-    icon: "📝",
-    content: (
-      <div className="space-y-4">
-        <p>Create and manage detailed profiles for all your pets to personalize their nutrition plans.</p>
-        
-        <h3 className="text-lg font-medium mt-4">Profile information:</h3>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Age, weight, and breed details</li>
-          <li>Activity level assessment</li>
-          <li>Health conditions and allergies</li>
-          <li>Dietary preferences and restrictions</li>
-          <li>Growth or weight management goals</li>
-        </ul>
-        
-        <h3 className="text-lg font-medium mt-4">Benefits:</h3>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Personalized nutrition recommendations</li>
-          <li>Accurate calorie and portion calculations</li>
-          <li>Track changes in weight and condition over time</li>
-          <li>Manage multiple pets with different needs</li>
-        </ul>
-      </div>
-    ),
-  },
-  "pet-recipes": {
-    title: "Pet Recipes",
-    icon: "🍳",
-    content: (
-      <div className="space-y-4">
-        <p>Browse and create homemade pet food recipes that are nutritionally balanced and safe.</p>
-        
-        <h3 className="text-lg font-medium mt-4">Features:</h3>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Curated library of vet-approved recipes</li>
-          <li>Nutritional analysis of each recipe</li>
-          <li>Filter recipes by pet type, dietary needs, or ingredients</li>
-          <li>Save and share favorite recipes</li>
-          <li>Create your own recipes with nutritional validation</li>
-        </ul>
-        
-        <h3 className="text-lg font-medium mt-4">Safety first:</h3>
-        <p>All recipes are reviewed to ensure they meet basic nutritional requirements. Always consult with your veterinarian before making significant changes to your pet's diet.</p>
-      </div>
-    ),
-  },
+  "community": {
+    title: "Pet Care Community",
+    description: "Connect with pet owners and veterinary professionals",
+    icon: Users,
+    status: "coming-soon",
+    overview: "Join a supportive community of pet owners where you can share experiences, ask questions, and get expert advice.",
+    features: [
+      "Discussion forums",
+      "Expert Q&A sessions",
+      "Local meetups",
+      "Photo sharing",
+      "Success stories",
+      "Emergency support"
+    ],
+    benefits: [
+      "Learn from others",
+      "Get quick answers",
+      "Find local resources",
+      "Share experiences",
+      "Build friendships"
+    ],
+    howItWorks: [
+      "Create community profile",
+      "Join relevant groups",
+      "Ask questions or share tips",
+      "Connect with experts",
+      "Attend virtual events"
+    ]
+  }
 };
 
 export function FeatureDetails() {
-  const { featureId } = useParams<{ featureId: string }>();
-  const feature = featureId && featureContent[featureId];
-  
+  const { featureId } = useParams();
+  const feature = featureData[featureId as keyof typeof featureData];
+
   if (!feature) {
     return (
-      <div className="container py-8 max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Link to="/features">
-              <Button variant="ghost" size="sm" className="mr-2">
-                <ArrowLeft className="h-4 w-4 mr-1" /> Back to Features
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50">
+        <AppNavigation />
+        <div className="container mx-auto px-4 py-8">
+          <PageHeader title="Feature Not Found" />
+          <Card>
+            <CardContent className="pt-6 text-center">
+              <p className="text-gray-600 mb-4">The feature you're looking for doesn't exist.</p>
+              <Button asChild>
+                <Link to="/features">Back to Features</Link>
               </Button>
-            </Link>
-            <h1 className="text-3xl font-bold tracking-tight">Feature Not Found</h1>
-          </div>
-          <MainNavigation />
+            </CardContent>
+          </Card>
         </div>
-        <Card>
-          <CardContent className="pt-6">
-            <p>The requested feature information could not be found. Please return to the features page.</p>
-            <Button className="mt-4" asChild>
-              <Link to="/features">View All Features</Link>
-            </Button>
-          </CardContent>
-        </Card>
-        <Toaster position="top-right" />
       </div>
     );
   }
 
-  return (
-    <div className="container py-8 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <Link to="/features">
-            <Button variant="ghost" size="sm" className="mr-2">
-              <ArrowLeft className="h-4 w-4 mr-1" /> Back to Features
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-bold tracking-tight">{feature.title}</h1>
-        </div>
-        <MainNavigation />
-      </div>
+  const Icon = feature.icon;
 
-      <Card>
-        <CardHeader>
-          <div className="text-4xl mb-2">{feature.icon}</div>
-          <CardTitle className="text-2xl">{feature.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {feature.content}
-          
-          <div className="mt-8">
-            <Button asChild>
-              <Link to="/">Try This Feature</Link>
-            </Button>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50">
+      <AppNavigation />
+      <div className="container mx-auto px-4 py-8">
+        <PageHeader 
+          title={feature.title}
+          description={feature.description}
+        />
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Overview */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <Icon className="h-8 w-8 text-blue-600" />
+                  <div>
+                    <CardTitle className="text-2xl">Overview</CardTitle>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge variant={feature.status === 'stable' ? 'default' : feature.status === 'beta' ? 'secondary' : 'outline'}>
+                        {feature.status}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 text-lg leading-relaxed">{feature.overview}</p>
+              </CardContent>
+            </Card>
+
+            {/* How It Works */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">How It Works</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {feature.howItWorks.map((step, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold text-sm">
+                        {index + 1}
+                      </div>
+                      <p className="text-gray-700 pt-1">{step}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Features */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Key Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {feature.features.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
-      <Toaster position="top-right" />
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Benefits */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Star className="h-5 w-5 text-yellow-500" />
+                  Benefits
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {feature.benefits.map((benefit, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <ArrowRight className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700">{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Call to Action */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="pt-6">
+                <div className="text-center space-y-4">
+                  <h3 className="font-semibold text-gray-900">Ready to get started?</h3>
+                  <p className="text-sm text-gray-600">
+                    {feature.status === 'coming-soon' 
+                      ? 'This feature is coming soon. Stay tuned for updates!'
+                      : 'Start using this feature today to improve your pet\'s health and wellbeing.'
+                    }
+                  </p>
+                  {feature.status !== 'coming-soon' && (
+                    <Button className="w-full">
+                      Get Started
+                    </Button>
+                  )}
+                  <Button variant="outline" asChild className="w-full">
+                    <Link to="/features">View All Features</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

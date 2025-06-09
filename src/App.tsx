@@ -9,7 +9,6 @@ import PlanningDashboard from "./pages/PlanningDashboard";
 import { PetRecipes } from "./pages/PetRecipes";
 import { Features } from "./pages/Features";
 import { FeatureDetails } from "./pages/FeatureDetails";
-import { Contact } from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
@@ -52,7 +51,6 @@ function App() {
         />
         <Route path="/features" element={<Features />} />
         <Route path="/features/:featureId" element={<FeatureDetails />} />
-        <Route path="/contact" element={<Contact />} />
         <Route 
           path="/admin" 
           element={

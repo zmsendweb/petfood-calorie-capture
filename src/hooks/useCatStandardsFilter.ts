@@ -25,8 +25,7 @@ export function useCatStandardsFilter() {
     // Apply search term filter
     if (filters.searchTerm) {
       filtered = filtered.filter(breed =>
-        breed.breed.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        breed.country?.toLowerCase().includes(filters.searchTerm.toLowerCase())
+        breed.breed.toLowerCase().includes(filters.searchTerm.toLowerCase())
       );
     }
 
@@ -47,30 +46,28 @@ export function useCatStandardsFilter() {
       );
     }
 
-    // Apply temperament filter
+    // Apply temperament filter - using breed name as fallback since temperament may not be available
     if (filters.temperament.length > 0) {
       filtered = filtered.filter(breed =>
         filters.temperament.some(temp =>
-          breed.temperament?.some((breedTemp: string) =>
-            breedTemp.toLowerCase().includes(temp.toLowerCase())
-          )
+          breed.breed.toLowerCase().includes(temp.toLowerCase())
         )
       );
     }
 
-    // Apply coat length filter
+    // Apply coat length filter - using breed name as fallback since coat may not be available
     if (filters.coatLength.length > 0) {
       filtered = filtered.filter(breed =>
         filters.coatLength.some(coat => {
-          const breedCoat = breed.coat?.toLowerCase() || '';
+          const breedName = breed.breed.toLowerCase();
           const filterCoat = coat.toLowerCase();
           
-          // Handle coat length variations
-          if (filterCoat === 'short' && (breedCoat.includes('short') || breedCoat.includes('shorthair'))) return true;
-          if (filterCoat === 'long' && (breedCoat.includes('long') || breedCoat.includes('longhair'))) return true;
-          if (filterCoat === 'medium' && breedCoat.includes('medium')) return true;
+          // Handle coat length variations in breed name
+          if (filterCoat === 'short' && (breedName.includes('short') || breedName.includes('shorthair'))) return true;
+          if (filterCoat === 'long' && (breedName.includes('long') || breedName.includes('longhair'))) return true;
+          if (filterCoat === 'medium' && breedName.includes('medium')) return true;
           
-          return breedCoat.includes(filterCoat);
+          return breedName.includes(filterCoat);
         })
       );
     }
@@ -80,7 +77,6 @@ export function useCatStandardsFilter() {
       filtered = filtered.filter(breed => {
         return filters.category.some(category => {
           const cat = category.toLowerCase();
-          const breedCountry = breed.country?.toLowerCase() || '';
           const breedName = breed.breed.toLowerCase();
           
           // Check for exotic and rare flags
@@ -88,7 +84,7 @@ export function useCatStandardsFilter() {
           if (cat === 'rare' && breed.isRare) return true;
           
           // For other categories, check if it matches breed characteristics
-          return breedName.includes(cat) || breedCountry.includes(cat);
+          return breedName.includes(cat);
         });
       });
     }

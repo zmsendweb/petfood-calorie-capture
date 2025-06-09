@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Trophy, Star, Sparkles, Loader2 } from "lucide-react";
 import { showCatBreeds } from "@/data/show-breeds";
 import { useHailuoImageGeneration } from "@/hooks/use-hailuo-image-generation";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ShowCatBreedsProps {
   onBreedSelect: (breed: any) => void;
@@ -20,6 +21,7 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
   const [breedImages, setBreedImages] = useState<Record<string, string>>({});
   
   const { generateBreedImage, isGenerating } = useHailuoImageGeneration();
+  const { isAdmin } = useAuth();
 
   const filteredBreeds = showCatBreeds.filter(breed => {
     const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -95,34 +97,36 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                 {breedImages[breed.name] ? (
                   <img 
                     src={breedImages[breed.name]} 
                     alt={breed.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                 ) : (
                   <div className="flex flex-col items-center gap-2">
                     <Trophy className="h-8 w-8 text-gray-400" />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleGenerateImage(breed.name)}
-                      disabled={isGenerating}
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-3 w-3 mr-1" />
-                          Generate Image
-                        </>
-                      )}
-                    </Button>
+                    {isAdmin && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleGenerateImage(breed.name)}
+                        disabled={isGenerating}
+                      >
+                        {isGenerating ? (
+                          <>
+                            <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="h-3 w-3 mr-1" />
+                            Generate Image
+                          </>
+                        )}
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>

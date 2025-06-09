@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, UserPlus, Mail, Calendar, Shield } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search, UserPlus, Mail, Calendar, Shield, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -20,18 +21,53 @@ export function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      // Note: In a real implementation, you'd need a server-side function to fetch users
-      // as the auth.users table is not directly accessible from the client
-      setUsers([
+      // Fetch user roles data which includes user_id references
+      const { data: userRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('*');
+
+      if (rolesError) {
+        console.error("Error fetching user roles:", rolesError);
+        toast.error("Failed to fetch user data");
+        return;
+      }
+
+      // Create a map of user roles
+      const roleMap = new Map();
+      userRoles?.forEach(role => {
+        if (!roleMap.has(role.user_id)) {
+          roleMap.set(role.user_id, []);
+        }
+        roleMap.get(role.user_id).push(role.role);
+      });
+
+      // For demo purposes, we'll show the admin user and any role data we have
+      const mockUsers = [
         {
-          id: "1",
-          email: "admin@mypetcal.com",
+          id: "admin-user",
+          email: "lineupforme2@gmail.com",
           created_at: "2024-01-01T00:00:00Z",
           last_sign_in_at: "2024-06-09T00:00:00Z",
           email_confirmed_at: "2024-01-01T00:00:00Z",
-          role: "admin"
+          roles: ["admin"]
         }
-      ]);
+      ];
+
+      // Add any users from roles table
+      roleMap.forEach((roles, userId) => {
+        if (userId !== "admin-user") {
+          mockUsers.push({
+            id: userId,
+            email: `user-${userId.slice(0, 8)}@example.com`,
+            created_at: new Date().toISOString(),
+            last_sign_in_at: new Date().toISOString(),
+            email_confirmed_at: new Date().toISOString(),
+            roles: roles
+          });
+        }
+      });
+
+      setUsers(mockUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error("Failed to fetch users");
@@ -39,10 +75,6 @@ export function UserManagement() {
       setLoading(false);
     }
   };
-
-  const filteredUsers = users.filter(user => 
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const createAdminUser = async () => {
     try {
@@ -58,6 +90,25 @@ export function UserManagement() {
       toast.error("Failed to create admin user");
     }
   };
+
+  const assignRole = async (userId: string, role: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .insert({ user_id: userId, role });
+
+      if (error) throw error;
+      toast.success(`Role ${role} assigned successfully`);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error assigning role:", error);
+      toast.error("Failed to assign role");
+    }
+  };
+
+  const filteredUsers = users.filter(user => 
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Card>
@@ -94,10 +145,11 @@ export function UserManagement() {
             <TableHeader>
               <TableRow>
                 <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
+                <TableHead>Roles</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead>Last Sign In</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -108,9 +160,13 @@ export function UserManagement() {
                     {user.email}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
-                      {user.role || 'user'}
-                    </Badge>
+                    <div className="flex gap-1 flex-wrap">
+                      {user.roles?.map((role: string) => (
+                        <Badge key={role} variant={role === 'admin' ? 'default' : 'secondary'}>
+                          {role}
+                        </Badge>
+                      )) || <Badge variant="secondary">user</Badge>}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -130,10 +186,30 @@ export function UserManagement() {
                       {user.email_confirmed_at ? 'Verified' : 'Unverified'}
                     </Badge>
                   </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Select onValueChange={(role) => assignRole(user.id, role)}>
+                        <SelectTrigger className="w-32">
+                          <SelectValue placeholder="Add role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="moderator">Moderator</SelectItem>
+                          <SelectItem value="user">User</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+        )}
+        
+        {filteredUsers.length === 0 && !loading && (
+          <div className="text-center py-8 text-gray-500">
+            No users found matching your search criteria.
+          </div>
         )}
       </CardContent>
     </Card>

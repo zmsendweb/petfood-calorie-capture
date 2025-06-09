@@ -24,6 +24,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
+  const checkAdminRole = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .single();
+      
+      if (!error && data) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (error) {
+      console.error('Error checking admin role:', error);
+      setIsAdmin(false);
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -31,9 +51,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check if user is admin
-        if (session?.user?.email === 'admin@mypetcal.com') {
-          setIsAdmin(true);
+        // Check admin role when user signs in
+        if (session?.user) {
+          checkAdminRole(session.user.id);
         } else {
           setIsAdmin(false);
         }
@@ -49,9 +69,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
-      // Check if user is admin
-      if (session?.user?.email === 'admin@mypetcal.com') {
-        setIsAdmin(true);
+      if (session?.user) {
+        checkAdminRole(session.user.id);
       } else {
         setIsAdmin(false);
       }
@@ -87,8 +106,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       if (error) throw error;
       
-      toast.success("Signed up successfully", {
-        description: "Please check your email to verify your account"
+      toast.success("Account created successfully!", {
+        description: "Please check your email to verify your account before signing in."
       });
     } catch (error: any) {
       toast.error("Error signing up", {

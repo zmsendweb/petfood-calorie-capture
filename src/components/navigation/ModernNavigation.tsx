@@ -20,8 +20,7 @@ import {
   Heart, 
   Calendar, 
   ChefHat, 
-  Sparkles, 
-  Mail,
+  Sparkles,
   Shield,
   LogOut,
   User,
@@ -38,13 +37,12 @@ const navigationItems = [
   { name: "Planning", href: "/planning", icon: Calendar, protected: true },
   { name: "Pet Recipes", href: "/pet-recipes", icon: ChefHat, protected: true },
   { name: "Features", href: "/features", icon: Sparkles },
-  { name: "Contact", href: "/contact", icon: Mail },
 ];
 
 export function ModernNavigation() {
   const { pathname } = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, signOut, isAdmin } = useAuth();
+  const { user, signOut, isAdmin, loading } = useAuth();
 
   const isActivePath = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -54,6 +52,31 @@ export function ModernNavigation() {
   const visibleItems = navigationItems.filter(item => 
     !item.protected || (item.protected && user)
   );
+
+  const handleSignOut = async () => {
+    console.log('Attempting to sign out');
+    await signOut();
+  };
+
+  if (loading) {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
+              alt="mypetcal logo" 
+              className="h-8 w-auto"
+            />
+            <span className="font-bold text-lg hidden sm:inline-block">
+              mypetcal
+            </span>
+          </div>
+          <div className="text-sm text-muted-foreground">Loading...</div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -125,6 +148,9 @@ export function ModernNavigation() {
                     <p className="text-xs leading-none text-muted-foreground">
                       {user.email}
                     </p>
+                    {isAdmin && (
+                      <Badge variant="secondary" className="w-fit mt-1">Admin</Badge>
+                    )}
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -149,7 +175,7 @@ export function ModernNavigation() {
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()} className="text-red-600">
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </DropdownMenuItem>
@@ -227,6 +253,9 @@ export function ModernNavigation() {
                       <div className="flex flex-col">
                         <span className="font-medium">My Account</span>
                         <span className="text-xs text-muted-foreground">{user.email}</span>
+                        {isAdmin && (
+                          <Badge variant="secondary" className="w-fit mt-1">Admin</Badge>
+                        )}
                       </div>
                     </div>
                     <Button 
@@ -234,7 +263,7 @@ export function ModernNavigation() {
                       size="sm" 
                       className="w-full justify-start mt-2 text-red-600 hover:text-red-600 hover:bg-red-50"
                       onClick={() => {
-                        signOut();
+                        handleSignOut();
                         setIsMobileMenuOpen(false);
                       }}
                     >

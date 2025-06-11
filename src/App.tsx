@@ -12,56 +12,53 @@ import { FeatureDetails } from "./pages/FeatureDetails";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
-import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import "./App.css";
 
 function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/standards" element={<Standards />} />
-        <Route path="/cat-standards" element={<CatStandards />} />
-        <Route path="/show-breeds" element={<ShowBreeds />} />
-        <Route 
-          path="/pet-profiles" 
-          element={
-            <ProtectedRoute>
-              <PetProfiles />
-            </ProtectedRoute>
-          }
-        />
-        <Route 
-          path="/planning" 
-          element={
-            <ProtectedRoute>
-              <PlanningDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route 
-          path="/pet-recipes" 
-          element={
-            <ProtectedRoute>
-              <PetRecipes />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/features" element={<Features />} />
-        <Route path="/features/:featureId" element={<FeatureDetails />} />
-        <Route 
-          path="/admin" 
-          element={
-            <ProtectedRoute requireAdmin={true}>
-              <Admin />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </AuthProvider>
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/standards" element={<Standards />} />
+      <Route path="/cat-standards" element={<CatStandards />} />
+      <Route path="/show-breeds" element={<ShowBreeds />} />
+      <Route 
+        path="/pet-profiles" 
+        element={
+          <ProtectedRoute>
+            <PetProfiles />
+          </ProtectedRoute>
+        }
+      />
+      <Route 
+        path="/planning" 
+        element={
+          <ProtectedRoute>
+            <PlanningDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route 
+        path="/pet-recipes" 
+        element={
+          <ProtectedRoute>
+            <PetRecipes />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/features" element={<Features />} />
+      <Route path="/features/:featureId" element={<FeatureDetails />} />
+      <Route 
+        path="/admin" 
+        element={
+          <ProtectedRoute requireAdmin={true}>
+            <Admin />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 

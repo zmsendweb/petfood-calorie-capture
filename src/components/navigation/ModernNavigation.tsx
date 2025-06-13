@@ -54,8 +54,12 @@ export function ModernNavigation() {
   );
 
   const handleSignOut = async () => {
-    console.log('Attempting to sign out');
-    await signOut();
+    console.log('Navigation: Attempting to sign out');
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Navigation: Sign out error:', error);
+    }
   };
 
   if (loading) {

@@ -57,7 +57,7 @@ site_url = "http://localhost:5173"
   [functions.create-admin-user]
     verify_jwt = false
     
-  [functions.hailuo-image-generation]
+  [functions.runware-image-generation]
     verify_jwt = false
     
   [functions.show-breed-comparison]

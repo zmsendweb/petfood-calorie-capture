@@ -2,31 +2,68 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, Loader2, Image, Trash2 } from "lucide-react";
 import { showDogBreeds, showCatBreeds } from "@/data/show-breeds";
-import { useHailuoImageGeneration } from "@/hooks/use-hailuo-image-generation";
+import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { toast } from "sonner";
+
+interface BreedImage {
+  breedName: string;
+  imageUrl: string;
+  generatedAt: string;
+}
 
 export function ImageManagement() {
   const [selectedCategory, setSelectedCategory] = useState("dogs");
-  const [breedImages, setBreedImages] = useState<Record<string, string>>({});
+  const [breedImages, setBreedImages] = useState<Record<string, BreedImage>>({});
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
-  const { generateBreedImage, isGenerating } = useHailuoImageGeneration();
+  const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
 
   const breeds = selectedCategory === "dogs" ? showDogBreeds : showCatBreeds;
 
+  // Load stored images from localStorage on component mount
+  useEffect(() => {
+    const storedImages = localStorage.getItem('admin-breed-images');
+    if (storedImages) {
+      try {
+        const parsed = JSON.parse(storedImages);
+        setBreedImages(parsed);
+        console.log('Loaded stored breed images:', Object.keys(parsed).length);
+      } catch (error) {
+        console.error('Error loading stored images:', error);
+      }
+    }
+  }, []);
+
+  // Save images to localStorage whenever breedImages changes
+  useEffect(() => {
+    if (Object.keys(breedImages).length > 0) {
+      localStorage.setItem('admin-breed-images', JSON.stringify(breedImages));
+      console.log('Saved breed images to localStorage:', Object.keys(breedImages).length);
+    }
+  }, [breedImages]);
+
   const handleGenerateImage = async (breedName: string) => {
     setGeneratingFor(breedName);
+    console.log(`Starting image generation for: ${breedName}`);
+    
     const imageUrl = await generateBreedImage(breedName);
     if (imageUrl) {
+      const newBreedImage: BreedImage = {
+        breedName,
+        imageUrl,
+        generatedAt: new Date().toISOString()
+      };
+      
       setBreedImages(prev => ({
         ...prev,
-        [breedName]: imageUrl
+        [breedName]: newBreedImage
       }));
-      toast.success(`Generated image for ${breedName}`);
+      
+      console.log(`Image generated and stored for ${breedName}:`, imageUrl);
+      toast.success(`Generated and saved image for ${breedName}`);
     }
     setGeneratingFor(null);
   };
@@ -37,17 +74,25 @@ export function ImageManagement() {
       delete updated[breedName];
       return updated;
     });
+    console.log(`Removed image for: ${breedName}`);
     toast.success(`Removed image for ${breedName}`);
   };
 
   const generateAllMissingImages = async () => {
     const breedsWithoutImages = breeds.filter(breed => !breedImages[breed.name]);
+    console.log(`Starting batch generation for ${breedsWithoutImages.length} breeds`);
     
     for (const breed of breedsWithoutImages) {
       await handleGenerateImage(breed.name);
       // Add a small delay to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
+    
+    console.log('Batch generation completed');
+  };
+
+  const getTotalStoredImages = () => {
+    return Object.keys(breedImages).length;
   };
 
   return (
@@ -56,9 +101,12 @@ export function ImageManagement() {
         <CardTitle className="flex items-center gap-2">
           <Image className="h-5 w-5" />
           Image Management
+          <Badge variant="outline" className="ml-auto">
+            {getTotalStoredImages()} stored images
+          </Badge>
         </CardTitle>
         <CardDescription>
-          Generate and manage images for show breed cards
+          Generate and manage images for show breed cards. Images are permanently stored and will appear on the frontend.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -80,6 +128,11 @@ export function ImageManagement() {
           >
             <Sparkles className="h-4 w-4" />
             Generate All Missing
+            {breeds.filter(breed => !breedImages[breed.name]).length > 0 && (
+              <Badge variant="secondary">
+                {breeds.filter(breed => !breedImages[breed.name]).length}
+              </Badge>
+            )}
           </Button>
         </div>
 
@@ -95,9 +148,13 @@ export function ImageManagement() {
                 <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                   {breedImages[breed.name] ? (
                     <img 
-                      src={breedImages[breed.name]} 
+                      src={breedImages[breed.name].imageUrl} 
                       alt={breed.name}
                       className="w-full h-full object-cover rounded-lg"
+                      onError={(e) => {
+                        console.error(`Failed to load image for ${breed.name}`);
+                        e.currentTarget.style.display = 'none';
+                      }}
                     />
                   ) : (
                     <div className="text-center text-gray-400">
@@ -107,8 +164,14 @@ export function ImageManagement() {
                   )}
                 </div>
                 
+                {breedImages[breed.name] && (
+                  <div className="text-xs text-gray-500">
+                    Generated: {new Date(breedImages[breed.name].generatedAt).toLocaleDateString()}
+                  </div>
+                )}
+                
                 <div className="flex gap-2">
-                  {breedImages[breed.name] ? (
+                  {breedImages[breed.name] && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -118,7 +181,7 @@ export function ImageManagement() {
                       <Trash2 className="h-3 w-3 mr-1" />
                       Remove
                     </Button>
-                  ) : null}
+                  )}
                   
                   <Button
                     variant={breedImages[breed.name] ? "outline" : "default"}

@@ -24,18 +24,32 @@ import {
   Shield,
   LogOut,
   User,
-  Trophy
+  Trophy,
+  ChevronDown
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const navigationItems = [
   { name: "Home", href: "/", icon: Home },
-  { name: "Dog Standards", href: "/standards", icon: BookOpen },
-  { name: "Cat Standards", href: "/cat-standards", icon: Heart },
+  { 
+    name: "Standards", 
+    icon: BookOpen, 
+    dropdown: [
+      { name: "Dog Standards", href: "/standards", icon: BookOpen },
+      { name: "Cat Standards", href: "/cat-standards", icon: Heart },
+    ]
+  },
   { name: "Show Breeds", href: "/show-breeds", icon: Trophy },
-  { name: "Pet Profiles", href: "/pet-profiles", icon: User, protected: true },
-  { name: "Planning", href: "/planning", icon: Calendar, protected: true },
-  { name: "Pet Recipes", href: "/pet-recipes", icon: ChefHat, protected: true },
+  { 
+    name: "Pet Management", 
+    icon: User, 
+    protected: true,
+    dropdown: [
+      { name: "Pet Profiles", href: "/pet-profiles", icon: User },
+      { name: "Planning", href: "/planning", icon: Calendar },
+      { name: "Pet Recipes", href: "/pet-recipes", icon: ChefHat },
+    ]
+  },
   { name: "Features", href: "/features", icon: Sparkles },
 ];
 
@@ -66,15 +80,12 @@ export function ModernNavigation() {
     return (
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center">
             <img 
               src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
-              alt="mypetcal logo" 
-              className="h-8 w-auto"
+              alt="logo" 
+              className="h-12 w-auto"
             />
-            <span className="font-bold text-lg hidden sm:inline-block">
-              mypetcal
-            </span>
           </div>
           <div className="text-sm text-muted-foreground">Loading...</div>
         </div>
@@ -85,22 +96,54 @@ export function ModernNavigation() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center space-x-3">
+        {/* Logo Only */}
+        <Link to="/" className="flex items-center">
           <img 
             src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
-            alt="mypetcal logo" 
-            className="h-8 w-auto"
+            alt="logo" 
+            className="h-12 w-auto"
           />
-          <span className="font-bold text-lg hidden sm:inline-block">
-            mypetcal
-          </span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation with Dropdowns */}
         <nav className="hidden lg:flex items-center space-x-1">
           {visibleItems.map((item) => {
             const Icon = item.icon;
+            
+            if (item.dropdown) {
+              return (
+                <DropdownMenu key={item.name}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center space-x-2 px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <Icon className="h-4 w-4" />
+                      <span>{item.name}</span>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    {item.dropdown.map((subItem) => {
+                      const SubIcon = subItem.icon;
+                      return (
+                        <DropdownMenuItem key={subItem.name} asChild>
+                          <Link
+                            to={subItem.href}
+                            className={`flex items-center space-x-2 ${
+                              isActivePath(subItem.href) 
+                                ? "bg-accent text-accent-foreground" 
+                                : ""
+                            }`}
+                          >
+                            <SubIcon className="h-4 w-4" />
+                            <span>{subItem.name}</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            }
+
             return (
               <Link
                 key={item.name}
@@ -116,6 +159,7 @@ export function ModernNavigation() {
               </Link>
             );
           })}
+          
           {isAdmin && (
             <Link
               to="/admin"
@@ -201,18 +245,47 @@ export function ModernNavigation() {
             </SheetTrigger>
             <SheetContent side="right" className="w-80">
               <div className="flex flex-col space-y-4 mt-4">
-                <div className="flex items-center space-x-3 pb-4 border-b">
+                <div className="flex items-center pb-4 border-b">
                   <img 
                     src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
-                    alt="mypetcal logo" 
-                    className="h-8 w-auto"
+                    alt="logo" 
+                    className="h-10 w-auto"
                   />
-                  <span className="font-bold text-lg">mypetcal</span>
                 </div>
                 
                 <nav className="flex flex-col space-y-1">
                   {visibleItems.map((item) => {
                     const Icon = item.icon;
+                    
+                    if (item.dropdown) {
+                      return (
+                        <div key={item.name} className="space-y-1">
+                          <div className="flex items-center space-x-3 px-3 py-2 text-sm font-medium text-muted-foreground">
+                            <Icon className="h-5 w-5" />
+                            <span>{item.name}</span>
+                          </div>
+                          {item.dropdown.map((subItem) => {
+                            const SubIcon = subItem.icon;
+                            return (
+                              <Link
+                                key={subItem.name}
+                                to={subItem.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`flex items-center space-x-3 px-6 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground ${
+                                  isActivePath(subItem.href) 
+                                    ? "bg-accent text-accent-foreground" 
+                                    : "text-muted-foreground"
+                                }`}
+                              >
+                                <SubIcon className="h-4 w-4" />
+                                <span>{subItem.name}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      );
+                    }
+
                     return (
                       <Link
                         key={item.name}
@@ -229,6 +302,7 @@ export function ModernNavigation() {
                       </Link>
                     );
                   })}
+                  
                   {isAdmin && (
                     <Link
                       to="/admin"

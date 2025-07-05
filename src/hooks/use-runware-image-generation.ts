@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const useHailuoImageGeneration = () => {
+export const useRunwareImageGeneration = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
@@ -13,7 +13,7 @@ export const useHailuoImageGeneration = () => {
     try {
       console.log(`Generating image for breed: ${breedName}`);
       
-      const { data, error } = await supabase.functions.invoke('hailuo-image-generation', {
+      const { data, error } = await supabase.functions.invoke('runware-image-generation', {
         body: { 
           breedName,
           prompt: customPrompt 

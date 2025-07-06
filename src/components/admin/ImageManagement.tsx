@@ -25,56 +25,88 @@ export function ImageManagement() {
 
   // Load stored images from localStorage on component mount
   useEffect(() => {
-    const storedImages = localStorage.getItem('admin-breed-images');
-    if (storedImages) {
+    const loadStoredImages = () => {
       try {
-        const parsed = JSON.parse(storedImages);
-        setBreedImages(parsed);
-        console.log('Loaded stored breed images:', Object.keys(parsed).length);
+        const storedImages = localStorage.getItem('admin-breed-images');
+        if (storedImages) {
+          const parsed = JSON.parse(storedImages);
+          console.log('Loading stored breed images:', Object.keys(parsed).length, 'images found');
+          setBreedImages(parsed);
+        } else {
+          console.log('No stored breed images found in localStorage');
+        }
       } catch (error) {
-        console.error('Error loading stored images:', error);
+        console.error('Error loading stored images from localStorage:', error);
+        toast.error("Failed to load stored images");
       }
-    }
+    };
+
+    loadStoredImages();
   }, []);
 
   // Save images to localStorage whenever breedImages changes
   useEffect(() => {
-    if (Object.keys(breedImages).length > 0) {
-      localStorage.setItem('admin-breed-images', JSON.stringify(breedImages));
-      console.log('Saved breed images to localStorage:', Object.keys(breedImages).length);
-    }
+    const saveToStorage = () => {
+      try {
+        if (Object.keys(breedImages).length > 0) {
+          localStorage.setItem('admin-breed-images', JSON.stringify(breedImages));
+          console.log('Saved breed images to localStorage:', Object.keys(breedImages).length, 'images');
+        }
+      } catch (error) {
+        console.error('Error saving images to localStorage:', error);
+        toast.error("Failed to save images to storage");
+      }
+    };
+
+    saveToStorage();
   }, [breedImages]);
 
   const handleGenerateImage = async (breedName: string) => {
     setGeneratingFor(breedName);
     console.log(`Starting image generation for: ${breedName}`);
     
-    const imageUrl = await generateBreedImage(breedName);
-    if (imageUrl) {
-      const newBreedImage: BreedImage = {
-        breedName,
-        imageUrl,
-        generatedAt: new Date().toISOString()
-      };
-      
-      setBreedImages(prev => ({
-        ...prev,
-        [breedName]: newBreedImage
-      }));
-      
-      console.log(`Image generated and stored for ${breedName}:`, imageUrl);
-      toast.success(`Generated and saved image for ${breedName}`);
+    try {
+      const imageUrl = await generateBreedImage(breedName);
+      if (imageUrl) {
+        const newBreedImage: BreedImage = {
+          breedName,
+          imageUrl,
+          generatedAt: new Date().toISOString()
+        };
+        
+        console.log(`Image generated successfully for ${breedName}:`, imageUrl);
+        
+        // Update state with new image - this will trigger the useEffect to save to localStorage
+        setBreedImages(prev => {
+          const updated = {
+            ...prev,
+            [breedName]: newBreedImage
+          };
+          console.log(`Updated breedImages state for ${breedName}, total images:`, Object.keys(updated).length);
+          return updated;
+        });
+        
+        toast.success(`Generated and saved image for ${breedName}`);
+      } else {
+        console.error(`Failed to generate image for ${breedName} - no URL returned`);
+        toast.error(`Failed to generate image for ${breedName}`);
+      }
+    } catch (error) {
+      console.error(`Error generating image for ${breedName}:`, error);
+      toast.error(`Error generating image for ${breedName}`);
+    } finally {
+      setGeneratingFor(null);
     }
-    setGeneratingFor(null);
   };
 
   const handleRemoveImage = (breedName: string) => {
+    console.log(`Removing image for: ${breedName}`);
     setBreedImages(prev => {
       const updated = { ...prev };
       delete updated[breedName];
+      console.log(`Removed image for ${breedName}, remaining images:`, Object.keys(updated).length);
       return updated;
     });
-    console.log(`Removed image for: ${breedName}`);
     toast.success(`Removed image for ${breedName}`);
   };
 
@@ -123,7 +155,7 @@ export function ImageManagement() {
           
           <Button 
             onClick={generateAllMissingImages}
-            disabled={isGenerating}
+            disabled={isGenerating || generatingFor !== null}
             className="flex items-center gap-2"
           >
             <Sparkles className="h-4 w-4" />
@@ -152,8 +184,11 @@ export function ImageManagement() {
                       alt={breed.name}
                       className="w-full h-full object-cover rounded-lg"
                       onError={(e) => {
-                        console.error(`Failed to load image for ${breed.name}`);
+                        console.error(`Failed to load image for ${breed.name}:`, breedImages[breed.name].imageUrl);
                         e.currentTarget.style.display = 'none';
+                      }}
+                      onLoad={() => {
+                        console.log(`Successfully loaded image for ${breed.name}`);
                       }}
                     />
                   ) : (

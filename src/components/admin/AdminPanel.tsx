@@ -19,6 +19,7 @@ export function AdminPanel() {
     totalMeals: 0
   });
   const [loading, setLoading] = useState(true);
+  const [creatingAdmin, setCreatingAdmin] = useState(false);
   
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -44,6 +45,31 @@ export function AdminPanel() {
       fetchAdminData();
     }
   }, [isAdmin]);
+
+  const handleCreateAdminUser = async () => {
+    setCreatingAdmin(true);
+    try {
+      console.log("Calling assign-admin-role function...");
+      
+      const { data, error } = await supabase.functions.invoke('assign-admin-role', {
+        body: {}
+      });
+      
+      console.log("assign-admin-role response:", { data, error });
+      
+      if (error) {
+        console.error("Error calling assign-admin-role:", error);
+        throw error;
+      }
+      
+      toast.success(data?.message || "Admin user setup completed successfully");
+    } catch (error: any) {
+      console.error("Error creating admin user:", error);
+      toast.error("Failed to create admin user: " + (error.message || "Unknown error"));
+    } finally {
+      setCreatingAdmin(false);
+    }
+  };
   
   if (!isAdmin) {
     return <Navigate to="/" />;
@@ -128,20 +154,11 @@ export function AdminPanel() {
                   <p className="text-sm text-muted-foreground mb-2">
                     Initialize the admin user (email: admin@mypetcal.com) if it doesn't exist
                   </p>
-                  <Button onClick={async () => {
-                    try {
-                      const { data, error } = await supabase.functions.invoke('create-admin-user', {
-                        body: { adminPassword: "Jfgefi$6823hJHDvcdc" }
-                      });
-                      
-                      if (error) throw error;
-                      toast.success(data.message || "Admin user setup completed");
-                    } catch (error) {
-                      console.error("Error creating admin user:", error);
-                      toast.error("Failed to create admin user");
-                    }
-                  }}>
-                    Create Admin User
+                  <Button 
+                    onClick={handleCreateAdminUser}
+                    disabled={creatingAdmin}
+                  >
+                    {creatingAdmin ? "Creating..." : "Create Admin User"}
                   </Button>
                 </div>
               </div>

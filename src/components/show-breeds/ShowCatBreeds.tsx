@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,14 +14,53 @@ interface ShowCatBreedsProps {
   onBreedSelect: (breed: any) => void;
 }
 
+interface BreedImage {
+  breedName: string;
+  imageUrl: string;
+  generatedAt: string;
+}
+
 export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sizeFilter, setSizeFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [breedImages, setBreedImages] = useState<Record<string, string>>({});
+  const [storedImages, setStoredImages] = useState<Record<string, BreedImage>>({});
   
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
   const { isAdmin } = useAuth();
+
+  // Load stored images from localStorage
+  useEffect(() => {
+    const loadStoredImages = () => {
+      try {
+        const stored = localStorage.getItem('admin-breed-images');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          console.log('Frontend: Loaded stored breed images:', Object.keys(parsed).length);
+          setStoredImages(parsed);
+        }
+      } catch (error) {
+        console.error('Error loading stored images:', error);
+      }
+    };
+
+    loadStoredImages();
+
+    // Listen for storage changes (when admin generates new images)
+    const handleStorageChange = () => {
+      loadStoredImages();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check periodically in case we're on the same tab
+    const interval = setInterval(loadStoredImages, 5000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   const filteredBreeds = showCatBreeds.filter(breed => {
     const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -34,10 +74,8 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
   const handleGenerateImage = async (breedName: string) => {
     const imageUrl = await generateBreedImage(breedName);
     if (imageUrl) {
-      setBreedImages(prev => ({
-        ...prev,
-        [breedName]: imageUrl
-      }));
+      // The image will be automatically picked up by the useEffect
+      console.log(`Generated image for ${breedName}:`, imageUrl);
     }
   };
 
@@ -97,11 +135,14 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                {breedImages[breed.name] ? (
+                {storedImages[breed.name] ? (
                   <img 
-                    src={breedImages[breed.name]} 
+                    src={storedImages[breed.name].imageUrl} 
                     alt={breed.name}
                     className="w-full h-full object-cover rounded-lg"
+                    onError={(e) => {
+                      console.error(`Failed to load stored image for ${breed.name}`);
+                    }}
                   />
                 ) : (
                   <div className="flex flex-col items-center gap-2">

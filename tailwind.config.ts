@@ -31,11 +31,11 @@ export default {
         },
         secondary: {
           DEFAULT: "hsl(30, 40%, 85%)",
-          foreground: "#1c1c1c",
+          foreground: "hsl(30, 30%, 20%)",
         },
         accent: {
           DEFAULT: "hsl(30, 50%, 70%)",
-          foreground: "#ffffff",
+          foreground: "hsl(30, 30%, 20%)",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",

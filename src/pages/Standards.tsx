@@ -4,7 +4,7 @@ import { DogStandardsHeader } from "@/components/standards/DogStandardsHeader";
 import { DogBreedFilters } from "@/components/standards/DogBreedFilters";
 import { DogBreedCard } from "@/components/standards/DogBreedCard";
 import { StandardsFooter } from "@/components/standards/StandardsFooter";
-import { AppNavigation } from "@/components/AppNavigation";
+import { ModernNavigation } from "@/components/navigation/ModernNavigation";
 import { dogStandards } from "@/data/dogStandards";
 import { PetSize } from "@/utils/sizeCategoryImages";
 
@@ -25,8 +25,8 @@ export default function Standards() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-      <AppNavigation />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-amber-50">
+      <ModernNavigation />
       <div className="container mx-auto px-4 py-8">
         <DogStandardsHeader />
         <DogBreedFilters

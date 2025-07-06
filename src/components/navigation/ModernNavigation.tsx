@@ -84,7 +84,7 @@ export function ModernNavigation() {
             <img 
               src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
               alt="logo" 
-              className="h-18 w-auto"
+              className="h-12 w-auto max-w-[200px]"
             />
           </div>
           <div className="text-sm text-muted-foreground">Loading...</div>
@@ -96,17 +96,17 @@ export function ModernNavigation() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo Only - 50% larger */}
-        <Link to="/" className="flex items-center">
+        {/* Logo - Fixed positioning and responsive sizing */}
+        <Link to="/" className="flex items-center flex-shrink-0">
           <img 
             src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
             alt="logo" 
-            className="h-18 w-auto"
+            className="h-12 w-auto max-w-[200px] sm:max-w-[250px] md:max-w-[300px]"
           />
         </Link>
 
         {/* Desktop Navigation with Dropdowns */}
-        <nav className="hidden lg:flex items-center space-x-1">
+        <nav className="hidden lg:flex items-center space-x-1 flex-1 justify-center">
           {visibleItems.map((item) => {
             const Icon = item.icon;
             
@@ -177,7 +177,7 @@ export function ModernNavigation() {
         </nav>
 
         {/* User Actions */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 flex-shrink-0">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -249,7 +249,7 @@ export function ModernNavigation() {
                   <img 
                     src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
                     alt="logo" 
-                    className="h-15 w-auto"
+                    className="h-10 w-auto max-w-[180px]"
                   />
                 </div>
                 

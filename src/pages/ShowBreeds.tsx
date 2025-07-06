@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShowDogBreeds } from "@/components/show-breeds/ShowDogBreeds";
 import { ShowCatBreeds } from "@/components/show-breeds/ShowCatBreeds";
 import { BreedComparison } from "@/components/show-breeds/BreedComparison";
-import { AppNavigation } from "@/components/AppNavigation";
+import { ModernNavigation } from "@/components/navigation/ModernNavigation";
 import { Trophy, Sparkles } from "lucide-react";
 
 export default function ShowBreeds() {
@@ -13,8 +13,8 @@ export default function ShowBreeds() {
   const [userPhoto, setUserPhoto] = useState<string>("");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      <AppNavigation />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-amber-50">
+      <ModernNavigation />
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>

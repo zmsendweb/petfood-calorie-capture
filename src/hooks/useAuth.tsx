@@ -28,8 +28,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       console.log('Checking admin role for user:', currentUser.email);
       
-      // Check if user is the admin email first
-      if (currentUser.email === 'lineupforme2@gmail.com') {
+      // Check if user is the admin emails
+      if (currentUser.email === 'admin@mypetcal.com' || currentUser.email === 'lineupforme2@gmail.com') {
         console.log('User is admin by email');
         setIsAdmin(true);
         return;

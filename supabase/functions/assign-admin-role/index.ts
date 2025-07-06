@@ -24,15 +24,50 @@ serve(async (req) => {
     const { data: users, error: fetchError } = await supabaseAdmin.auth.admin.listUsers();
     
     if (fetchError) {
+      console.error('Error fetching users:', fetchError);
       throw fetchError;
     }
     
     const adminUser = users.users.find(user => user.email === 'admin@mypetcal.com');
     
     if (!adminUser) {
+      console.log('Admin user not found, creating user first');
+      // Create the admin user if it doesn't exist
+      const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+        email: 'admin@mypetcal.com',
+        password: 'TempPassword123!',
+        email_confirm: true,
+        user_metadata: {
+          role: 'admin'
+        }
+      });
+      
+      if (createError) {
+        console.error('Error creating admin user:', createError);
+        throw createError;
+      }
+      
+      console.log('Admin user created:', newUser.user?.email);
+      
+      // Insert admin role for the new user
+      const { error: insertError } = await supabaseAdmin
+        .from('user_roles')
+        .insert({
+          user_id: newUser.user!.id,
+          role: 'admin'
+        });
+      
+      if (insertError) {
+        console.error('Error inserting admin role:', insertError);
+        throw insertError;
+      }
+      
       return new Response(
-        JSON.stringify({ error: "Admin user not found" }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ 
+          message: "Admin user created and role assigned successfully",
+          user_id: newUser.user!.id 
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
@@ -45,10 +80,12 @@ serve(async (req) => {
       .single();
     
     if (roleCheckError && roleCheckError.code !== 'PGRST116') {
+      console.error('Error checking existing role:', roleCheckError);
       throw roleCheckError;
     }
     
     if (existingRole) {
+      console.log('Admin role already exists');
       return new Response(
         JSON.stringify({ message: "Admin role already exists" }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -64,15 +101,20 @@ serve(async (req) => {
       });
     
     if (insertError) {
+      console.error('Error inserting admin role:', insertError);
       throw insertError;
     }
     
+    console.log('Admin role assigned successfully');
     return new Response(
-      JSON.stringify({ message: "Admin role assigned successfully" }),
+      JSON.stringify({ 
+        message: "Admin role assigned successfully",
+        user_id: adminUser.id 
+      }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error assigning admin role:', error);
+    console.error('Error in assign-admin-role function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

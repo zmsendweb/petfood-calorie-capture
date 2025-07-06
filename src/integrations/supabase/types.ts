@@ -132,8 +132,8 @@ export type Database = {
     }
     Functions: {
       assign_admin_role: {
-        Args: { user_email: string }
-        Returns: string
+        Args: { user_email: string } | { user_id: string }
+        Returns: undefined
       }
     }
     Enums: {

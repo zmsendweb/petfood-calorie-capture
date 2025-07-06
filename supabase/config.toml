@@ -62,3 +62,6 @@ site_url = "http://localhost:5173"
     
   [functions.show-breed-comparison]
     verify_jwt = false
+    
+  [functions.assign-admin-role]
+    verify_jwt = false

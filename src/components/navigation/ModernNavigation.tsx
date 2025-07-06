@@ -84,7 +84,7 @@ export function ModernNavigation() {
             <img 
               src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
               alt="logo" 
-              className="h-12 w-auto"
+              className="h-18 w-auto"
             />
           </div>
           <div className="text-sm text-muted-foreground">Loading...</div>
@@ -96,12 +96,12 @@ export function ModernNavigation() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo Only */}
+        {/* Logo Only - 50% larger */}
         <Link to="/" className="flex items-center">
           <img 
             src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
             alt="logo" 
-            className="h-12 w-auto"
+            className="h-18 w-auto"
           />
         </Link>
 
@@ -249,7 +249,7 @@ export function ModernNavigation() {
                   <img 
                     src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
                     alt="logo" 
-                    className="h-10 w-auto"
+                    className="h-15 w-auto"
                   />
                 </div>
                 

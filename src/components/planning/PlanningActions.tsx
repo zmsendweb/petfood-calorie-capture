@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useNotifications } from "@/hooks/use-notifications";
 import { usePetGoals } from "@/hooks/use-pet-goals";
 import { usePetReminders } from "@/hooks/use-pet-reminders";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PlanningActionsProps {
   pet: PetProfile;
@@ -14,6 +15,7 @@ interface PlanningActionsProps {
 }
 
 export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
+  const { user } = useAuth();
   const { isDismissed, dismissNotification } = useNotifications();
   const [showMissedOpportunity, setShowMissedOpportunity] = useState(true);
   const MISSED_OPPORTUNITY_ID = `missed-opportunity-${pet.id}`;
@@ -34,22 +36,34 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
       ? "85% of owners who track consistently reach weight goals 2x faster. Don't fall behind!"
       : "Pets with daily tracked nutrition are 3x more likely to avoid health issues. Don't miss this opportunity!";
 
-  const handleSetReminder = () => {
-    const newReminder = {
-      pet_id: pet.id,
-      title: "Pet Health Checkup",
-      description: `Remember to track ${pet.name}'s nutrition and activity`,
-      date: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
-      completed: false
-    };
+  const handleSetReminder = async () => {
+    if (!user) {
+      toast.error("Please log in to set reminders");
+      return;
+    }
+
+    console.log('Setting reminder for pet:', pet.id, 'user:', user.id);
     
-    addReminder(newReminder);
-    
-    toast.success("Reminder set! We'll help you stay on track with your pet's health goals.", {
-      description: `Reminder for ${pet.name} scheduled for ${newReminder.date.toLocaleDateString()}`
-    });
-    dismissNotification(MISSED_OPPORTUNITY_ID);
-    setShowMissedOpportunity(false);
+    try {
+      const newReminder = {
+        pet_id: pet.id,
+        title: "Pet Health Checkup",
+        description: `Remember to track ${pet.name}'s nutrition and activity`,
+        date: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
+        completed: false
+      };
+      
+      await addReminder(newReminder);
+      
+      toast.success("Reminder set! We'll help you stay on track with your pet's health goals.", {
+        description: `Reminder for ${pet.name} scheduled for ${newReminder.date.toLocaleDateString()}`
+      });
+      dismissNotification(MISSED_OPPORTUNITY_ID);
+      setShowMissedOpportunity(false);
+    } catch (error) {
+      console.error('Error setting reminder:', error);
+      toast.error("Failed to set reminder. Please try again.");
+    }
   };
 
   const handleDismiss = () => {
@@ -58,66 +72,91 @@ export const PlanningActions = ({ pet, viewMode }: PlanningActionsProps) => {
     setShowMissedOpportunity(false);
   };
   
-  const handleScheduleCheckup = () => {
-    const checkupDate = new Date();
-    checkupDate.setDate(checkupDate.getDate() + 14); // Two weeks from now
+  const handleScheduleCheckup = async () => {
+    if (!user) {
+      toast.error("Please log in to schedule checkups");
+      return;
+    }
+
+    console.log('Scheduling checkup for pet:', pet.id, 'user:', user.id);
     
-    const newReminder = {
-      pet_id: pet.id,
-      title: "Vet Checkup",
-      description: `Schedule a checkup for ${pet.name}`,
-      date: checkupDate,
-      completed: false
-    };
-    
-    addReminder(newReminder);
-    
-    toast.success(`Vet checkup scheduled for ${pet.name}`, {
-      description: `Set for ${checkupDate.toLocaleDateString()}`
-    });
+    try {
+      const checkupDate = new Date();
+      checkupDate.setDate(checkupDate.getDate() + 14); // Two weeks from now
+      
+      const newReminder = {
+        pet_id: pet.id,
+        title: "Vet Checkup",
+        description: `Schedule a checkup for ${pet.name}`,
+        date: checkupDate,
+        completed: false
+      };
+      
+      await addReminder(newReminder);
+      
+      toast.success(`Vet checkup scheduled for ${pet.name}`, {
+        description: `Set for ${checkupDate.toLocaleDateString()}`
+      });
+    } catch (error) {
+      console.error('Error scheduling checkup:', error);
+      toast.error("Failed to schedule checkup. Please try again.");
+    }
   };
   
-  const handleSetMealReminder = () => {
-    // Create daily meal reminders
-    const breakfast = new Date();
-    breakfast.setHours(8, 0, 0, 0);
+  const handleSetMealReminder = async () => {
+    if (!user) {
+      toast.error("Please log in to set meal reminders");
+      return;
+    }
+
+    console.log('Setting meal reminders for pet:', pet.id, 'user:', user.id);
     
-    const dinner = new Date();
-    dinner.setHours(18, 0, 0, 0);
-    
-    const breakfastReminder = {
-      pet_id: pet.id,
-      title: "Breakfast Time",
-      description: `Time to feed ${pet.name} breakfast`,
-      date: breakfast,
-      completed: false
-    };
-    
-    const dinnerReminder = {
-      pet_id: pet.id,
-      title: "Dinner Time", 
-      description: `Time to feed ${pet.name} dinner`,
-      date: dinner,
-      completed: false
-    };
-    
-    addReminder(breakfastReminder);
-    addReminder(dinnerReminder);
-    
-    toast.success(`Meal reminders set for ${pet.name}`, {
-      description: "Daily breakfast and dinner reminders created"
-    });
+    try {
+      // Create daily meal reminders
+      const breakfast = new Date();
+      breakfast.setHours(8, 0, 0, 0);
+      
+      const dinner = new Date();
+      dinner.setHours(18, 0, 0, 0);
+      
+      const breakfastReminder = {
+        pet_id: pet.id,
+        title: "Breakfast Time",
+        description: `Time to feed ${pet.name} breakfast`,
+        date: breakfast,
+        completed: false
+      };
+      
+      const dinnerReminder = {
+        pet_id: pet.id,
+        title: "Dinner Time", 
+        description: `Time to feed ${pet.name} dinner`,
+        date: dinner,
+        completed: false
+      };
+      
+      await addReminder(breakfastReminder);
+      await addReminder(dinnerReminder);
+      
+      toast.success(`Meal reminders set for ${pet.name}`, {
+        description: "Daily breakfast and dinner reminders created"
+      });
+    } catch (error) {
+      console.error('Error setting meal reminders:', error);
+      toast.error("Failed to set meal reminders. Please try again.");
+    }
   };
   
   const handleShareProgress = () => {
-    // Generate a summary of the pet's progress
-    const allGoals = [...(pet.shortTermGoals || []), ...(pet.longTermGoals || [])];
-    const totalGoals = allGoals.length;
-    const completedGoals = goals.filter(g => g.is_completed);
-    const completedCount = completedGoals.length;
-    const completionPercentage = totalGoals > 0 ? Math.round((completedCount / totalGoals) * 100) : 0;
-    
-    const progressSummary = `
+    try {
+      // Generate a summary of the pet's progress
+      const allGoals = [...(pet.shortTermGoals || []), ...(pet.longTermGoals || [])];
+      const totalGoals = allGoals.length;
+      const completedGoals = goals.filter(g => g.is_completed);
+      const completedCount = completedGoals.length;
+      const completionPercentage = totalGoals > 0 ? Math.round((completedCount / totalGoals) * 100) : 0;
+      
+      const progressSummary = `
 Pet: ${pet.name} (${pet.breed || pet.type})
 Progress: ${completionPercentage}% complete
 ${completedCount} out of ${totalGoals} goals accomplished
@@ -127,42 +166,58 @@ Daily Calorie Target: ${pet.dailyCalorieTarget || "Not set"}
 Activity Level: ${pet.activityLevel}
 
 Thank you for using mypetcal to track your pet's health!
-    `.trim();
-    
-    navigator.clipboard.writeText(progressSummary).then(() => {
-      toast.success("Progress report copied to clipboard", {
-        description: "You can now share it with your vet or friends"
+      `.trim();
+      
+      navigator.clipboard.writeText(progressSummary).then(() => {
+        toast.success("Progress report copied to clipboard", {
+          description: "You can now share it with your vet or friends"
+        });
+      }).catch(() => {
+        toast.error("Failed to copy to clipboard");
       });
-    }).catch(() => {
-      toast.error("Failed to copy to clipboard");
-    });
+    } catch (error) {
+      console.error('Error sharing progress:', error);
+      toast.error("Failed to share progress. Please try again.");
+    }
   };
   
-  const handleMarkGoalComplete = () => {
-    // Get incomplete goals from pet profile
-    const allGoals = [...(pet.shortTermGoals || []), ...(pet.longTermGoals || [])];
-    const completedGoalTexts = goals.filter(g => g.is_completed).map(g => g.goal_text);
-    const incompleteGoals = allGoals.filter(goal => !completedGoalTexts.includes(goal));
+  const handleMarkGoalComplete = async () => {
+    if (!user) {
+      toast.error("Please log in to mark goals complete");
+      return;
+    }
+
+    console.log('Marking goal complete for pet:', pet.id, 'user:', user.id);
     
-    if (incompleteGoals.length > 0) {
-      const goalToComplete = incompleteGoals[0];
+    try {
+      // Get incomplete goals from pet profile
+      const allGoals = [...(pet.shortTermGoals || []), ...(pet.longTermGoals || [])];
+      const completedGoalTexts = goals.filter(g => g.is_completed).map(g => g.goal_text);
+      const incompleteGoals = allGoals.filter(goal => !completedGoalTexts.includes(goal));
       
-      // Find existing goal or create completion record
-      const existingGoal = goals.find(g => g.goal_text === goalToComplete);
-      
-      if (existingGoal) {
-        markGoalComplete(existingGoal.id, goalToComplete);
+      if (incompleteGoals.length > 0) {
+        const goalToComplete = incompleteGoals[0];
+        
+        // Find existing goal or create completion record
+        const existingGoal = goals.find(g => g.goal_text === goalToComplete);
+        
+        if (existingGoal) {
+          await markGoalComplete(existingGoal.id, goalToComplete);
+        } else {
+          await markGoalComplete(undefined, goalToComplete);
+        }
+        
+        toast.success(`Goal marked as complete for ${pet.name}`, {
+          description: goalToComplete
+        });
       } else {
-        markGoalComplete(undefined, goalToComplete);
+        toast.info("All goals are already completed!", {
+          description: "Great job taking care of your pet's health!"
+        });
       }
-      
-      toast.success(`Goal marked as complete for ${pet.name}`, {
-        description: goalToComplete
-      });
-    } else {
-      toast.info("All goals are already completed!", {
-        description: "Great job taking care of your pet's health!"
-      });
+    } catch (error) {
+      console.error('Error marking goal complete:', error);
+      toast.error("Failed to mark goal complete. Please try again.");
     }
   };
 
@@ -171,6 +226,14 @@ Thank you for using mypetcal to track your pet's health!
       <div className="flex items-center justify-center py-4">
         <Loader2 className="h-4 w-4 animate-spin" />
         <span className="ml-2 text-sm text-gray-500">Loading...</span>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="text-center py-4">
+        <p className="text-sm text-gray-500 mb-2">Please log in to access planning actions</p>
       </div>
     );
   }

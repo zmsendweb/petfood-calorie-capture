@@ -1,10 +1,9 @@
 
-import { PageHeader } from "@/components/PageHeader";
 import { CatStandardsHeader } from "@/components/standards/CatStandardsHeader";
 import { CatBreedFilters } from "@/components/standards/CatBreedFilters";
 import { CatBreedCard } from "@/components/standards/CatBreedCard";
 import { StandardsFooter } from "@/components/standards/StandardsFooter";
-import { AppNavigation } from "@/components/AppNavigation";
+import { ModernNavigation } from "@/components/navigation/ModernNavigation";
 import { useCatStandardsFilter } from "@/hooks/useCatStandardsFilter";
 import { useState } from "react";
 
@@ -22,13 +21,17 @@ export default function CatStandards() {
   const [ageFilter, setAgeFilter] = useState("adult");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50">
-      <AppNavigation />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-amber-50">
+      <ModernNavigation />
       <div className="container mx-auto px-4 py-8">
-        <PageHeader 
-          title="Cat Breed Standards" 
-          description="Comprehensive guide to cat breed characteristics and standards"
-        />
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Cat Breed Standards
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Comprehensive guide to cat breed characteristics and standards
+          </p>
+        </div>
         
         <CatStandardsHeader />
         
@@ -54,7 +57,7 @@ export default function CatStandards() {
             <p className="text-gray-500 text-lg">No cat breeds match your current filters.</p>
             <button
               onClick={clearFilters}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
             >
               Clear All Filters
             </button>

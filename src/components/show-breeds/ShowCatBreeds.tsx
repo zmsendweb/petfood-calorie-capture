@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -7,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Trophy, Star, Sparkles, Loader2 } from "lucide-react";
 import { showCatBreeds } from "@/data/show-breeds";
-import { useHailuoImageGeneration } from "@/hooks/use-hailuo-image-generation";
+import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { useAuth } from "@/hooks/useAuth";
 
 interface ShowCatBreedsProps {
@@ -20,7 +19,7 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
   const [typeFilter, setTypeFilter] = useState("all");
   const [breedImages, setBreedImages] = useState<Record<string, string>>({});
   
-  const { generateBreedImage, isGenerating } = useHailuoImageGeneration();
+  const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
   const { isAdmin } = useAuth();
 
   const filteredBreeds = showCatBreeds.filter(breed => {

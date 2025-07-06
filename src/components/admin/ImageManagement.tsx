@@ -7,92 +7,33 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sparkles, Loader2, Image, Trash2 } from "lucide-react";
 import { showDogBreeds, showCatBreeds } from "@/data/show-breeds";
 import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
+import { useBreedImages } from "@/hooks/useBreedImages";
 import { toast } from "sonner";
-
-interface BreedImage {
-  breedName: string;
-  imageUrl: string;
-  generatedAt: string;
-}
 
 export function ImageManagement() {
   const [selectedCategory, setSelectedCategory] = useState("dogs");
-  const [breedImages, setBreedImages] = useState<Record<string, BreedImage>>({});
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
+  const { storedImages, saveImage, removeImage } = useBreedImages();
 
   const breeds = selectedCategory === "dogs" ? showDogBreeds : showCatBreeds;
 
-  // Load stored images from localStorage on component mount
-  useEffect(() => {
-    const loadStoredImages = () => {
-      try {
-        const storedImages = localStorage.getItem('admin-breed-images');
-        if (storedImages) {
-          const parsed = JSON.parse(storedImages);
-          console.log('Loading stored breed images:', Object.keys(parsed).length, 'images found');
-          setBreedImages(parsed);
-        } else {
-          console.log('No stored breed images found in localStorage');
-        }
-      } catch (error) {
-        console.error('Error loading stored images from localStorage:', error);
-        toast.error("Failed to load stored images");
-      }
-    };
-
-    loadStoredImages();
-  }, []);
-
-  // Save images to localStorage whenever breedImages changes
-  useEffect(() => {
-    const saveToStorage = () => {
-      try {
-        if (Object.keys(breedImages).length > 0) {
-          localStorage.setItem('admin-breed-images', JSON.stringify(breedImages));
-          console.log('Saved breed images to localStorage:', Object.keys(breedImages).length, 'images');
-        }
-      } catch (error) {
-        console.error('Error saving images to localStorage:', error);
-        toast.error("Failed to save images to storage");
-      }
-    };
-
-    saveToStorage();
-  }, [breedImages]);
-
   const handleGenerateImage = async (breedName: string) => {
     setGeneratingFor(breedName);
-    console.log(`Starting image generation for: ${breedName}`);
+    console.log(`ImageManagement: Starting image generation for: ${breedName}`);
     
     try {
       const imageUrl = await generateBreedImage(breedName);
       if (imageUrl) {
-        const newBreedImage: BreedImage = {
-          breedName,
-          imageUrl,
-          generatedAt: new Date().toISOString()
-        };
-        
-        console.log(`Image generated successfully for ${breedName}:`, imageUrl);
-        
-        // Update state with new image - this will trigger the useEffect to save to localStorage
-        setBreedImages(prev => {
-          const updated = {
-            ...prev,
-            [breedName]: newBreedImage
-          };
-          console.log(`Updated breedImages state for ${breedName}, total images:`, Object.keys(updated).length);
-          return updated;
-        });
-        
+        saveImage(breedName, imageUrl);
+        console.log(`ImageManagement: Generated and saved image for ${breedName}:`, imageUrl);
         toast.success(`Generated and saved image for ${breedName}`);
       } else {
-        console.error(`Failed to generate image for ${breedName} - no URL returned`);
+        console.error(`ImageManagement: Failed to generate image for ${breedName} - no URL returned`);
         toast.error(`Failed to generate image for ${breedName}`);
       }
     } catch (error) {
-      console.error(`Error generating image for ${breedName}:`, error);
+      console.error(`ImageManagement: Error generating image for ${breedName}:`, error);
       toast.error(`Error generating image for ${breedName}`);
     } finally {
       setGeneratingFor(null);
@@ -100,19 +41,14 @@ export function ImageManagement() {
   };
 
   const handleRemoveImage = (breedName: string) => {
-    console.log(`Removing image for: ${breedName}`);
-    setBreedImages(prev => {
-      const updated = { ...prev };
-      delete updated[breedName];
-      console.log(`Removed image for ${breedName}, remaining images:`, Object.keys(updated).length);
-      return updated;
-    });
+    console.log(`ImageManagement: Removing image for: ${breedName}`);
+    removeImage(breedName);
     toast.success(`Removed image for ${breedName}`);
   };
 
   const generateAllMissingImages = async () => {
-    const breedsWithoutImages = breeds.filter(breed => !breedImages[breed.name]);
-    console.log(`Starting batch generation for ${breedsWithoutImages.length} breeds`);
+    const breedsWithoutImages = breeds.filter(breed => !storedImages[breed.name]);
+    console.log(`ImageManagement: Starting batch generation for ${breedsWithoutImages.length} breeds`);
     
     for (const breed of breedsWithoutImages) {
       await handleGenerateImage(breed.name);
@@ -120,11 +56,11 @@ export function ImageManagement() {
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
     
-    console.log('Batch generation completed');
+    console.log('ImageManagement: Batch generation completed');
   };
 
   const getTotalStoredImages = () => {
-    return Object.keys(breedImages).length;
+    return Object.keys(storedImages).length;
   };
 
   return (
@@ -160,9 +96,9 @@ export function ImageManagement() {
           >
             <Sparkles className="h-4 w-4" />
             Generate All Missing
-            {breeds.filter(breed => !breedImages[breed.name]).length > 0 && (
+            {breeds.filter(breed => !storedImages[breed.name]).length > 0 && (
               <Badge variant="secondary">
-                {breeds.filter(breed => !breedImages[breed.name]).length}
+                {breeds.filter(breed => !storedImages[breed.name]).length}
               </Badge>
             )}
           </Button>
@@ -178,17 +114,17 @@ export function ImageManagement() {
                 </div>
                 
                 <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                  {breedImages[breed.name] ? (
+                  {storedImages[breed.name] ? (
                     <img 
-                      src={breedImages[breed.name].imageUrl} 
+                      src={storedImages[breed.name].imageUrl} 
                       alt={breed.name}
                       className="w-full h-full object-cover rounded-lg"
                       onError={(e) => {
-                        console.error(`Failed to load image for ${breed.name}:`, breedImages[breed.name].imageUrl);
+                        console.error(`ImageManagement: Failed to load image for ${breed.name}:`, storedImages[breed.name].imageUrl);
                         e.currentTarget.style.display = 'none';
                       }}
                       onLoad={() => {
-                        console.log(`Successfully loaded image for ${breed.name}`);
+                        console.log(`ImageManagement: Successfully loaded image for ${breed.name}`);
                       }}
                     />
                   ) : (
@@ -199,14 +135,14 @@ export function ImageManagement() {
                   )}
                 </div>
                 
-                {breedImages[breed.name] && (
+                {storedImages[breed.name] && (
                   <div className="text-xs text-gray-500">
-                    Generated: {new Date(breedImages[breed.name].generatedAt).toLocaleDateString()}
+                    Generated: {new Date(storedImages[breed.name].generatedAt).toLocaleDateString()}
                   </div>
                 )}
                 
                 <div className="flex gap-2">
-                  {breedImages[breed.name] && (
+                  {storedImages[breed.name] && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -219,7 +155,7 @@ export function ImageManagement() {
                   )}
                   
                   <Button
-                    variant={breedImages[breed.name] ? "outline" : "default"}
+                    variant={storedImages[breed.name] ? "outline" : "default"}
                     size="sm"
                     onClick={() => handleGenerateImage(breed.name)}
                     disabled={generatingFor === breed.name}
@@ -233,7 +169,7 @@ export function ImageManagement() {
                     ) : (
                       <>
                         <Sparkles className="h-3 w-3 mr-1" />
-                        {breedImages[breed.name] ? 'Regenerate' : 'Generate'}
+                        {storedImages[breed.name] ? 'Regenerate' : 'Generate'}
                       </>
                     )}
                   </Button>

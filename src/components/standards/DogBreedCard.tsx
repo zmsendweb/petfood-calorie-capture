@@ -6,73 +6,24 @@ import { getSizeCategoryStyle } from "@/utils/sizeCategoryImages";
 import { DogStandard } from "@/data/types/dogTypes";
 import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { useAuth } from "@/hooks/useAuth";
-import { useState, useEffect } from "react";
+import { useBreedImages } from "@/hooks/useBreedImages";
 
 interface DogBreedCardProps {
   dog: DogStandard;
   ageFilter: string;
 }
 
-interface BreedImage {
-  breedName: string;
-  imageUrl: string;
-  generatedAt: string;
-}
-
 export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
-  const [storedImages, setStoredImages] = useState<Record<string, BreedImage>>({});
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
   const { isAdmin } = useAuth();
-
-  // Load stored images from localStorage
-  useEffect(() => {
-    const loadStoredImages = () => {
-      try {
-        const stored = localStorage.getItem('admin-breed-images');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setStoredImages(parsed);
-        }
-      } catch (error) {
-        console.error('Error loading stored images:', error);
-      }
-    };
-
-    loadStoredImages();
-
-    // Listen for storage changes
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'admin-breed-images') {
-        loadStoredImages();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    const interval = setInterval(loadStoredImages, 2000);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
-  }, []);
+  const { storedImages, saveImage } = useBreedImages();
 
   const handleGenerateImage = async (breedName: string) => {
+    console.log(`DogBreedCard: Generating image for ${breedName}`);
     const imageUrl = await generateBreedImage(breedName);
     if (imageUrl) {
-      const newBreedImage: BreedImage = {
-        breedName,
-        imageUrl,
-        generatedAt: new Date().toISOString()
-      };
-      
-      const currentImages = JSON.parse(localStorage.getItem('admin-breed-images') || '{}');
-      const updatedImages = {
-        ...currentImages,
-        [breedName]: newBreedImage
-      };
-      
-      localStorage.setItem('admin-breed-images', JSON.stringify(updatedImages));
-      setStoredImages(updatedImages);
+      saveImage(breedName, imageUrl);
+      console.log(`DogBreedCard: Generated and saved image for ${breedName}:`, imageUrl);
     }
   };
 
@@ -110,6 +61,12 @@ export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
                 src={storedImages[dog.breed].imageUrl} 
                 alt={dog.breed}
                 className="w-full h-full object-cover rounded-lg"
+                onLoad={() => {
+                  console.log(`DogBreedCard: Successfully loaded image for ${dog.breed}`);
+                }}
+                onError={(e) => {
+                  console.error(`DogBreedCard: Failed to load stored image for ${dog.breed}:`, storedImages[dog.breed].imageUrl);
+                }}
               />
             ) : (
               <div className="flex flex-col items-center gap-2">

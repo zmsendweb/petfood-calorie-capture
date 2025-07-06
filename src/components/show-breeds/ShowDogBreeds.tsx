@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,65 +9,20 @@ import { Search, Trophy, Star, Sparkles, Loader2 } from "lucide-react";
 import { showDogBreeds } from "@/data/show-breeds";
 import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { useAuth } from "@/hooks/useAuth";
+import { useBreedImages } from "@/hooks/useBreedImages";
 
 interface ShowDogBreedsProps {
   onBreedSelect: (breed: any) => void;
-}
-
-interface BreedImage {
-  breedName: string;
-  imageUrl: string;
-  generatedAt: string;
 }
 
 export const ShowDogBreeds = ({ onBreedSelect }: ShowDogBreedsProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sizeFilter, setSizeFilter] = useState("all");
   const [groupFilter, setGroupFilter] = useState("all");
-  const [storedImages, setStoredImages] = useState<Record<string, BreedImage>>({});
   
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
   const { isAdmin } = useAuth();
-
-  // Load stored images from localStorage
-  useEffect(() => {
-    const loadStoredImages = () => {
-      try {
-        const stored = localStorage.getItem('admin-breed-images');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          console.log('Frontend ShowDogBreeds: Loaded stored breed images:', Object.keys(parsed).length);
-          setStoredImages(parsed);
-        } else {
-          console.log('Frontend ShowDogBreeds: No stored images found in localStorage');
-        }
-      } catch (error) {
-        console.error('Frontend ShowDogBreeds: Error loading stored images:', error);
-      }
-    };
-
-    loadStoredImages();
-
-    // Listen for storage changes (when admin generates new images)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'admin-breed-images') {
-        console.log('Frontend ShowDogBreeds: Storage change detected, reloading images');
-        loadStoredImages();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check periodically in case we're on the same tab
-    const interval = setInterval(() => {
-      loadStoredImages();
-    }, 2000);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
-  }, []);
+  const { storedImages, saveImage } = useBreedImages();
 
   const filteredBreeds = showDogBreeds.filter(breed => {
     const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -78,26 +34,11 @@ export const ShowDogBreeds = ({ onBreedSelect }: ShowDogBreedsProps) => {
   const uniqueGroups = [...new Set(showDogBreeds.map(breed => breed.group))];
 
   const handleGenerateImage = async (breedName: string) => {
-    console.log(`Frontend ShowDogBreeds: Generating image for ${breedName}`);
+    console.log(`ShowDogBreeds: Generating image for ${breedName}`);
     const imageUrl = await generateBreedImage(breedName);
     if (imageUrl) {
-      // Store the image immediately in localStorage
-      const newBreedImage: BreedImage = {
-        breedName,
-        imageUrl,
-        generatedAt: new Date().toISOString()
-      };
-      
-      const currentImages = JSON.parse(localStorage.getItem('admin-breed-images') || '{}');
-      const updatedImages = {
-        ...currentImages,
-        [breedName]: newBreedImage
-      };
-      
-      localStorage.setItem('admin-breed-images', JSON.stringify(updatedImages));
-      setStoredImages(updatedImages);
-      
-      console.log(`Frontend ShowDogBreeds: Generated and stored image for ${breedName}:`, imageUrl);
+      saveImage(breedName, imageUrl);
+      console.log(`ShowDogBreeds: Generated and saved image for ${breedName}:`, imageUrl);
     }
   };
 
@@ -163,10 +104,10 @@ export const ShowDogBreeds = ({ onBreedSelect }: ShowDogBreedsProps) => {
                     alt={breed.name}
                     className="w-full h-full object-cover rounded-lg"
                     onLoad={() => {
-                      console.log(`Frontend ShowDogBreeds: Successfully loaded image for ${breed.name}`);
+                      console.log(`ShowDogBreeds: Successfully loaded image for ${breed.name}`);
                     }}
                     onError={(e) => {
-                      console.error(`Frontend ShowDogBreeds: Failed to load stored image for ${breed.name}:`, storedImages[breed.name].imageUrl);
+                      console.error(`ShowDogBreeds: Failed to load stored image for ${breed.name}:`, storedImages[breed.name].imageUrl);
                     }}
                   />
                 ) : (

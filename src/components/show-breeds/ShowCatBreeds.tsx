@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,65 +9,20 @@ import { Search, Trophy, Star, Sparkles, Loader2 } from "lucide-react";
 import { showCatBreeds } from "@/data/show-breeds";
 import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { useAuth } from "@/hooks/useAuth";
+import { useBreedImages } from "@/hooks/useBreedImages";
 
 interface ShowCatBreedsProps {
   onBreedSelect: (breed: any) => void;
-}
-
-interface BreedImage {
-  breedName: string;
-  imageUrl: string;
-  generatedAt: string;
 }
 
 export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sizeFilter, setSizeFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [storedImages, setStoredImages] = useState<Record<string, BreedImage>>({});
   
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
   const { isAdmin } = useAuth();
-
-  // Load stored images from localStorage
-  useEffect(() => {
-    const loadStoredImages = () => {
-      try {
-        const stored = localStorage.getItem('admin-breed-images');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          console.log('Frontend ShowCatBreeds: Loaded stored breed images:', Object.keys(parsed).length);
-          setStoredImages(parsed);
-        } else {
-          console.log('Frontend ShowCatBreeds: No stored images found in localStorage');
-        }
-      } catch (error) {
-        console.error('Frontend ShowCatBreeds: Error loading stored images:', error);
-      }
-    };
-
-    loadStoredImages();
-
-    // Listen for storage changes (when admin generates new images)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'admin-breed-images') {
-        console.log('Frontend ShowCatBreeds: Storage change detected, reloading images');
-        loadStoredImages();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check periodically in case we're on the same tab
-    const interval = setInterval(() => {
-      loadStoredImages();
-    }, 2000);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
-  }, []);
+  const { storedImages, saveImage } = useBreedImages();
 
   const filteredBreeds = showCatBreeds.filter(breed => {
     const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -78,26 +34,11 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
   const uniqueCoatTypes = [...new Set(showCatBreeds.map(breed => breed.coatType))];
 
   const handleGenerateImage = async (breedName: string) => {
-    console.log(`Frontend ShowCatBreeds: Generating image for ${breedName}`);
+    console.log(`ShowCatBreeds: Generating image for ${breedName}`);
     const imageUrl = await generateBreedImage(breedName);
     if (imageUrl) {
-      // Store the image immediately in localStorage
-      const newBreedImage: BreedImage = {
-        breedName,
-        imageUrl,
-        generatedAt: new Date().toISOString()
-      };
-      
-      const currentImages = JSON.parse(localStorage.getItem('admin-breed-images') || '{}');
-      const updatedImages = {
-        ...currentImages,
-        [breedName]: newBreedImage
-      };
-      
-      localStorage.setItem('admin-breed-images', JSON.stringify(updatedImages));
-      setStoredImages(updatedImages);
-      
-      console.log(`Frontend ShowCatBreeds: Generated and stored image for ${breedName}:`, imageUrl);
+      saveImage(breedName, imageUrl);
+      console.log(`ShowCatBreeds: Generated and saved image for ${breedName}:`, imageUrl);
     }
   };
 
@@ -163,10 +104,10 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
                     alt={breed.name}
                     className="w-full h-full object-cover rounded-lg"
                     onLoad={() => {
-                      console.log(`Frontend ShowCatBreeds: Successfully loaded image for ${breed.name}`);
+                      console.log(`ShowCatBreeds: Successfully loaded image for ${breed.name}`);
                     }}
                     onError={(e) => {
-                      console.error(`Frontend ShowCatBreeds: Failed to load stored image for ${breed.name}:`, storedImages[breed.name].imageUrl);
+                      console.error(`ShowCatBreeds: Failed to load stored image for ${breed.name}:`, storedImages[breed.name].imageUrl);
                     }}
                   />
                 ) : (

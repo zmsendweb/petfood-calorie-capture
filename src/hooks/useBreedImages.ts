@@ -1,7 +1,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { BreedImageStorage } from "@/services/breedImageStorage";
-import { useAuth } from "@/hooks/useAuth";
 
 interface BreedImage {
   breedName: string;
@@ -13,13 +12,12 @@ interface BreedImage {
 export const useBreedImages = () => {
   const [storedImages, setStoredImages] = useState<Record<string, BreedImage>>({});
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
 
   const loadImages = useCallback(() => {
     try {
       const images = BreedImageStorage.getStoredImages();
       setStoredImages(images);
-      console.log('useBreedImages: Loaded images:', Object.keys(images).length);
+      console.log('useBreedImages: Loaded global images:', Object.keys(images).length);
     } catch (error) {
       console.error('useBreedImages: Error loading images:', error);
     } finally {
@@ -37,12 +35,11 @@ export const useBreedImages = () => {
     return cleanup;
   }, [loadImages]);
 
-  const saveImage = useCallback((breedName: string, imageUrl: string) => {
-    const generatedBy = user?.email || 'admin';
+  const saveImage = useCallback((breedName: string, imageUrl: string, generatedBy: string = 'user') => {
     BreedImageStorage.saveImage(breedName, imageUrl, generatedBy);
     // Immediate update for current tab
     loadImages();
-  }, [user?.email, loadImages]);
+  }, [loadImages]);
 
   const removeImage = useCallback((breedName: string) => {
     BreedImageStorage.removeImage(breedName);
@@ -55,6 +52,14 @@ export const useBreedImages = () => {
     loadImages();
   }, [loadImages]);
 
+  const hasImage = useCallback((breedName: string) => {
+    return BreedImageStorage.hasImage(breedName);
+  }, []);
+
+  const getImage = useCallback((breedName: string) => {
+    return BreedImageStorage.getImage(breedName);
+  }, []);
+
   return {
     storedImages,
     isLoading,
@@ -62,6 +67,8 @@ export const useBreedImages = () => {
     removeImage,
     clearAllImages,
     refreshImages: loadImages,
-    imageCount: Object.keys(storedImages).length
+    imageCount: Object.keys(storedImages).length,
+    hasImage,
+    getImage
   };
 };

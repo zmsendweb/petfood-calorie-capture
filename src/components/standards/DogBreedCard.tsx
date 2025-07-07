@@ -22,7 +22,8 @@ export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
     console.log(`DogBreedCard: Generating image for ${breedName}`);
     const imageUrl = await generateBreedImage(breedName);
     if (imageUrl) {
-      saveImage(breedName, imageUrl);
+      const generatedBy = user?.email || 'anonymous';
+      saveImage(breedName, imageUrl, generatedBy);
       console.log(`DogBreedCard: Generated and saved image for ${breedName}:`, imageUrl);
     }
   };
@@ -70,6 +71,7 @@ export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
               />
             ) : (
               <div className="flex flex-col items-center gap-2">
+                {/* Show generate button only for admin users */}
                 {isAdmin && user && (
                   <Button
                     variant="outline"

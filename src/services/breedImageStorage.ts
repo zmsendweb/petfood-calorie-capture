@@ -3,10 +3,10 @@ interface BreedImage {
   breedName: string;
   imageUrl: string;
   generatedAt: string;
-  generatedBy: string; // Track who generated it
+  generatedBy: string;
 }
 
-const STORAGE_KEY = 'pet-breed-images'; // More generic key name
+const STORAGE_KEY = 'pet-breed-images-global'; // Global storage key
 
 export class BreedImageStorage {
   static getStoredImages(): Record<string, BreedImage> {
@@ -14,10 +14,10 @@ export class BreedImageStorage {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        console.log('BreedImageStorage: Loaded images from localStorage:', Object.keys(parsed).length);
+        console.log('BreedImageStorage: Loaded global images from localStorage:', Object.keys(parsed).length);
         return parsed;
       }
-      console.log('BreedImageStorage: No stored images found');
+      console.log('BreedImageStorage: No global stored images found');
       return {};
     } catch (error) {
       console.error('BreedImageStorage: Error loading stored images:', error);
@@ -25,7 +25,7 @@ export class BreedImageStorage {
     }
   }
 
-  static saveImage(breedName: string, imageUrl: string, generatedBy: string = 'admin'): void {
+  static saveImage(breedName: string, imageUrl: string, generatedBy: string = 'user'): void {
     try {
       const currentImages = this.getStoredImages();
       const newBreedImage: BreedImage = {
@@ -41,7 +41,7 @@ export class BreedImageStorage {
       };
       
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedImages));
-      console.log(`BreedImageStorage: Saved image for ${breedName}:`, imageUrl);
+      console.log(`BreedImageStorage: Saved global image for ${breedName}:`, imageUrl);
       
       // Trigger storage event for cross-tab synchronization
       this.triggerStorageEvent(updatedImages);
@@ -55,7 +55,7 @@ export class BreedImageStorage {
       const currentImages = this.getStoredImages();
       delete currentImages[breedName];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(currentImages));
-      console.log(`BreedImageStorage: Removed image for ${breedName}`);
+      console.log(`BreedImageStorage: Removed global image for ${breedName}`);
       
       // Trigger storage event
       this.triggerStorageEvent(currentImages);
@@ -67,7 +67,7 @@ export class BreedImageStorage {
   static clearAllImages(): void {
     try {
       localStorage.removeItem(STORAGE_KEY);
-      console.log('BreedImageStorage: Cleared all images');
+      console.log('BreedImageStorage: Cleared all global images');
       this.triggerStorageEvent({});
     } catch (error) {
       console.error('BreedImageStorage: Error clearing images:', error);
@@ -76,7 +76,7 @@ export class BreedImageStorage {
 
   private static triggerStorageEvent(updatedImages: Record<string, BreedImage>): void {
     // Dispatch custom event for same-tab updates
-    window.dispatchEvent(new CustomEvent('breed-images-updated', {
+    window.dispatchEvent(new CustomEvent('breed-images-updated-global', {
       detail: { images: updatedImages }
     }));
     
@@ -92,27 +92,37 @@ export class BreedImageStorage {
     // Listen for storage changes from other tabs
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY) {
-        console.log('BreedImageStorage: Storage change detected from other tab');
+        console.log('BreedImageStorage: Global storage change detected from other tab');
         callback();
       }
     };
 
     // Listen for custom events from same tab
     const handleCustomEvent = (e: CustomEvent) => {
-      console.log('BreedImageStorage: Custom event detected in same tab');
+      console.log('BreedImageStorage: Global custom event detected in same tab');
       callback();
     };
 
     window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('breed-images-updated', handleCustomEvent as EventListener);
+    window.addEventListener('breed-images-updated-global', handleCustomEvent as EventListener);
     
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('breed-images-updated', handleCustomEvent as EventListener);
+      window.removeEventListener('breed-images-updated-global', handleCustomEvent as EventListener);
     };
   }
 
   static getImageCount(): number {
     return Object.keys(this.getStoredImages()).length;
+  }
+
+  static hasImage(breedName: string): boolean {
+    const images = this.getStoredImages();
+    return breedName in images;
+  }
+
+  static getImage(breedName: string): BreedImage | null {
+    const images = this.getStoredImages();
+    return images[breedName] || null;
   }
 }

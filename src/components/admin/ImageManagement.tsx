@@ -8,6 +8,7 @@ import { Sparkles, Loader2, Image, Trash2, RotateCcw } from "lucide-react";
 import { showDogBreeds, showCatBreeds } from "@/data/show-breeds";
 import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { useBreedImages } from "@/hooks/useBreedImages";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 export function ImageManagement() {
@@ -15,6 +16,7 @@ export function ImageManagement() {
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
   const { storedImages, saveImage, removeImage, clearAllImages, refreshImages, imageCount } = useBreedImages();
+  const { user } = useAuth();
 
   const breeds = selectedCategory === "dogs" ? showDogBreeds : showCatBreeds;
 
@@ -25,7 +27,8 @@ export function ImageManagement() {
     try {
       const imageUrl = await generateBreedImage(breedName);
       if (imageUrl) {
-        saveImage(breedName, imageUrl);
+        const generatedBy = user?.email || 'admin';
+        saveImage(breedName, imageUrl, generatedBy);
         console.log(`ImageManagement: Generated and saved image for ${breedName}:`, imageUrl);
         toast.success(`Generated and saved image for ${breedName}`);
       } else {
@@ -78,7 +81,7 @@ export function ImageManagement() {
           </Badge>
         </CardTitle>
         <CardDescription>
-          Generate and manage images for breed cards. Images are stored locally and persist across sessions for all users.
+          Generate and manage images for breed cards. Images are stored globally and visible to all users without authentication.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

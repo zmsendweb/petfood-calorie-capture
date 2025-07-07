@@ -37,7 +37,8 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
     console.log(`ShowCatBreeds: Generating image for ${breedName}`);
     const imageUrl = await generateBreedImage(breedName);
     if (imageUrl) {
-      saveImage(breedName, imageUrl);
+      const generatedBy = user?.email || 'anonymous';
+      saveImage(breedName, imageUrl, generatedBy);
       console.log(`ShowCatBreeds: Generated and saved image for ${breedName}:`, imageUrl);
     }
   };
@@ -113,6 +114,7 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
                 ) : (
                   <div className="flex flex-col items-center gap-2">
                     <Trophy className="h-8 w-8 text-gray-400" />
+                    {/* Show generate button for all users, but only admins can actually generate */}
                     {isAdmin && user && (
                       <Button
                         variant="outline"

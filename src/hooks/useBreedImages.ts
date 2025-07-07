@@ -13,10 +13,11 @@ export const useBreedImages = () => {
   const [storedImages, setStoredImages] = useState<Record<string, BreedImage>>({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadImages = useCallback(() => {
+  const loadImages = useCallback(async () => {
     console.log('useBreedImages: Loading images...');
     try {
-      const images = BreedImageStorage.getStoredImages();
+      setIsLoading(true);
+      const images = await BreedImageStorage.getStoredImages();
       setStoredImages(images);
       console.log('useBreedImages: Successfully loaded images:', Object.keys(images).length);
       
@@ -49,47 +50,47 @@ export const useBreedImages = () => {
     };
   }, [loadImages]);
 
-  const saveImage = useCallback((breedName: string, imageUrl: string, generatedBy: string = 'user') => {
+  const saveImage = useCallback(async (breedName: string, imageUrl: string, generatedBy: string = 'user') => {
     console.log(`useBreedImages: Saving image for "${breedName}":`, imageUrl.substring(0, 50) + '...');
-    BreedImageStorage.saveImage(breedName, imageUrl, generatedBy);
+    await BreedImageStorage.saveImage(breedName, imageUrl, generatedBy);
     // Force immediate update
     setTimeout(() => {
       loadImages();
-    }, 100);
+    }, 500);
   }, [loadImages]);
 
-  const removeImage = useCallback((breedName: string) => {
+  const removeImage = useCallback(async (breedName: string) => {
     console.log(`useBreedImages: Removing image for "${breedName}"`);
-    BreedImageStorage.removeImage(breedName);
+    await BreedImageStorage.removeImage(breedName);
     // Force immediate update
     setTimeout(() => {
       loadImages();
-    }, 100);
+    }, 500);
   }, [loadImages]);
 
-  const clearAllImages = useCallback(() => {
+  const clearAllImages = useCallback(async () => {
     console.log('useBreedImages: Clearing all images');
-    BreedImageStorage.clearAllImages();
+    await BreedImageStorage.clearAllImages();
     // Force immediate update
     setTimeout(() => {
       loadImages();
-    }, 100);
+    }, 500);
   }, [loadImages]);
 
   const hasImage = useCallback((breedName: string) => {
-    const hasImg = BreedImageStorage.hasImage(breedName);
+    const hasImg = !!storedImages[breedName?.trim()];
     console.log(`useBreedImages: hasImage("${breedName}") = ${hasImg}`);
     return hasImg;
-  }, []);
+  }, [storedImages]);
 
   const getImage = useCallback((breedName: string) => {
-    const image = BreedImageStorage.getImage(breedName);
+    const image = storedImages[breedName?.trim()] || null;
     console.log(`useBreedImages: getImage("${breedName}") =`, image ? 'found' : 'not found');
     return image;
-  }, []);
+  }, [storedImages]);
 
-  const debugStorage = useCallback(() => {
-    BreedImageStorage.debugStorage();
+  const debugStorage = useCallback(async () => {
+    await BreedImageStorage.debugStorage();
   }, []);
 
   return {

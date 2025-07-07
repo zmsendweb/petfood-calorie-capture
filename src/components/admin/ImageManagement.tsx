@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Loader2, Image, Trash2, RotateCcw } from "lucide-react";
+import { Sparkles, Loader2, Image, Trash2, RotateCcw, Bug } from "lucide-react";
 import { showDogBreeds, showCatBreeds } from "@/data/show-breeds";
 import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { useBreedImages } from "@/hooks/useBreedImages";
@@ -15,7 +15,7 @@ export function ImageManagement() {
   const [selectedCategory, setSelectedCategory] = useState("dogs");
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
-  const { storedImages, saveImage, removeImage, clearAllImages, refreshImages, imageCount } = useBreedImages();
+  const { storedImages, saveImage, removeImage, clearAllImages, refreshImages, imageCount, debugStorage } = useBreedImages();
   const { user } = useAuth();
 
   const breeds = selectedCategory === "dogs" ? showDogBreeds : showCatBreeds;
@@ -28,8 +28,9 @@ export function ImageManagement() {
       const imageUrl = await generateBreedImage(breedName);
       if (imageUrl) {
         const generatedBy = user?.email || 'admin';
+        console.log(`ImageManagement: Generated image URL for ${breedName}:`, imageUrl);
         saveImage(breedName, imageUrl, generatedBy);
-        console.log(`ImageManagement: Generated and saved image for ${breedName}:`, imageUrl);
+        console.log(`ImageManagement: Generated and saved image for ${breedName}`);
         toast.success(`Generated and saved image for ${breedName}`);
       } else {
         console.error(`ImageManagement: Failed to generate image for ${breedName} - no URL returned`);
@@ -81,7 +82,7 @@ export function ImageManagement() {
           </Badge>
         </CardTitle>
         <CardDescription>
-          Generate and manage images for breed cards. Images are stored globally and visible to all users without authentication.
+          Generate and manage images for breed cards. Images are stored globally and visible to all users.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -97,6 +98,16 @@ export function ImageManagement() {
           </Select>
           
           <div className="flex gap-2">
+            <Button 
+              onClick={debugStorage}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Bug className="h-4 w-4" />
+              Debug
+            </Button>
+            
             <Button 
               onClick={refreshImages}
               variant="outline"
@@ -134,80 +145,85 @@ export function ImageManagement() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {breeds.map((breed) => (
-            <Card key={breed.name} className="p-4">
-              <div className="space-y-3">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-medium">{breed.name}</h3>
-                  <Badge variant="outline">{breed.size}</Badge>
-                </div>
-                
-                <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                  {storedImages[breed.name] ? (
-                    <img 
-                      src={storedImages[breed.name].imageUrl} 
-                      alt={breed.name}
-                      className="w-full h-full object-cover rounded-lg"
-                      onError={(e) => {
-                        console.error(`ImageManagement: Failed to load image for ${breed.name}:`, storedImages[breed.name].imageUrl);
-                        e.currentTarget.style.display = 'none';
-                      }}
-                      onLoad={() => {
-                        console.log(`ImageManagement: Successfully loaded image for ${breed.name}`);
-                      }}
-                    />
-                  ) : (
-                    <div className="text-center text-gray-400">
-                      <Image className="h-8 w-8 mx-auto mb-2" />
-                      <p className="text-sm">No image</p>
+          {breeds.map((breed) => {
+            const breedImage = storedImages[breed.name];
+            const hasStoredImage = breedImage && breedImage.imageUrl;
+            
+            return (
+              <Card key={breed.name} className="p-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-medium">{breed.name}</h3>
+                    <Badge variant="outline">{breed.size}</Badge>
+                  </div>
+                  
+                  <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                    {hasStoredImage ? (
+                      <img 
+                        src={breedImage.imageUrl} 
+                        alt={breed.name}
+                        className="w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          console.error(`ImageManagement: Failed to load image for ${breed.name}:`, breedImage.imageUrl);
+                          e.currentTarget.style.display = 'none';
+                        }}
+                        onLoad={() => {
+                          console.log(`ImageManagement: Successfully loaded image for ${breed.name}`);
+                        }}
+                      />
+                    ) : (
+                      <div className="text-center text-gray-400">
+                        <Image className="h-8 w-8 mx-auto mb-2" />
+                        <p className="text-sm">No image</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {hasStoredImage && (
+                    <div className="text-xs text-gray-500">
+                      Generated: {new Date(breedImage.generatedAt).toLocaleDateString()}
+                      <br />
+                      By: {breedImage.generatedBy}
                     </div>
                   )}
-                </div>
-                
-                {storedImages[breed.name] && (
-                  <div className="text-xs text-gray-500">
-                    Generated: {new Date(storedImages[breed.name].generatedAt).toLocaleDateString()}
-                    <br />
-                    By: {storedImages[breed.name].generatedBy}
-                  </div>
-                )}
-                
-                <div className="flex gap-2">
-                  {storedImages[breed.name] && (
+                  
+                  <div className="flex gap-2">
+                    {hasStoredImage && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleRemoveImage(breed.name)}
+                        className="flex-1"
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Remove
+                      </Button>
+                    )}
+                    
                     <Button
-                      variant="outline"
+                      variant={hasStoredImage ? "outline" : "default"}
                       size="sm"
-                      onClick={() => handleRemoveImage(breed.name)}
+                      onClick={() => handleGenerateImage(breed.name)}
+                      disabled={generatingFor === breed.name}
                       className="flex-1"
                     >
-                      <Trash2 className="h-3 w-3 mr-1" />
-                      Remove
+                      {generatingFor === breed.name ? (
+                        <>
+                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          {hasStoredImage ? 'Regenerate' : 'Generate'}
+                        </>
+                      )}
                     </Button>
-                  )}
-                  
-                  <Button
-                    variant={storedImages[breed.name] ? "outline" : "default"}
-                    size="sm"
-                    onClick={() => handleGenerateImage(breed.name)}
-                    disabled={generatingFor === breed.name}
-                    className="flex-1"
-                  >
-                    {generatingFor === breed.name ? (
-                      <>
-                        <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="h-3 w-3 mr-1" />
-                        {storedImages[breed.name] ? 'Regenerate' : 'Generate'}
-                      </>
-                    )}
-                  </Button>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       </CardContent>
     </Card>

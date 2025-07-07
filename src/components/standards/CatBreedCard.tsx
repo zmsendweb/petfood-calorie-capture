@@ -19,12 +19,15 @@ export const CatBreedCard = ({ cat, ageFilter }: CatBreedCardProps) => {
   const { storedImages, saveImage, isLoading } = useBreedImages();
 
   const handleGenerateImage = async (breedName: string) => {
-    console.log(`CatBreedCard: Generating image for ${breedName}`);
+    console.log(`CatBreedCard: Starting image generation for "${breedName}"`);
     const imageUrl = await generateBreedImage(breedName);
     if (imageUrl) {
       const generatedBy = user?.email || 'anonymous';
+      console.log(`CatBreedCard: Generated image URL for "${breedName}":`, imageUrl);
       saveImage(breedName, imageUrl, generatedBy);
-      console.log(`CatBreedCard: Generated and saved image for ${breedName}:`, imageUrl);
+      console.log(`CatBreedCard: Saved image for "${breedName}"`);
+    } else {
+      console.error(`CatBreedCard: Failed to generate image for "${breedName}"`);
     }
   };
 
@@ -42,6 +45,12 @@ export const CatBreedCard = ({ cat, ageFilter }: CatBreedCardProps) => {
   // Get the appropriate style for the category
   const sizeStyle = getSizeCategoryStyle(displayCategory);
   
+  // Check if we have a stored image
+  const breedImage = storedImages[cat.breed];
+  const hasStoredImage = !isLoading && breedImage && breedImage.imageUrl;
+  
+  console.log(`CatBreedCard: Rendering ${cat.breed}, hasStoredImage: ${hasStoredImage}`);
+  
   return (
     <Card className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
       <CardHeader className="pb-2">
@@ -57,20 +66,22 @@ export const CatBreedCard = ({ cat, ageFilter }: CatBreedCardProps) => {
         <div className="space-y-4">
           {/* Breed Image */}
           <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-            {!isLoading && storedImages[cat.breed] ? (
+            {hasStoredImage ? (
               <img 
-                src={storedImages[cat.breed].imageUrl} 
+                src={breedImage.imageUrl} 
                 alt={cat.breed}
                 className="w-full h-full object-cover rounded-lg"
                 onLoad={() => {
                   console.log(`CatBreedCard: Successfully loaded image for ${cat.breed}`);
                 }}
                 onError={(e) => {
-                  console.error(`CatBreedCard: Failed to load stored image for ${cat.breed}:`, storedImages[cat.breed].imageUrl);
+                  console.error(`CatBreedCard: Failed to load image for ${cat.breed}:`, breedImage.imageUrl);
+                  console.error('Image error event:', e);
                 }}
               />
             ) : (
               <div className="flex flex-col items-center gap-2">
+                <span className="text-xs text-gray-500">No image</span>
                 {/* Show generate button only for admin users */}
                 {isAdmin && user && (
                   <Button

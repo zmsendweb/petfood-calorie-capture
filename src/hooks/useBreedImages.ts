@@ -18,13 +18,16 @@ export const useBreedImages = () => {
     try {
       setIsLoading(true);
       const images = await BreedImageStorage.getStoredImages();
-      setStoredImages(images);
+      
       console.log('useBreedImages: Successfully loaded images:', Object.keys(images).length);
       
       // Debug individual images
       Object.keys(images).forEach(breedName => {
-        console.log(`useBreedImages: ${breedName} -> ${images[breedName].imageUrl.substring(0, 50)}...`);
+        const img = images[breedName];
+        console.log(`useBreedImages: ${breedName} -> ${img.imageUrl?.substring(0, 50)}...`);
       });
+      
+      setStoredImages(images);
     } catch (error) {
       console.error('useBreedImages: Error loading images:', error);
       setStoredImages({});
@@ -35,10 +38,11 @@ export const useBreedImages = () => {
 
   useEffect(() => {
     console.log('useBreedImages: Effect triggered - initial load');
+    
     // Initial load
     loadImages();
 
-    // Set up storage listener
+    // Set up storage listener for updates
     const cleanup = BreedImageStorage.setupStorageListener(() => {
       console.log('useBreedImages: Storage listener triggered - reloading images');
       loadImages();
@@ -52,40 +56,62 @@ export const useBreedImages = () => {
 
   const saveImage = useCallback(async (breedName: string, imageUrl: string, generatedBy: string = 'user') => {
     console.log(`useBreedImages: Saving image for "${breedName}":`, imageUrl.substring(0, 50) + '...');
-    await BreedImageStorage.saveImage(breedName, imageUrl, generatedBy);
-    // Force immediate update
-    setTimeout(() => {
-      loadImages();
-    }, 500);
+    try {
+      await BreedImageStorage.saveImage(breedName, imageUrl, generatedBy);
+      console.log(`useBreedImages: Successfully saved image for "${breedName}"`);
+      
+      // Force immediate update after a short delay
+      setTimeout(() => {
+        loadImages();
+      }, 200);
+    } catch (error) {
+      console.error(`useBreedImages: Error saving image for "${breedName}":`, error);
+    }
   }, [loadImages]);
 
   const removeImage = useCallback(async (breedName: string) => {
     console.log(`useBreedImages: Removing image for "${breedName}"`);
-    await BreedImageStorage.removeImage(breedName);
-    // Force immediate update
-    setTimeout(() => {
-      loadImages();
-    }, 500);
+    try {
+      await BreedImageStorage.removeImage(breedName);
+      console.log(`useBreedImages: Successfully removed image for "${breedName}"`);
+      
+      // Force immediate update
+      setTimeout(() => {
+        loadImages();
+      }, 200);
+    } catch (error) {
+      console.error(`useBreedImages: Error removing image for "${breedName}":`, error);
+    }
   }, [loadImages]);
 
   const clearAllImages = useCallback(async () => {
     console.log('useBreedImages: Clearing all images');
-    await BreedImageStorage.clearAllImages();
-    // Force immediate update
-    setTimeout(() => {
-      loadImages();
-    }, 500);
+    try {
+      await BreedImageStorage.clearAllImages();
+      console.log('useBreedImages: Successfully cleared all images');
+      
+      // Force immediate update
+      setTimeout(() => {
+        loadImages();
+      }, 200);
+    } catch (error) {
+      console.error('useBreedImages: Error clearing all images:', error);
+    }
   }, [loadImages]);
 
   const hasImage = useCallback((breedName: string) => {
-    const hasImg = !!storedImages[breedName?.trim()];
-    console.log(`useBreedImages: hasImage("${breedName}") = ${hasImg}`);
+    if (!breedName) return false;
+    const trimmedName = breedName.trim();
+    const hasImg = !!storedImages[trimmedName];
+    console.log(`useBreedImages: hasImage("${trimmedName}") = ${hasImg}`);
     return hasImg;
   }, [storedImages]);
 
   const getImage = useCallback((breedName: string) => {
-    const image = storedImages[breedName?.trim()] || null;
-    console.log(`useBreedImages: getImage("${breedName}") =`, image ? 'found' : 'not found');
+    if (!breedName) return null;
+    const trimmedName = breedName.trim();
+    const image = storedImages[trimmedName] || null;
+    console.log(`useBreedImages: getImage("${trimmedName}") =`, image ? 'found' : 'not found');
     return image;
   }, [storedImages]);
 

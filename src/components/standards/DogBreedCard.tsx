@@ -15,8 +15,8 @@ interface DogBreedCardProps {
 
 export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
-  const { isAdmin } = useAuth();
-  const { storedImages, saveImage } = useBreedImages();
+  const { isAdmin, user } = useAuth();
+  const { storedImages, saveImage, isLoading } = useBreedImages();
 
   const handleGenerateImage = async (breedName: string) => {
     console.log(`DogBreedCard: Generating image for ${breedName}`);
@@ -56,7 +56,7 @@ export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
         <div className="space-y-4">
           {/* Breed Image */}
           <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-            {storedImages[dog.breed] ? (
+            {!isLoading && storedImages[dog.breed] ? (
               <img 
                 src={storedImages[dog.breed].imageUrl} 
                 alt={dog.breed}
@@ -70,7 +70,7 @@ export const DogBreedCard = ({ dog, ageFilter }: DogBreedCardProps) => {
               />
             ) : (
               <div className="flex flex-col items-center gap-2">
-                {isAdmin && (
+                {isAdmin && user && (
                   <Button
                     variant="outline"
                     size="sm"

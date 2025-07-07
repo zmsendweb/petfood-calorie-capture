@@ -15,8 +15,8 @@ interface CatBreedCardProps {
 
 export const CatBreedCard = ({ cat, ageFilter }: CatBreedCardProps) => {
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
-  const { isAdmin } = useAuth();
-  const { storedImages, saveImage } = useBreedImages();
+  const { isAdmin, user } = useAuth();
+  const { storedImages, saveImage, isLoading } = useBreedImages();
 
   const handleGenerateImage = async (breedName: string) => {
     console.log(`CatBreedCard: Generating image for ${breedName}`);
@@ -56,7 +56,7 @@ export const CatBreedCard = ({ cat, ageFilter }: CatBreedCardProps) => {
         <div className="space-y-4">
           {/* Breed Image */}
           <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-            {storedImages[cat.breed] ? (
+            {!isLoading && storedImages[cat.breed] ? (
               <img 
                 src={storedImages[cat.breed].imageUrl} 
                 alt={cat.breed}
@@ -70,7 +70,7 @@ export const CatBreedCard = ({ cat, ageFilter }: CatBreedCardProps) => {
               />
             ) : (
               <div className="flex flex-col items-center gap-2">
-                {isAdmin && (
+                {isAdmin && user && (
                   <Button
                     variant="outline"
                     size="sm"

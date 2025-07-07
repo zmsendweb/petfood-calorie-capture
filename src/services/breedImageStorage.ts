@@ -3,9 +3,10 @@ interface BreedImage {
   breedName: string;
   imageUrl: string;
   generatedAt: string;
+  generatedBy: string; // Track who generated it
 }
 
-const STORAGE_KEY = 'admin-breed-images';
+const STORAGE_KEY = 'pet-breed-images'; // More generic key name
 
 export class BreedImageStorage {
   static getStoredImages(): Record<string, BreedImage> {
@@ -24,13 +25,14 @@ export class BreedImageStorage {
     }
   }
 
-  static saveImage(breedName: string, imageUrl: string): void {
+  static saveImage(breedName: string, imageUrl: string, generatedBy: string = 'admin'): void {
     try {
       const currentImages = this.getStoredImages();
       const newBreedImage: BreedImage = {
         breedName,
         imageUrl,
-        generatedAt: new Date().toISOString()
+        generatedAt: new Date().toISOString(),
+        generatedBy
       };
       
       const updatedImages = {
@@ -42,11 +44,7 @@ export class BreedImageStorage {
       console.log(`BreedImageStorage: Saved image for ${breedName}:`, imageUrl);
       
       // Trigger storage event for cross-tab synchronization
-      window.dispatchEvent(new StorageEvent('storage', {
-        key: STORAGE_KEY,
-        newValue: JSON.stringify(updatedImages),
-        storageArea: localStorage
-      }));
+      this.triggerStorageEvent(updatedImages);
     } catch (error) {
       console.error('BreedImageStorage: Error saving image:', error);
     }
@@ -60,33 +58,61 @@ export class BreedImageStorage {
       console.log(`BreedImageStorage: Removed image for ${breedName}`);
       
       // Trigger storage event
-      window.dispatchEvent(new StorageEvent('storage', {
-        key: STORAGE_KEY,
-        newValue: JSON.stringify(currentImages),
-        storageArea: localStorage
-      }));
+      this.triggerStorageEvent(currentImages);
     } catch (error) {
       console.error('BreedImageStorage: Error removing image:', error);
     }
   }
 
+  static clearAllImages(): void {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      console.log('BreedImageStorage: Cleared all images');
+      this.triggerStorageEvent({});
+    } catch (error) {
+      console.error('BreedImageStorage: Error clearing images:', error);
+    }
+  }
+
+  private static triggerStorageEvent(updatedImages: Record<string, BreedImage>): void {
+    // Dispatch custom event for same-tab updates
+    window.dispatchEvent(new CustomEvent('breed-images-updated', {
+      detail: { images: updatedImages }
+    }));
+    
+    // Also dispatch storage event for cross-tab sync
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: STORAGE_KEY,
+      newValue: JSON.stringify(updatedImages),
+      storageArea: localStorage
+    }));
+  }
+
   static setupStorageListener(callback: () => void): () => void {
+    // Listen for storage changes from other tabs
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY) {
-        console.log('BreedImageStorage: Storage change detected, reloading images');
+        console.log('BreedImageStorage: Storage change detected from other tab');
         callback();
       }
     };
 
+    // Listen for custom events from same tab
+    const handleCustomEvent = (e: CustomEvent) => {
+      console.log('BreedImageStorage: Custom event detected in same tab');
+      callback();
+    };
+
     window.addEventListener('storage', handleStorageChange);
-    
-    // Also listen for manual dispatched events (same-tab updates)
-    const handleCustomEvent = () => callback();
-    window.addEventListener('storage', handleCustomEvent);
+    window.addEventListener('breed-images-updated', handleCustomEvent as EventListener);
     
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('storage', handleCustomEvent);
+      window.removeEventListener('breed-images-updated', handleCustomEvent as EventListener);
     };
+  }
+
+  static getImageCount(): number {
+    return Object.keys(this.getStoredImages()).length;
   }
 }

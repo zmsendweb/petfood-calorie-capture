@@ -1,21 +1,31 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BreedImageStorage } from "@/services/breedImageStorage";
+import { useAuth } from "@/hooks/useAuth";
 
 interface BreedImage {
   breedName: string;
   imageUrl: string;
   generatedAt: string;
+  generatedBy: string;
 }
 
 export const useBreedImages = () => {
   const [storedImages, setStoredImages] = useState<Record<string, BreedImage>>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
 
-  const loadImages = () => {
-    const images = BreedImageStorage.getStoredImages();
-    setStoredImages(images);
-    console.log('useBreedImages: Loaded images:', Object.keys(images).length);
-  };
+  const loadImages = useCallback(() => {
+    try {
+      const images = BreedImageStorage.getStoredImages();
+      setStoredImages(images);
+      console.log('useBreedImages: Loaded images:', Object.keys(images).length);
+    } catch (error) {
+      console.error('useBreedImages: Error loading images:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Initial load
@@ -24,29 +34,34 @@ export const useBreedImages = () => {
     // Set up storage listener
     const cleanup = BreedImageStorage.setupStorageListener(loadImages);
 
-    // Also check periodically for same-tab updates
-    const interval = setInterval(loadImages, 2000);
+    return cleanup;
+  }, [loadImages]);
 
-    return () => {
-      cleanup();
-      clearInterval(interval);
-    };
-  }, []);
+  const saveImage = useCallback((breedName: string, imageUrl: string) => {
+    const generatedBy = user?.email || 'admin';
+    BreedImageStorage.saveImage(breedName, imageUrl, generatedBy);
+    // Immediate update for current tab
+    loadImages();
+  }, [user?.email, loadImages]);
 
-  const saveImage = (breedName: string, imageUrl: string) => {
-    BreedImageStorage.saveImage(breedName, imageUrl);
-    loadImages(); // Immediate update
-  };
-
-  const removeImage = (breedName: string) => {
+  const removeImage = useCallback((breedName: string) => {
     BreedImageStorage.removeImage(breedName);
-    loadImages(); // Immediate update
-  };
+    // Immediate update for current tab
+    loadImages();
+  }, [loadImages]);
+
+  const clearAllImages = useCallback(() => {
+    BreedImageStorage.clearAllImages();
+    loadImages();
+  }, [loadImages]);
 
   return {
     storedImages,
+    isLoading,
     saveImage,
     removeImage,
-    refreshImages: loadImages
+    clearAllImages,
+    refreshImages: loadImages,
+    imageCount: Object.keys(storedImages).length
   };
 };

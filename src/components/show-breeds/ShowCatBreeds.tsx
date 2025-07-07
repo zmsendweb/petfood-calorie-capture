@@ -21,8 +21,8 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
   const [typeFilter, setTypeFilter] = useState("all");
   
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
-  const { isAdmin } = useAuth();
-  const { storedImages, saveImage } = useBreedImages();
+  const { isAdmin, user } = useAuth();
+  const { storedImages, saveImage, isLoading } = useBreedImages();
 
   const filteredBreeds = showCatBreeds.filter(breed => {
     const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -98,7 +98,7 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                {storedImages[breed.name] ? (
+                {!isLoading && storedImages[breed.name] ? (
                   <img 
                     src={storedImages[breed.name].imageUrl} 
                     alt={breed.name}
@@ -113,7 +113,7 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
                 ) : (
                   <div className="flex flex-col items-center gap-2">
                     <Trophy className="h-8 w-8 text-gray-400" />
-                    {isAdmin && (
+                    {isAdmin && user && (
                       <Button
                         variant="outline"
                         size="sm"

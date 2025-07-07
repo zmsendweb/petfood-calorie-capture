@@ -1,10 +1,10 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Loader2, Image, Trash2 } from "lucide-react";
+import { Sparkles, Loader2, Image, Trash2, RotateCcw } from "lucide-react";
 import { showDogBreeds, showCatBreeds } from "@/data/show-breeds";
 import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { useBreedImages } from "@/hooks/useBreedImages";
@@ -14,7 +14,7 @@ export function ImageManagement() {
   const [selectedCategory, setSelectedCategory] = useState("dogs");
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
-  const { storedImages, saveImage, removeImage } = useBreedImages();
+  const { storedImages, saveImage, removeImage, clearAllImages, refreshImages, imageCount } = useBreedImages();
 
   const breeds = selectedCategory === "dogs" ? showDogBreeds : showCatBreeds;
 
@@ -46,6 +46,12 @@ export function ImageManagement() {
     toast.success(`Removed image for ${breedName}`);
   };
 
+  const handleClearAll = () => {
+    console.log('ImageManagement: Clearing all images');
+    clearAllImages();
+    toast.success('Cleared all images');
+  };
+
   const generateAllMissingImages = async () => {
     const breedsWithoutImages = breeds.filter(breed => !storedImages[breed.name]);
     console.log(`ImageManagement: Starting batch generation for ${breedsWithoutImages.length} breeds`);
@@ -59,9 +65,7 @@ export function ImageManagement() {
     console.log('ImageManagement: Batch generation completed');
   };
 
-  const getTotalStoredImages = () => {
-    return Object.keys(storedImages).length;
-  };
+  const missingImagesCount = breeds.filter(breed => !storedImages[breed.name]).length;
 
   return (
     <Card>
@@ -70,15 +74,15 @@ export function ImageManagement() {
           <Image className="h-5 w-5" />
           Image Management
           <Badge variant="outline" className="ml-auto">
-            {getTotalStoredImages()} stored images
+            {imageCount} total images
           </Badge>
         </CardTitle>
         <CardDescription>
-          Generate and manage images for show breed cards. Images are permanently stored and will appear on the frontend.
+          Generate and manage images for breed cards. Images are stored locally and persist across sessions for all users.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center flex-wrap gap-2">
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-48">
               <SelectValue />
@@ -89,19 +93,41 @@ export function ImageManagement() {
             </SelectContent>
           </Select>
           
-          <Button 
-            onClick={generateAllMissingImages}
-            disabled={isGenerating || generatingFor !== null}
-            className="flex items-center gap-2"
-          >
-            <Sparkles className="h-4 w-4" />
-            Generate All Missing
-            {breeds.filter(breed => !storedImages[breed.name]).length > 0 && (
-              <Badge variant="secondary">
-                {breeds.filter(breed => !storedImages[breed.name]).length}
-              </Badge>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={refreshImages}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <RotateCcw className="h-4 w-4" />
+              Refresh
+            </Button>
+            
+            <Button 
+              onClick={handleClearAll}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              Clear All
+            </Button>
+            
+            <Button 
+              onClick={generateAllMissingImages}
+              disabled={isGenerating || generatingFor !== null || missingImagesCount === 0}
+              className="flex items-center gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              Generate All Missing
+              {missingImagesCount > 0 && (
+                <Badge variant="secondary">
+                  {missingImagesCount}
+                </Badge>
+              )}
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -138,6 +164,8 @@ export function ImageManagement() {
                 {storedImages[breed.name] && (
                   <div className="text-xs text-gray-500">
                     Generated: {new Date(storedImages[breed.name].generatedAt).toLocaleDateString()}
+                    <br />
+                    By: {storedImages[breed.name].generatedBy}
                   </div>
                 )}
                 

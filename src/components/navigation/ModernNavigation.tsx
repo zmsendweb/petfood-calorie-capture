@@ -25,7 +25,8 @@ import {
   LogOut,
   User,
   Trophy,
-  ChevronDown
+  ChevronDown,
+  Settings
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -202,6 +203,12 @@ export function ModernNavigation() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/account" className="flex items-center">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Account Settings
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/pet-profiles" className="flex items-center">
                     <User className="mr-2 h-4 w-4" />

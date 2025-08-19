@@ -11,6 +11,7 @@ import { Features } from "./pages/Features";
 import { FeatureDetails } from "./pages/FeatureDetails";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import Account from "./pages/Account";
 import Admin from "./pages/Admin";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import "./App.css";
@@ -49,6 +50,14 @@ function App() {
       />
       <Route path="/features" element={<Features />} />
       <Route path="/features/:featureId" element={<FeatureDetails />} />
+      <Route 
+        path="/account" 
+        element={
+          <ProtectedRoute>
+            <Account />
+          </ProtectedRoute>
+        }
+      />
       <Route 
         path="/admin" 
         element={

@@ -12,7 +12,7 @@ export const CatStandardsHeader = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold">Cat Breed Feeding Standards</h1>
+        <h1 className="text-3xl font-bold">Cat Breed Standards</h1>
       </div>
 
       <div className="mb-4 flex flex-wrap gap-2">

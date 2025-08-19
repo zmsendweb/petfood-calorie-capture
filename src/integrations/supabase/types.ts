@@ -7,13 +7,40 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
   }
   public: {
     Tables: {
+      breed_images: {
+        Row: {
+          breed_name: string
+          created_at: string
+          generated_by: string | null
+          id: string
+          image_url: string
+          updated_at: string
+        }
+        Insert: {
+          breed_name: string
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          image_url: string
+          updated_at?: string
+        }
+        Update: {
+          breed_name?: string
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          image_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pet_goals: {
         Row: {
           created_at: string
@@ -138,7 +165,7 @@ export type Database = {
     Functions: {
       assign_admin_role: {
         Args: { user_email: string } | { user_id: string }
-        Returns: undefined
+        Returns: string
       }
     }
     Enums: {

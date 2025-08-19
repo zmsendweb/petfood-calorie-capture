@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 
 interface BreedImage {
   breedName: string;
@@ -6,144 +7,196 @@ interface BreedImage {
   generatedBy: string;
 }
 
-const STORAGE_KEY = 'pet-breed-images-global-v2';
+const STORAGE_KEY = 'pet-breed-images-backup';
 
 export class BreedImageStorage {
-  // Get images from localStorage with enhanced cross-browser support
+  // Get images from database with localStorage fallback
   static async getStoredImages(): Promise<Record<string, BreedImage>> {
+    console.log('BreedImageStorage: Loading images from database...');
+    
     try {
-      console.log('BreedImageStorage: Loading images from localStorage...');
-      
-      // Try to get from localStorage
+      // First try to get from database
+      const { data: dbImages, error } = await supabase
+        .from('breed_images')
+        .select('*');
+
+      if (error) {
+        console.error('BreedImageStorage: Database error:', error);
+        // Fall back to localStorage
+        return this.getLocalStorageImages();
+      }
+
+      // Convert database format to our format
+      const images: Record<string, BreedImage> = {};
+      if (dbImages) {
+        dbImages.forEach(img => {
+          images[img.breed_name] = {
+            breedName: img.breed_name,
+            imageUrl: img.image_url,
+            generatedAt: img.created_at,
+            generatedBy: img.generated_by || 'user'
+          };
+        });
+      }
+
+      console.log('BreedImageStorage: Found', Object.keys(images).length, 'images in database');
+      return images;
+    } catch (error) {
+      console.error('BreedImageStorage: Error getting images from database:', error);
+      // Fall back to localStorage
+      return this.getLocalStorageImages();
+    }
+  }
+
+  // Fallback method for localStorage
+  private static getLocalStorageImages(): Record<string, BreedImage> {
+    console.log('BreedImageStorage: Falling back to localStorage...');
+    
+    try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (typeof parsed === 'object' && parsed !== null) {
-          console.log('BreedImageStorage: Successfully loaded images from localStorage:', Object.keys(parsed).length);
-          
-          // Validate each image entry
-          const validatedImages: Record<string, BreedImage> = {};
-          Object.keys(parsed).forEach(key => {
-            const img = parsed[key];
-            if (img && img.breedName && img.imageUrl && img.generatedAt) {
-              validatedImages[key] = {
-                breedName: img.breedName,
-                imageUrl: img.imageUrl,
-                generatedAt: img.generatedAt,
-                generatedBy: img.generatedBy || 'user'
-              };
-            }
-          });
-          
-          console.log('BreedImageStorage: Validated images:', Object.keys(validatedImages).length);
-          return validatedImages;
-        }
-      }
+      if (!stored) return {};
+
+      const parsed = JSON.parse(stored);
+      const localImages: Record<string, BreedImage> = {};
       
-      console.log('BreedImageStorage: No stored images found, returning empty object');
-      return {};
-    } catch (error) {
-      console.error('BreedImageStorage: Error loading stored images:', error);
-      // Clear corrupted data
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-      } catch (clearError) {
-        console.error('BreedImageStorage: Error clearing corrupted data:', clearError);
+      if (typeof parsed === 'object' && parsed !== null) {
+        Object.keys(parsed).forEach(key => {
+          const img = parsed[key];
+          if (img && img.breedName && img.imageUrl && img.generatedAt) {
+            localImages[key] = {
+              breedName: img.breedName,
+              imageUrl: img.imageUrl,
+              generatedAt: img.generatedAt,
+              generatedBy: img.generatedBy || 'user'
+            };
+          }
+        });
       }
+
+      console.log('BreedImageStorage: Found', Object.keys(localImages).length, 'images in localStorage');
+      return localImages;
+    } catch (error) {
+      console.error('BreedImageStorage: Error reading localStorage:', error);
       return {};
     }
   }
 
+  // Save image to database with localStorage backup
   static async saveImage(breedName: string, imageUrl: string, generatedBy: string = 'user'): Promise<void> {
+    if (!breedName || !imageUrl) {
+      console.error('BreedImageStorage: Invalid parameters for saveImage');
+      throw new Error('Breed name and image URL are required');
+    }
+
+    console.log(`BreedImageStorage: Saving image for "${breedName}":`, imageUrl.substring(0, 50) + '...');
+    
+    const trimmedName = breedName.trim();
+    
     try {
-      if (!breedName || !imageUrl) {
-        console.error('BreedImageStorage: Invalid breed name or image URL');
-        return;
-      }
+      // Try to save to database first
+      const { error } = await supabase
+        .from('breed_images')
+        .upsert({
+          breed_name: trimmedName,
+          image_url: imageUrl,
+          generated_by: generatedBy
+        }, { 
+          onConflict: 'breed_name'
+        });
 
-      const trimmedBreedName = breedName.trim();
-      const trimmedImageUrl = imageUrl.trim();
-      const trimmedGeneratedBy = generatedBy.trim();
-
-      console.log(`BreedImageStorage: Saving image for "${trimmedBreedName}"`);
-
-      // Get current images
-      const currentImages = await this.getStoredImages();
-      
-      // Create new breed image entry
-      const newBreedImage: BreedImage = {
-        breedName: trimmedBreedName,
-        imageUrl: trimmedImageUrl,
-        generatedAt: new Date().toISOString(),
-        generatedBy: trimmedGeneratedBy
-      };
-      
-      // Update the images object
-      const updatedImages = {
-        ...currentImages,
-        [trimmedBreedName]: newBreedImage
-      };
-      
-      // Save to localStorage with error handling
-      try {
-        const dataToStore = JSON.stringify(updatedImages);
-        localStorage.setItem(STORAGE_KEY, dataToStore);
-        console.log(`BreedImageStorage: Successfully saved image for "${trimmedBreedName}"`);
-        
-        // Verify the save worked
-        const verification = localStorage.getItem(STORAGE_KEY);
-        if (verification) {
-          console.log('BreedImageStorage: Save verification successful');
-        } else {
-          throw new Error('Save verification failed');
-        }
-      } catch (storageError) {
-        console.error('BreedImageStorage: LocalStorage save failed:', storageError);
-        throw storageError;
+      if (error) {
+        console.error('BreedImageStorage: Database save error:', error);
+      } else {
+        console.log(`BreedImageStorage: Successfully saved image for "${trimmedName}" to database`);
       }
       
-      // Trigger storage event for cross-tab communication
+      // Also save to localStorage as backup
+      await this.saveToLocalStorage(trimmedName, imageUrl, generatedBy);
+      
+      // Trigger events to notify other components
       this.triggerStorageEvent();
-      
-      // Also trigger a custom event for same-tab updates
-      setTimeout(() => {
-        this.triggerStorageEvent();
-      }, 100);
-      
     } catch (error) {
-      console.error('BreedImageStorage: Error saving image:', error);
-      throw error;
+      console.error(`BreedImageStorage: Error saving image for "${breedName}":`, error);
+      // Fall back to localStorage only
+      await this.saveToLocalStorage(trimmedName, imageUrl, generatedBy);
+      this.triggerStorageEvent();
     }
   }
 
-  static async removeImage(breedName: string): Promise<void> {
+  // Save to localStorage method
+  private static async saveToLocalStorage(breedName: string, imageUrl: string, generatedBy: string): Promise<void> {
     try {
-      if (!breedName) {
-        console.error('BreedImageStorage: Invalid breed name for removal');
-        return;
+      const currentImages = this.getLocalStorageImages();
+      
+      const newImage: BreedImage = {
+        breedName: breedName,
+        imageUrl: imageUrl,
+        generatedAt: new Date().toISOString(),
+        generatedBy: generatedBy
+      };
+
+      currentImages[breedName] = newImage;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentImages));
+      
+      console.log(`BreedImageStorage: Saved to localStorage for "${breedName}"`);
+    } catch (error) {
+      console.error(`BreedImageStorage: Error saving to localStorage for "${breedName}":`, error);
+    }
+  }
+
+  // Remove image from database and localStorage
+  static async removeImage(breedName: string): Promise<void> {
+    if (!breedName) {
+      console.error('BreedImageStorage: Invalid breed name for removal');
+      return;
+    }
+
+    const trimmedName = breedName.trim();
+    console.log(`BreedImageStorage: Removing image for "${trimmedName}"`);
+    
+    try {
+      // Remove from database
+      const { error } = await supabase
+        .from('breed_images')
+        .delete()
+        .eq('breed_name', trimmedName);
+
+      if (error) {
+        console.error('BreedImageStorage: Database delete error:', error);
       }
 
-      const trimmedBreedName = breedName.trim();
-      console.log(`BreedImageStorage: Removing image for "${trimmedBreedName}"`);
-
-      const currentImages = await this.getStoredImages();
-      if (currentImages[trimmedBreedName]) {
-        delete currentImages[trimmedBreedName];
+      // Also remove from localStorage
+      const currentImages = this.getLocalStorageImages();
+      if (currentImages[trimmedName]) {
+        delete currentImages[trimmedName];
         localStorage.setItem(STORAGE_KEY, JSON.stringify(currentImages));
-        console.log(`BreedImageStorage: Successfully removed image for "${trimmedBreedName}"`);
-        this.triggerStorageEvent();
-      } else {
-        console.log(`BreedImageStorage: No image found for "${trimmedBreedName}" to remove`);
       }
+      
+      console.log(`BreedImageStorage: Successfully removed image for "${trimmedName}"`);
+      this.triggerStorageEvent();
     } catch (error) {
       console.error('BreedImageStorage: Error removing image:', error);
     }
   }
 
+  // Clear all images from database and localStorage
   static async clearAllImages(): Promise<void> {
+    console.log('BreedImageStorage: Clearing all images');
+    
     try {
-      console.log('BreedImageStorage: Clearing all images');
+      // Clear from database (delete all rows)
+      const { error } = await supabase
+        .from('breed_images')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      if (error) {
+        console.error('BreedImageStorage: Database clear error:', error);
+      }
+
+      // Clear localStorage
       localStorage.removeItem(STORAGE_KEY);
+      
       console.log('BreedImageStorage: Successfully cleared all images');
       this.triggerStorageEvent();
     } catch (error) {
@@ -252,13 +305,17 @@ export class BreedImageStorage {
       const rawData = localStorage.getItem(STORAGE_KEY);
       console.log('- Raw localStorage data length:', rawData?.length || 0);
       
-      // Test localStorage functionality
-      const testKey = 'breed-storage-test';
-      const testValue = 'test-' + Date.now();
-      localStorage.setItem(testKey, testValue);
-      const retrieved = localStorage.getItem(testKey);
-      localStorage.removeItem(testKey);
-      console.log('- LocalStorage test passed:', retrieved === testValue);
+      // Check database directly
+      const { data: dbImages, error } = await supabase
+        .from('breed_images')
+        .select('breed_name, image_url, created_at, generated_by');
+      
+      if (error) {
+        console.error('- Database query error:', error);
+      } else {
+        console.log('- Database images count:', dbImages?.length || 0);
+        console.log('- Database breed names:', dbImages?.map(img => img.breed_name) || []);
+      }
       
     } catch (error) {
       console.error('- Debug error:', error);

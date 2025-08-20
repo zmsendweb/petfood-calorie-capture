@@ -35,7 +35,9 @@ export const ShowCatBreeds = ({ onBreedSelect }: ShowCatBreedsProps) => {
 
   const handleGenerateImage = async (breedName: string) => {
     console.log(`ShowCatBreeds: Starting image generation for "${breedName}"`);
-    const imageUrl = await generateBreedImage(breedName);
+    // Create cat-specific prompt to ensure we generate a cat, not a dog
+    const catPrompt = `Professional studio photograph of a purebred ${breedName} cat, show quality feline, perfect conformation, sitting pose, neutral background, high resolution, detailed fur texture, award-winning cat photography`;
+    const imageUrl = await generateBreedImage(breedName, catPrompt);
     if (imageUrl) {
       const generatedBy = user?.email || 'anonymous';
       console.log(`ShowCatBreeds: Generated image URL for "${breedName}":`, imageUrl);

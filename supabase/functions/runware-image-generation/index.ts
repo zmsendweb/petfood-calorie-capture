@@ -26,7 +26,23 @@ serve(async (req) => {
     }
 
     // Create a detailed prompt for breed images
-    const imagePrompt = prompt || `Professional studio photograph of a purebred ${breedName}, show quality, perfect conformation, sitting pose, neutral background, high resolution, detailed fur texture, award-winning photography`;
+    // If no custom prompt provided, create a default one
+    let imagePrompt = prompt;
+    if (!imagePrompt) {
+      // Check if this is likely a cat breed by looking for common cat breed names
+      const catBreeds = ['Pixie-bob', 'Ragamuffin', 'Siberian', 'Chantilly-Tiffany', 'Persian', 'Maine Coon', 'British Shorthair', 'Russian Blue', 'Bengal', 'Siamese', 'Abyssinian', 'Scottish Fold', 'Ragdoll', 'Sphynx', 'Norwegian Forest Cat', 'American Shorthair', 'Exotic Shorthair', 'Devon Rex', 'Cornish Rex', 'Oriental', 'Burmese', 'Birman', 'Turkish Angora', 'Manx', 'Somali', 'Ocicat', 'Turkish Van', 'Bombay', 'Korat', 'Chartreux', 'Tonkinese', 'Balinese', 'Javanese', 'Havana Brown', 'Singapura', 'Egyptian Mau', 'American Curl', 'LaPerm', 'Selkirk Rex', 'American Wirehair', 'Colorpoint Shorthair', 'European Shorthair', 'Neva Masquerade', 'Kurilian Bobtail', 'Peterbald', 'Cymric'];
+      
+      const isCatBreed = catBreeds.some(catBreed => 
+        breedName.toLowerCase().includes(catBreed.toLowerCase()) || 
+        catBreed.toLowerCase().includes(breedName.toLowerCase())
+      );
+      
+      if (isCatBreed) {
+        imagePrompt = `Professional studio photograph of a purebred ${breedName} cat, show quality feline, perfect conformation, sitting pose, neutral background, high resolution, detailed fur texture, award-winning cat photography`;
+      } else {
+        imagePrompt = `Professional studio photograph of a purebred ${breedName} dog, show quality canine, perfect conformation, sitting pose, neutral background, high resolution, detailed fur texture, award-winning dog photography`;
+      }
+    }
 
     console.log(`Generating image for: ${imagePrompt}`);
 

@@ -29,8 +29,31 @@ serve(async (req) => {
     // If no custom prompt provided, create a default one
     let imagePrompt = prompt;
     if (!imagePrompt) {
-      // Check if this is likely a cat breed by looking for common cat breed names
-      const catBreeds = ['Pixie-bob', 'Ragamuffin', 'Siberian', 'Chantilly-Tiffany', 'Persian', 'Maine Coon', 'British Shorthair', 'Russian Blue', 'Bengal', 'Siamese', 'Abyssinian', 'Scottish Fold', 'Ragdoll', 'Sphynx', 'Norwegian Forest Cat', 'American Shorthair', 'Exotic Shorthair', 'Devon Rex', 'Cornish Rex', 'Oriental', 'Burmese', 'Birman', 'Turkish Angora', 'Manx', 'Somali', 'Ocicat', 'Turkish Van', 'Bombay', 'Korat', 'Chartreux', 'Tonkinese', 'Balinese', 'Javanese', 'Havana Brown', 'Singapura', 'Egyptian Mau', 'American Curl', 'LaPerm', 'Selkirk Rex', 'American Wirehair', 'Colorpoint Shorthair', 'European Shorthair', 'Neva Masquerade', 'Kurilian Bobtail', 'Peterbald', 'Cymric', 'Munchkin'];
+      // Comprehensive list of cat breed names from all our data sources
+      // Includes breeds from catStandards (smallCats, mediumCats, largeCats, exoticCats, rareCats) 
+      // and showCatBreeds data
+      const catBreeds = [
+        // Small cats
+        'Devon Rex', 'Cornish Rex', 'Singapura', 'Korat', 'Munchkin',
+        // Medium cats - Traditional breeds
+        'Persian', 'Siamese', 'British Shorthair', 'Russian Blue', 'Abyssinian', 
+        'Scottish Fold', 'Burmese', 'Birman', 'Turkish Angora', 'Manx', 'Bombay',
+        'Chartreux', 'Tonkinese', 'Havana Brown', 'American Curl', 'American Wirehair',
+        'European Shorthair', 'Colorpoint Shorthair', 'Oriental Shorthair', 'Balinese',
+        'Javanese', 'Ocicat', 'Japanese Bobtail', 'Egyptian Mau', 'Selkirk Rex', 'LaPerm',
+        // Medium cats - Modern breeds
+        'Bengal', 'Somali', 'Turkish Van', 'Exotic Shorthair', 'Himalayan',
+        // Medium cats - Specialty breeds
+        'Sphynx', 'Peterbald', 'Donskoy', 'Khao Manee', 'Snowshoe',
+        // Large cats
+        'Maine Coon', 'Norwegian Forest Cat', 'Ragdoll', 'Siberian', 'Neva Masquerade',
+        'Ragamuffin', 'Savannah', 'Kurilian Bobtail',
+        // Exotic cats
+        'Pixie-bob', 'Chantilly-Tiffany', 'Burmilla', 'Cymric',
+        // Rare cats
+        'Toyger', 'California Spangled', 'Australian Mist', 'British Longhair',
+        'Oriental Longhair', 'American Bobtail', 'Maltese'
+      ];
       
       const isCatBreed = catBreeds.some(catBreed => 
         breedName.toLowerCase().includes(catBreed.toLowerCase()) || 

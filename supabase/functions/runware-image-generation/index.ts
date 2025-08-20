@@ -30,7 +30,7 @@ serve(async (req) => {
     let imagePrompt = prompt;
     if (!imagePrompt) {
       // Check if this is likely a cat breed by looking for common cat breed names
-      const catBreeds = ['Pixie-bob', 'Ragamuffin', 'Siberian', 'Chantilly-Tiffany', 'Persian', 'Maine Coon', 'British Shorthair', 'Russian Blue', 'Bengal', 'Siamese', 'Abyssinian', 'Scottish Fold', 'Ragdoll', 'Sphynx', 'Norwegian Forest Cat', 'American Shorthair', 'Exotic Shorthair', 'Devon Rex', 'Cornish Rex', 'Oriental', 'Burmese', 'Birman', 'Turkish Angora', 'Manx', 'Somali', 'Ocicat', 'Turkish Van', 'Bombay', 'Korat', 'Chartreux', 'Tonkinese', 'Balinese', 'Javanese', 'Havana Brown', 'Singapura', 'Egyptian Mau', 'American Curl', 'LaPerm', 'Selkirk Rex', 'American Wirehair', 'Colorpoint Shorthair', 'European Shorthair', 'Neva Masquerade', 'Kurilian Bobtail', 'Peterbald', 'Cymric'];
+      const catBreeds = ['Pixie-bob', 'Ragamuffin', 'Siberian', 'Chantilly-Tiffany', 'Persian', 'Maine Coon', 'British Shorthair', 'Russian Blue', 'Bengal', 'Siamese', 'Abyssinian', 'Scottish Fold', 'Ragdoll', 'Sphynx', 'Norwegian Forest Cat', 'American Shorthair', 'Exotic Shorthair', 'Devon Rex', 'Cornish Rex', 'Oriental', 'Burmese', 'Birman', 'Turkish Angora', 'Manx', 'Somali', 'Ocicat', 'Turkish Van', 'Bombay', 'Korat', 'Chartreux', 'Tonkinese', 'Balinese', 'Javanese', 'Havana Brown', 'Singapura', 'Egyptian Mau', 'American Curl', 'LaPerm', 'Selkirk Rex', 'American Wirehair', 'Colorpoint Shorthair', 'European Shorthair', 'Neva Masquerade', 'Kurilian Bobtail', 'Peterbald', 'Cymric', 'Munchkin'];
       
       const isCatBreed = catBreeds.some(catBreed => 
         breedName.toLowerCase().includes(catBreed.toLowerCase()) || 

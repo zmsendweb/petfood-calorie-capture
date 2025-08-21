@@ -19,17 +19,27 @@ export const ShowDogBreeds = ({ onBreedSelect }: ShowDogBreedsProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sizeFilter, setSizeFilter] = useState("all");
   const [groupFilter, setGroupFilter] = useState("all");
+  const [sortFilter, setSortFilter] = useState("default");
   
   const { generateBreedImage, isGenerating } = useRunwareImageGeneration();
   const { isAdmin, user } = useAuth();
   const { storedImages, saveImage, isLoading, debugStorage } = useBreedImages();
 
-  const filteredBreeds = showDogBreeds.filter(breed => {
-    const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSize = sizeFilter === "all" || breed.size === sizeFilter;
-    const matchesGroup = groupFilter === "all" || breed.group === groupFilter;
-    return matchesSearch && matchesSize && matchesGroup;
-  });
+  const filteredAndSortedBreeds = showDogBreeds
+    .filter(breed => {
+      const matchesSearch = breed.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSize = sizeFilter === "all" || breed.size === sizeFilter;
+      const matchesGroup = groupFilter === "all" || breed.group === groupFilter;
+      return matchesSearch && matchesSize && matchesGroup;
+    })
+    .sort((a, b) => {
+      if (sortFilter === "a-z") {
+        return a.name.localeCompare(b.name);
+      } else if (sortFilter === "z-a") {
+        return b.name.localeCompare(a.name);
+      }
+      return 0; // default order
+    });
 
   const uniqueGroups = [...new Set(showDogBreeds.map(breed => breed.group))];
 
@@ -94,11 +104,21 @@ export const ShowDogBreeds = ({ onBreedSelect }: ShowDogBreedsProps) => {
             ))}
           </SelectContent>
         </Select>
+        <Select value={sortFilter} onValueChange={setSortFilter}>
+          <SelectTrigger className="w-full sm:w-36">
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="default">Default</SelectItem>
+            <SelectItem value="a-z">A to Z</SelectItem>
+            <SelectItem value="z-a">Z to A</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Breed Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredBreeds.map((breed, index) => {
+        {filteredAndSortedBreeds.map((breed, index) => {
           const breedImage = storedImages[breed.name];
           const hasStoredImage = !isLoading && breedImage && breedImage.imageUrl;
           

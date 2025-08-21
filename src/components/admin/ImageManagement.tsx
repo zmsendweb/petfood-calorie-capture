@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, Loader2, Image, Trash2, RotateCcw, Bug } from "lucide-react";
-import { showDogBreeds, showCatBreeds } from "@/data/show-breeds";
+import { getAllDogBreedNames, getAllCatBreedNames } from "@/utils/breedNames";
 import { useRunwareImageGeneration } from "@/hooks/use-runware-image-generation";
 import { useBreedImages } from "@/hooks/useBreedImages";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,7 +18,8 @@ export function ImageManagement() {
   const { storedImages, saveImage, removeImage, clearAllImages, refreshImages, imageCount, debugStorage } = useBreedImages();
   const { user } = useAuth();
 
-  const breeds = selectedCategory === "dogs" ? showDogBreeds : showCatBreeds;
+  const breedNames = selectedCategory === "dogs" ? getAllDogBreedNames() : getAllCatBreedNames();
+  const totalBreedsCount = breedNames.length;
 
   const handleGenerateImage = async (breedName: string) => {
     setGeneratingFor(breedName);
@@ -57,11 +58,11 @@ export function ImageManagement() {
   };
 
   const generateAllMissingImages = async () => {
-    const breedsWithoutImages = breeds.filter(breed => !storedImages[breed.name]);
+    const breedsWithoutImages = breedNames.filter(breedName => !storedImages[breedName]);
     console.log(`ImageManagement: Starting batch generation for ${breedsWithoutImages.length} breeds`);
     
-    for (const breed of breedsWithoutImages) {
-      await handleGenerateImage(breed.name);
+    for (const breedName of breedsWithoutImages) {
+      await handleGenerateImage(breedName);
       // Add a small delay to avoid rate limiting
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
@@ -69,7 +70,7 @@ export function ImageManagement() {
     console.log('ImageManagement: Batch generation completed');
   };
 
-  const missingImagesCount = breeds.filter(breed => !storedImages[breed.name]).length;
+  const missingImagesCount = breedNames.filter(breedName => !storedImages[breedName]).length;
 
   return (
     <Card>
@@ -144,31 +145,37 @@ export function ImageManagement() {
           </div>
         </div>
 
+        <div className="flex justify-between items-center mb-4">
+          <div className="text-sm text-muted-foreground">
+            Total {selectedCategory === "dogs" ? "dog" : "cat"} breeds: {totalBreedsCount} | Missing images: {missingImagesCount}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {breeds.map((breed) => {
-            const breedImage = storedImages[breed.name];
+          {breedNames.map((breedName) => {
+            const breedImage = storedImages[breedName];
             const hasStoredImage = breedImage && breedImage.imageUrl;
             
             return (
-              <Card key={breed.name} className="p-4">
+              <Card key={breedName} className="p-4">
                 <div className="space-y-3">
                   <div className="flex justify-between items-start">
-                    <h3 className="font-medium">{breed.name}</h3>
-                    <Badge variant="outline">{breed.size}</Badge>
+                    <h3 className="font-medium">{breedName}</h3>
+                    <Badge variant="outline">All Breeds</Badge>
                   </div>
                   
                   <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                     {hasStoredImage ? (
                       <img 
                         src={breedImage.imageUrl} 
-                        alt={breed.name}
+                        alt={breedName}
                         className="w-full h-full object-cover rounded-lg"
                         onError={(e) => {
-                          console.error(`ImageManagement: Failed to load image for ${breed.name}:`, breedImage.imageUrl);
+                          console.error(`ImageManagement: Failed to load image for ${breedName}:`, breedImage.imageUrl);
                           e.currentTarget.style.display = 'none';
                         }}
                         onLoad={() => {
-                          console.log(`ImageManagement: Successfully loaded image for ${breed.name}`);
+                          console.log(`ImageManagement: Successfully loaded image for ${breedName}`);
                         }}
                       />
                     ) : (
@@ -192,7 +199,7 @@ export function ImageManagement() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleRemoveImage(breed.name)}
+                        onClick={() => handleRemoveImage(breedName)}
                         className="flex-1"
                       >
                         <Trash2 className="h-3 w-3 mr-1" />
@@ -203,11 +210,11 @@ export function ImageManagement() {
                     <Button
                       variant={hasStoredImage ? "outline" : "default"}
                       size="sm"
-                      onClick={() => handleGenerateImage(breed.name)}
-                      disabled={generatingFor === breed.name}
+                      onClick={() => handleGenerateImage(breedName)}
+                      disabled={generatingFor === breedName}
                       className="flex-1"
                     >
-                      {generatingFor === breed.name ? (
+                      {generatingFor === breedName ? (
                         <>
                           <Loader2 className="h-3 w-3 mr-1 animate-spin" />
                           Generating...

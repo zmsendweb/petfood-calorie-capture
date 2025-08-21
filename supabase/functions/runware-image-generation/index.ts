@@ -61,7 +61,29 @@ serve(async (req) => {
       );
       
       if (isCatBreed) {
-        imagePrompt = `Professional studio photograph of a purebred ${breedName} cat, show quality feline, perfect conformation, sitting pose, neutral background, high resolution, detailed fur texture, award-winning cat photography`;
+        // Create breed-specific prompts for cats with unique characteristics
+        const catBreedSpecificPrompts = {
+          'Arabian Mau': 'Professional studio photograph of a purebred Arabian Mau cat, silver spotted tabby pattern, lean athletic build, large ears, almond-shaped green eyes, short coat with distinct spots, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Bambino': 'Professional studio photograph of a purebred Bambino cat, hairless Sphynx-type with short legs like Munchkin, wrinkled skin, large ears, muscular body on short legs, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Chausie': 'Professional studio photograph of a purebred Chausie cat, large wild-looking hybrid, ticked tabby coat, long legs, athletic build, jungle cat heritage, tufted ears, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Dragon Li': 'Professional studio photograph of a purebred Dragon Li cat, Chinese breed, golden brown tabby markings, muscular build, broad head, thick tail with black tip, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Dwelf': 'Professional studio photograph of a purebred Dwelf cat, hairless with curled ears like American Curl and short legs like Munchkin, wrinkled skin, large eyes, unique elf-like appearance, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Exotic Shorthair': 'Professional studio photograph of a purebred Exotic Shorthair cat, Persian-type with short plush coat, flat face, large round eyes, cobby body, "teddy bear" appearance, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Highlander': 'Professional studio photograph of a purebred Highlander cat, curled ears, bobbed tail, large muscular build, wild appearance, lynx-like tufted ears, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Lykoi': 'Professional studio photograph of a purebred Lykoi cat, "werewolf cat" with partially hairless coat, patchy fur giving wild appearance, yellow eyes, unique coat pattern, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Mekong Bobtail': 'Professional studio photograph of a purebred Mekong Bobtail cat, colorpoint pattern like Siamese, short kinked tail, blue eyes, semi-foreign body type, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Minskin': 'Professional studio photograph of a purebred Minskin cat, mostly hairless with fur points on ears face legs and tail, short legs like Munchkin, large ears, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Minuet (Napoleon)': 'Professional studio photograph of a purebred Minuet Napoleon cat, Persian-type face with short Munchkin legs, long or short coat, doll-like appearance, round eyes, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Nebelung': 'Professional studio photograph of a purebred Nebelung cat, long-haired Russian Blue type, blue-gray coat with silver tips, green eyes, elegant build, silky fur, sitting pose, neutral background, high resolution, detailed fur texture, award-winning cat photography',
+          'Ojos Azules': 'Professional studio photograph of a purebred Ojos Azules cat, striking blue eyes, any coat color except colorpoint, rare breed with unique blue eye gene, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Pixiebob': 'Professional studio photograph of a purebred Pixiebob cat, bobcat-like appearance, spotted or ticked coat, bobbed tail, tufted ears, large paws, wild look, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Serengeti': 'Professional studio photograph of a purebred Serengeti cat, spotted like African Serval, long legs, large ears, golden coat with black spots, wild appearance, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Thai Lilac': 'Professional studio photograph of a purebred Thai Lilac cat, solid lilac-gray color, blue eyes, Siamese body type, elegant build, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Sokoke': 'Professional studio photograph of a purebred Sokoke cat, African forest cat, distinctive wood-grain tabby pattern, long legs, large ears, athletic build, sitting pose, neutral background, high resolution, award-winning cat photography',
+          'Ukrainian Levkoy': 'Professional studio photograph of a purebred Ukrainian Levkoy cat, hairless with folded ears, wrinkled skin, angular face, large eyes, distinctive ear fold, sitting pose, neutral background, high resolution, award-winning cat photography'
+        };
+        
+        imagePrompt = catBreedSpecificPrompts[breedName] || `Professional studio photograph of a purebred ${breedName} cat, show quality feline, perfect conformation, sitting pose, neutral background, high resolution, detailed fur texture, award-winning cat photography`;
       } else {
         // Create breed-specific prompts for dogs with unique characteristics
         const breedSpecificPrompts = {

@@ -288,8 +288,10 @@ export function FeatureDetails() {
                     }
                   </p>
                   {feature.status !== 'coming-soon' && (
-                    <Button className="w-full">
-                      Get Started
+                    <Button className="w-full" asChild>
+                      <Link to={featureId === 'calorie-calculator' ? '/calorie-calculator' : '#'}>
+                        Get Started
+                      </Link>
                     </Button>
                   )}
                   <Button variant="outline" asChild className="w-full">

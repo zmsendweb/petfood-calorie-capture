@@ -147,6 +147,11 @@ export function PetRecipeSuggestions() {
               isLoading={isLoading}
               recipe={recipe}
               petType={petType}
+              selectedBreed=""
+              setSelectedBreed={() => {}}
+              dogBreeds={[]}
+              catBreeds={[]}
+              generatedRecipes={[]}
             />
           </TabsContent>
           

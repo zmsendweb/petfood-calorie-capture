@@ -1,6 +1,5 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createHmac } from "https://deno.land/std@0.168.0/crypto/mod.ts";
 import { corsHeaders } from "./utils/cors.ts";
 
 // FatSecret API credentials from environment variables
@@ -11,7 +10,7 @@ const CONSUMER_SECRET = Deno.env.get("FATSECRET_CONSUMER_SECRET");
 const FATSECRET_API_URL = "https://platform.fatsecret.com/rest/server.api";
 
 // Generate OAuth 1.0a signature
-function generateOAuthSignature(method: string, url: string, params: Record<string, string>): string {
+async function generateOAuthSignature(method: string, url: string, params: Record<string, string>): Promise<string> {
   // Sort parameters alphabetically
   const sortedParams = Object.keys(params).sort().reduce((acc, key) => {
     acc[key] = params[key];
@@ -27,9 +26,26 @@ function generateOAuthSignature(method: string, url: string, params: Record<stri
   
   // Generate signature using HMAC-SHA1
   const signingKey = `${encodeURIComponent(CONSUMER_SECRET!)}&`;
-  const hmac = createHmac("sha1", signingKey);
-  hmac.update(signatureBaseString);
-  return hmac.toString("base64");
+  
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(signingKey);
+  const messageData = encoder.encode(signatureBaseString);
+  
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-1" },
+    false,
+    ["sign"]
+  );
+  
+  const signature = await crypto.subtle.sign("HMAC", cryptoKey, messageData);
+  const signatureArray = new Uint8Array(signature);
+  
+  // Convert to base64
+  let binary = '';
+  signatureArray.forEach((byte) => binary += String.fromCharCode(byte));
+  return btoa(binary);
 }
 
 // Create OAuth parameters
@@ -62,7 +78,7 @@ async function callFatSecretApi(method: string, params: Record<string, string>) 
     const allParams = { ...baseParams, ...params };
     
     // Generate signature
-    const signature = generateOAuthSignature("POST", FATSECRET_API_URL, allParams);
+    const signature = await generateOAuthSignature("POST", FATSECRET_API_URL, allParams);
     allParams.oauth_signature = signature;
     
     // Make API request

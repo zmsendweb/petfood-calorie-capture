@@ -9,6 +9,7 @@ import PlanningDashboard from "./pages/PlanningDashboard";
 import { PetRecipes } from "./pages/PetRecipes";
 import { Features } from "./pages/Features";
 import { FeatureDetails } from "./pages/FeatureDetails";
+import CalorieCalculator from "./pages/CalorieCalculator";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Account from "./pages/Account";
@@ -50,6 +51,7 @@ function App() {
       />
       <Route path="/features" element={<Features />} />
       <Route path="/features/:featureId" element={<FeatureDetails />} />
+      <Route path="/calorie-calculator" element={<CalorieCalculator />} />
       <Route 
         path="/account" 
         element={

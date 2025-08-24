@@ -1,4 +1,5 @@
 
+
 import {
   BrowserRouter,
   Routes,
@@ -23,9 +24,9 @@ import Standards from "@/pages/Standards";
 import ShowBreeds from "@/pages/ShowBreeds";
 import { Contact } from "@/pages/Contact";
 import { TooltipProvider } from "@/components/ui/tooltip"
-import ImageRecognition from "@/pages/ImageRecognition";
-import ProgressTracking from "@/pages/ProgressTracking";
-import MealPlanning from "@/pages/MealPlanning";
+import { ImageRecognition } from "@/pages/ImageRecognition";
+import { ProgressTracking } from "@/pages/ProgressTracking";
+import { MealPlanning } from "@/pages/MealPlanning";
 
 const queryClient = new QueryClient();
 

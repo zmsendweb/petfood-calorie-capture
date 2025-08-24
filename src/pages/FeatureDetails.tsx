@@ -189,6 +189,30 @@ export function FeatureDetails() {
 
   const Icon = feature.icon;
 
+  // Map feature IDs to their corresponding routes
+  const getFeatureRoute = (id: string) => {
+    switch (id) {
+      case 'calorie-calculator':
+        return '/calorie-calculator';
+      case 'image-recognition':
+        return '/image-recognition';
+      case 'progress-tracking':
+        return '/progress-tracking';
+      case 'meal-planning':
+        return '/meal-planning';
+      case 'breed-standards':
+        return '/standards';
+      case 'show-breeds':
+        return '/show-breeds';
+      case 'pet-profiles':
+        return '/pet-profiles';
+      case 'community':
+        return '/features/community';
+      default:
+        return '#';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50">
       <AppNavigation />
@@ -289,7 +313,7 @@ export function FeatureDetails() {
                   </p>
                   {feature.status !== 'coming-soon' && (
                     <Button className="w-full" asChild>
-                      <Link to={featureId === 'calorie-calculator' ? '/calorie-calculator' : '#'}>
+                      <Link to={getFeatureRoute(featureId!)}>
                         Get Started
                       </Link>
                     </Button>

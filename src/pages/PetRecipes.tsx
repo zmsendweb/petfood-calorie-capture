@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RecipeGenerator } from "@/components/pet-recipes/RecipeGenerator";
@@ -8,6 +8,19 @@ import { AppNavigation } from "@/components/AppNavigation";
 import { useFatSecretAPI, FoodItem } from "@/hooks/use-fatsecret-api";
 import { useRecipeGenerator } from "@/hooks/use-recipe-generator";
 import { ChefHat, Sparkles, Heart, BookOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getAllDogBreedNames, getAllCatBreedNames } from "@/utils/breedNames";
+
+interface Recipe {
+  name: string;
+  ingredients: string[];
+  instructions: string[];
+  nutritional_benefits: string;
+  serving_size: string;
+  storage: string;
+  breed: string;
+  petType: "dog" | "cat";
+}
 
 export function PetRecipes() {
   const [activeTab, setActiveTab] = useState("generator");
@@ -17,12 +30,20 @@ export function PetRecipes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [recipe, setRecipe] = useState("");
   const [selectedBreed, setSelectedBreed] = useState("");
-  const [generatedRecipes, setGeneratedRecipes] = useState<any[]>([]);
+  const [generatedRecipes, setGeneratedRecipes] = useState<Recipe[]>([]);
+  const [recipeLibrary, setRecipeLibrary] = useState<Recipe[]>([]);
+  const [isGeneratingLibrary, setIsGeneratingLibrary] = useState(false);
   
   const { searchFoods, isLoading: isFoodSearchLoading } = useFatSecretAPI();
   const { generateRecipes, isLoading: isRecipeGenerating } = useRecipeGenerator();
+
+  // Popular breeds (top 5 for each)
+  const popularDogBreeds = ["Labrador Retriever", "Golden Retriever", "German Shepherd", "Bulldog", "Poodle"];
+  const popularCatBreeds = ["Persian", "Maine Coon", "Ragdoll", "British Shorthair", "Siamese"];
+  
+  const dogBreeds = getAllDogBreedNames().slice(0, 20); // Top 20 for selection
+  const catBreeds = getAllCatBreedNames().slice(0, 20); // Top 20 for selection
 
   const generateRecipe = async () => {
     if (!selectedBreed) {
@@ -38,7 +59,64 @@ export function PetRecipes() {
     });
     
     if (result && result.recipes) {
-      setGeneratedRecipes(result.recipes);
+      const recipesWithMeta = result.recipes.map(recipe => ({
+        ...recipe,
+        breed: selectedBreed,
+        petType
+      }));
+      setGeneratedRecipes(recipesWithMeta);
+    }
+  };
+
+  const generateRecipeLibrary = async () => {
+    setIsGeneratingLibrary(true);
+    const library: Recipe[] = [];
+    
+    try {
+      // Generate for popular dog breeds
+      for (const breed of popularDogBreeds) {
+        const result = await generateRecipes({
+          petType: "dog",
+          breed,
+          ingredients: [], // Use common healthy ingredients
+          dietaryNeeds: "Nutritionally balanced for optimal health"
+        });
+        
+        if (result && result.recipes) {
+          const breedRecipes = result.recipes.map(recipe => ({
+            ...recipe,
+            breed,
+            petType: "dog" as const
+          }));
+          library.push(...breedRecipes);
+        }
+      }
+
+      // Generate for popular cat breeds
+      for (const breed of popularCatBreeds) {
+        const result = await generateRecipes({
+          petType: "cat",
+          breed,
+          ingredients: [], // Use common healthy ingredients
+          dietaryNeeds: "Nutritionally balanced for optimal health"
+        });
+        
+        if (result && result.recipes) {
+          const breedRecipes = result.recipes.map(recipe => ({
+            ...recipe,
+            breed,
+            petType: "cat" as const
+          }));
+          library.push(...breedRecipes);
+        }
+      }
+
+      setRecipeLibrary(library);
+      setActiveTab("library");
+    } catch (error) {
+      console.error("Error generating recipe library:", error);
+    } finally {
+      setIsGeneratingLibrary(false);
     }
   };
 
@@ -68,18 +146,13 @@ export function PetRecipes() {
 
   const handlePetTypeChange = (type: "dog" | "cat") => {
     setPetType(type);
+    setSelectedBreed("");
+    setGeneratedRecipes([]);
   };
 
-  // Popular breed options
-  const dogBreeds = [
-    "Labrador Retriever", "Golden Retriever", "German Shepherd", "Bulldog", "Poodle",
-    "Beagle", "Rottweiler", "Yorkshire Terrier", "Dachshund", "Siberian Husky"
-  ];
-  
-  const catBreeds = [
-    "Persian", "Maine Coon", "Ragdoll", "British Shorthair", "Abyssinian",
-    "Siamese", "American Shorthair", "Scottish Fold", "Sphynx", "Russian Blue"
-  ];
+  const filteredLibraryRecipes = recipeLibrary.filter(recipe => 
+    petType === "dog" ? recipe.petType === "dog" : recipe.petType === "cat"
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
@@ -116,7 +189,7 @@ export function PetRecipes() {
                 ingredients={ingredients}
                 generateRecipe={generateRecipe}
                 isLoading={isRecipeGenerating}
-                recipe={recipe}
+                recipe=""
                 petType={petType}
                 selectedBreed={selectedBreed}
                 setSelectedBreed={setSelectedBreed}
@@ -140,11 +213,102 @@ export function PetRecipes() {
               />
             </TabsContent>
             <TabsContent value="library">
-              <div className="text-center py-8">
-                <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">
-                  Generate recipes using the Generator tab to build your recipe library!
-                </p>
+              <div className="space-y-6">
+                {recipeLibrary.length === 0 ? (
+                  <div className="text-center py-8 space-y-4">
+                    <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Recipe Library</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Generate a comprehensive recipe library for the top 5 most popular dog and cat breeds using our AI-powered recipe generator.
+                      </p>
+                      <Button 
+                        onClick={generateRecipeLibrary}
+                        disabled={isGeneratingLibrary}
+                        className="w-full max-w-md"
+                      >
+                        {isGeneratingLibrary ? (
+                          <>Generating Recipe Library... (This may take a few minutes)</>
+                        ) : (
+                          <>Generate Recipe Library (10 recipes × 10 breeds = 100 recipes)</>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">
+                        Recipe Library ({filteredLibraryRecipes.length} {petType} recipes)
+                      </h3>
+                      <div className="flex gap-2">
+                        <Button
+                          variant={petType === "dog" ? "default" : "outline"}
+                          onClick={() => setPetType("dog")}
+                          size="sm"
+                        >
+                          Dog Recipes
+                        </Button>
+                        <Button
+                          variant={petType === "cat" ? "default" : "outline"}
+                          onClick={() => setPetType("cat")}
+                          size="sm"
+                        >
+                          Cat Recipes
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="grid gap-4">
+                      {filteredLibraryRecipes.map((recipe, index) => (
+                        <Card key={index} className="bg-muted/50">
+                          <CardHeader>
+                            <CardTitle className="text-lg flex items-center justify-between">
+                              <span>{recipe.name}</span>
+                              <span className="text-sm font-normal text-muted-foreground">
+                                {recipe.breed}
+                              </span>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div>
+                              <h4 className="font-medium text-sm text-muted-foreground mb-2">INGREDIENTS</h4>
+                              <ul className="text-sm space-y-1">
+                                {recipe.ingredients.map((ingredient, i) => (
+                                  <li key={i}>• {ingredient}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            
+                            <div>
+                              <h4 className="font-medium text-sm text-muted-foreground mb-2">INSTRUCTIONS</h4>
+                              <ol className="text-sm space-y-1">
+                                {recipe.instructions.map((instruction, i) => (
+                                  <li key={i}>{i + 1}. {instruction}</li>
+                                ))}
+                              </ol>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-3 gap-4 pt-2 border-t">
+                              <div>
+                                <h4 className="font-medium text-xs text-muted-foreground mb-1">BENEFITS</h4>
+                                <p className="text-xs">{recipe.nutritional_benefits}</p>
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-xs text-muted-foreground mb-1">SERVING SIZE</h4>
+                                <p className="text-xs">{recipe.serving_size}</p>
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-xs text-muted-foreground mb-1">STORAGE</h4>
+                                <p className="text-xs">{recipe.storage}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </TabsContent>
           </CardContent>

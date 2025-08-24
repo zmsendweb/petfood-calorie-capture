@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,45 +7,81 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AppNavigation } from "@/components/AppNavigation";
 import { Calculator, Dog, Cat } from "lucide-react";
+import { dogStandards } from "@/data/dogStandards";
+import { catStandards } from "@/data/catStandards";
+import { DogStandard } from "@/data/types/dogTypes";
+import { CatStandard } from "@/data/types/catTypes";
 
 export default function CalorieCalculator() {
   const [petType, setPetType] = useState<"dog" | "cat">("dog");
+  const [selectedBreed, setSelectedBreed] = useState("");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [activityLevel, setActivityLevel] = useState("");
   const [neutered, setNeutered] = useState("");
-  const [result, setResult] = useState<number | null>(null);
+  const [result, setResult] = useState<{
+    calories: number;
+    breedInfo: DogStandard | CatStandard | null;
+    ageCategory: string;
+  } | null>(null);
+
+  const currentBreeds = petType === "dog" ? dogStandards : catStandards;
 
   const calculateCalories = () => {
     const weightNum = parseFloat(weight);
-    if (!weightNum || !activityLevel) return;
-
-    // Basic RER (Resting Energy Requirement) calculation
-    const rer = 70 * Math.pow(weightNum, 0.75);
-    
-    // Activity multipliers
-    const multipliers = {
-      sedentary: 1.2,
-      light: 1.4,
-      moderate: 1.6,
-      active: 1.8,
-      very_active: 2.0
-    };
-
-    // Age adjustments
     const ageNum = parseInt(age);
-    let ageMultiplier = 1;
-    if (ageNum < 1) {
-      ageMultiplier = petType === "dog" ? 2.5 : 2.0; // Puppy/kitten
-    } else if (ageNum > 7) {
-      ageMultiplier = 0.8; // Senior pets
+    
+    if (!weightNum || !ageNum || !activityLevel || !selectedBreed) return;
+
+    // Find breed-specific information
+    const breedInfo = currentBreeds.find(breed => breed.breed === selectedBreed);
+    
+    if (!breedInfo) return;
+
+    // Determine age category
+    let ageCategory = "adult";
+    if (petType === "dog") {
+      if (ageNum < 1) ageCategory = "puppy";
+      else if (ageNum > 7) ageCategory = "senior";
+    } else {
+      if (ageNum < 1) ageCategory = "kitten";
+      else if (ageNum > 7) ageCategory = "senior";
     }
 
-    // Neuter status adjustment
-    const neuterMultiplier = neutered === "yes" ? 0.8 : 1;
+    // Get breed-specific calorie range
+    const ageSpecificCalories = breedInfo.ageSpecificCalories[ageCategory as keyof typeof breedInfo.ageSpecificCalories];
+    
+    // Calculate base calories using breed-specific data
+    let baseCalories = (ageSpecificCalories.min + ageSpecificCalories.max) / 2;
 
-    const totalCalories = rer * multipliers[activityLevel as keyof typeof multipliers] * ageMultiplier * neuterMultiplier;
-    setResult(Math.round(totalCalories));
+    // Activity level adjustments
+    const activityMultipliers = {
+      sedentary: 0.8,
+      light: 0.9,
+      moderate: 1.0,
+      active: 1.2,
+      very_active: 1.4
+    };
+
+    // Neuter status adjustment
+    const neuterMultiplier = neutered === "yes" ? 0.9 : 1;
+
+    // Weight adjustment (simple linear scaling)
+    const weightMultiplier = weightNum / 25; // Assuming 25kg as base weight
+
+    const totalCalories = Math.round(baseCalories * activityMultipliers[activityLevel as keyof typeof activityMultipliers] * neuterMultiplier * weightMultiplier);
+
+    setResult({
+      calories: totalCalories,
+      breedInfo,
+      ageCategory
+    });
+  };
+
+  const handlePetTypeChange = (type: "dog" | "cat") => {
+    setPetType(type);
+    setSelectedBreed("");
+    setResult(null);
   };
 
   return (
@@ -55,7 +92,7 @@ export default function CalorieCalculator() {
           <CardHeader>
             <CardTitle className="text-2xl font-bold tracking-tight flex items-center gap-2">
               <Calculator className="h-6 w-6" />
-              Pet Calorie Calculator
+              Breed-Specific Pet Calorie Calculator
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -65,7 +102,7 @@ export default function CalorieCalculator() {
               <div className="flex gap-4">
                 <Button
                   variant={petType === "dog" ? "default" : "outline"}
-                  onClick={() => setPetType("dog")}
+                  onClick={() => handlePetTypeChange("dog")}
                   className="flex-1 flex items-center gap-2"
                 >
                   <Dog className="h-4 w-4" />
@@ -73,13 +110,30 @@ export default function CalorieCalculator() {
                 </Button>
                 <Button
                   variant={petType === "cat" ? "default" : "outline"}
-                  onClick={() => setPetType("cat")}
+                  onClick={() => handlePetTypeChange("cat")}
                   className="flex-1 flex items-center gap-2"
                 >
                   <Cat className="h-4 w-4" />
                   Cat
                 </Button>
               </div>
+            </div>
+
+            {/* Breed Selection */}
+            <div className="space-y-2">
+              <Label>Breed</Label>
+              <Select value={selectedBreed} onValueChange={setSelectedBreed}>
+                <SelectTrigger>
+                  <SelectValue placeholder={`Select a ${petType} breed`} />
+                </SelectTrigger>
+                <SelectContent>
+                  {currentBreeds.map((breed) => (
+                    <SelectItem key={breed.breed} value={breed.breed}>
+                      {breed.breed} ({breed.size})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Weight */}
@@ -140,21 +194,47 @@ export default function CalorieCalculator() {
             {/* Calculate Button */}
             <Button 
               onClick={calculateCalories}
-              disabled={!weight || !age || !activityLevel || !neutered}
+              disabled={!weight || !age || !activityLevel || !neutered || !selectedBreed}
               className="w-full"
             >
-              Calculate Daily Calories
+              Calculate Breed-Specific Daily Calories
             </Button>
 
             {/* Result */}
             {result && (
               <Card className="bg-green-50 border-green-200">
                 <CardContent className="pt-6">
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold text-green-900">Daily Calorie Requirement</h3>
-                    <p className="text-3xl font-bold text-green-700 mt-2">{result} calories</p>
-                    <p className="text-sm text-green-600 mt-2">
-                      This is an estimate. Consult your veterinarian for specific dietary needs.
+                  <div className="text-center space-y-4">
+                    <h3 className="text-lg font-semibold text-green-900">
+                      Daily Calorie Requirement for {selectedBreed}
+                    </h3>
+                    <p className="text-3xl font-bold text-green-700">{result.calories} calories</p>
+                    
+                    {result.breedInfo && (
+                      <div className="bg-white rounded-lg p-4 text-left space-y-2">
+                        <h4 className="font-medium text-sm text-gray-700">Breed-Specific Information:</h4>
+                        <p className="text-sm text-gray-600">
+                          <strong>Size Category:</strong> {result.breedInfo.size}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <strong>Age Category:</strong> {result.ageCategory.charAt(0).toUpperCase() + result.ageCategory.slice(1)}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <strong>Recommended Meals per Day:</strong> {
+                            petType === "dog" 
+                              ? result.breedInfo.mealsPerDay[result.ageCategory as keyof typeof result.breedInfo.mealsPerDay]
+                              : (result.breedInfo as CatStandard).mealsByAge[result.ageCategory as keyof CatStandard['mealsByAge']]
+                          }
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <strong>Notes:</strong> {result.breedInfo.nutritionNotes[result.ageCategory as keyof typeof result.breedInfo.nutritionNotes]}
+                        </p>
+                      </div>
+                    )}
+                    
+                    <p className="text-sm text-green-600">
+                      This calculation is based on breed-specific nutritional requirements. 
+                      Consult your veterinarian for specific dietary needs.
                     </p>
                   </div>
                 </CardContent>

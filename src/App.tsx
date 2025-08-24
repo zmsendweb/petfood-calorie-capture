@@ -1,3 +1,4 @@
+
 import {
   BrowserRouter,
   Routes,
@@ -7,24 +8,24 @@ import { QueryClient, QueryClientProvider as QueryClientProviderOriginal } from 
 import { Toaster } from "sonner";
 
 import { Index } from "@/pages/Index";
-import { Auth } from "@/pages/Auth";
-import { Account } from "@/pages/Account";
-import { Admin } from "@/pages/Admin";
-import { NotFound } from "@/pages/NotFound";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Auth from "@/pages/Auth";
+import Account from "@/pages/Account";
+import Admin from "@/pages/Admin";
+import NotFound from "@/pages/NotFound";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { Features } from "@/pages/Features";
 import { FeatureDetails } from "@/pages/FeatureDetails";
-import { CalorieCalculator } from "@/pages/CalorieCalculator";
+import CalorieCalculator from "@/pages/CalorieCalculator";
 import { PetRecipes } from "@/pages/PetRecipes";
-import { PlanningDashboard } from "@/pages/PlanningDashboard";
-import { PetProfiles } from "@/pages/PetProfiles";
-import { Standards } from "@/pages/Standards";
-import { ShowBreeds } from "@/pages/ShowBreeds";
+import PlanningDashboard from "@/pages/PlanningDashboard";
+import PetProfiles from "@/pages/PetProfiles";
+import Standards from "@/pages/Standards";
+import ShowBreeds from "@/pages/ShowBreeds";
 import { Contact } from "@/pages/Contact";
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { ImageRecognition } from "@/pages/ImageRecognition";
-import { ProgressTracking } from "@/pages/ProgressTracking";
-import { MealPlanning } from "@/pages/MealPlanning";
+import ImageRecognition from "@/pages/ImageRecognition";
+import ProgressTracking from "@/pages/ProgressTracking";
+import MealPlanning from "@/pages/MealPlanning";
 
 const queryClient = new QueryClient();
 

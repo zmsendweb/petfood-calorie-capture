@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Search, Heart, Coffee, Sun, Moon } from "lucide-react";
+import { X, Search, Heart, Coffee, Sun, Moon, Utensils } from "lucide-react";
 import { useRecipeGenerator } from "@/hooks/use-recipe-generator";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";

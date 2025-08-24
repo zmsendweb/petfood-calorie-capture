@@ -1,7 +1,6 @@
 
 
 import {
-  BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
@@ -35,41 +34,39 @@ function App() {
     <QueryClientProviderOriginal client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="/features/:featureId" element={<FeatureDetails />} />
-            <Route path="/calorie-calculator" element={<CalorieCalculator />} />
-            <Route path="/image-recognition" element={<ImageRecognition />} />
-            <Route path="/progress-tracking" element={<ProgressTracking />} />
-            <Route path="/meal-planning" element={<MealPlanning />} />
-            <Route path="/pet-recipes" element={<PetRecipes />} />
-            <Route path="/planning-dashboard" element={<PlanningDashboard />} />
-            <Route path="/pet-profiles" element={<PetProfiles />} />
-            <Route path="/standards" element={<Standards />} />
-            <Route path="/show-breeds" element={<ShowBreeds />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route 
-              path="/account" 
-              element={
-                <ProtectedRoute>
-                  <Account />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin" 
-              element={
-                <ProtectedRoute requireAdmin>
-                  <Admin />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/features/:featureId" element={<FeatureDetails />} />
+          <Route path="/calorie-calculator" element={<CalorieCalculator />} />
+          <Route path="/image-recognition" element={<ImageRecognition />} />
+          <Route path="/progress-tracking" element={<ProgressTracking />} />
+          <Route path="/meal-planning" element={<MealPlanning />} />
+          <Route path="/pet-recipes" element={<PetRecipes />} />
+          <Route path="/planning-dashboard" element={<PlanningDashboard />} />
+          <Route path="/pet-profiles" element={<PetProfiles />} />
+          <Route path="/standards" element={<Standards />} />
+          <Route path="/show-breeds" element={<ShowBreeds />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route 
+            path="/account" 
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute requireAdmin>
+                <Admin />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </TooltipProvider>
     </QueryClientProviderOriginal>
   );

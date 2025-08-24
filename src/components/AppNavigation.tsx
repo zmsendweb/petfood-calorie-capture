@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Sheet,
@@ -19,14 +20,12 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
-import { useUser } from "@/hooks/use-user";
+import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
 import { Menu, User, Home, Book, ListChecks, Flame, Settings, LogOut } from "lucide-react";
 
 export function AppNavigation() {
-  const { signOut } = useAuth();
-  const { user } = useUser();
+  const { signOut, user, isAdmin } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
@@ -174,9 +173,9 @@ export function AppNavigation() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user?.image} alt={user?.name || "Avatar"} />
+                  <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.user_metadata?.full_name || "Avatar"} />
                   <AvatarFallback>
-                    {user?.name ? user.name[0].toUpperCase() : "U"}
+                    {user?.email ? user.email[0].toUpperCase() : "U"}
                   </AvatarFallback>
                 </Avatar>
               </Button>
@@ -189,7 +188,7 @@ export function AppNavigation() {
                   Profile
                 </Link>
               </DropdownMenuItem>
-              {user?.isAdmin && (
+              {isAdmin && (
                 <DropdownMenuItem>
                   <Link to="/admin" className="flex items-center gap-2">
                     <Settings className="h-4 w-4 mr-2" />

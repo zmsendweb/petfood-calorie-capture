@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Search, Heart, Coffee, Sun, Moon, Utensils } from "lucide-react";
+import { X, Search, Heart, Coffee, Sun, Moon, Utensils, Filter, Plus } from "lucide-react";
 import { useRecipeGenerator } from "@/hooks/use-recipe-generator";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 import { getAllDogBreedNames, getAllCatBreedNames } from "@/utils/breedNames";
+import { toast } from "sonner";
 
 interface RecipeBrowserProps {
   onClose: () => void;
@@ -56,6 +58,9 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [dietaryNeeds, setDietaryNeeds] = useState("");
   const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
+  const [mealTypeFilter, setMealTypeFilter] = useState<string>("all");
+  const [searchProgress, setSearchProgress] = useState(0);
+  const [showFavorites, setShowFavorites] = useState(false);
   
   const { generateRecipes, isLoading } = useRecipeGenerator();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -70,11 +75,29 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
       return;
     }
 
+    setSearchProgress(0);
+    
+    // Simulate progress during search
+    const progressInterval = setInterval(() => {
+      setSearchProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return 90;
+        }
+        return prev + 10;
+      });
+    }, 200);
+
     const result = await generateRecipes({
       petType,
       breed,
       dietaryNeeds: dietaryNeeds || undefined
     });
+
+    clearInterval(progressInterval);
+    setSearchProgress(100);
+    
+    setTimeout(() => setSearchProgress(0), 1000);
 
     if (result?.recipes) {
       const recipesWithMealTypes = assignMealTypes(result.recipes);
@@ -83,19 +106,48 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
   };
 
   const toggleFavorite = (recipeId: string) => {
-    setFavoriteRecipes(prev => 
-      prev.includes(recipeId) 
+    const recipe = recipes[parseInt(recipeId)];
+    if (!recipe) return;
+
+    setFavoriteRecipes(prev => {
+      const isAlreadyFavorite = prev.includes(recipeId);
+      const newFavorites = isAlreadyFavorite 
         ? prev.filter(id => id !== recipeId)
-        : [...prev, recipeId]
-    );
+        : [...prev, recipeId];
+
+      if (isAlreadyFavorite) {
+        toast.success("Recipe removed from favorites");
+      } else {
+        toast.success(`"${recipe.name}" added to favorites!`, {
+          description: "You can view all favorites by clicking the filter button"
+        });
+      }
+      
+      return newFavorites;
+    });
   };
 
-  const filteredRecipes = recipes.filter(recipe => 
-    recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    recipe.ingredients.some((ingredient: string) => 
-      ingredient.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  );
+  const addToMealPlan = (recipe: Recipe) => {
+    toast.success(`"${recipe.name}" added to meal planner!`, {
+      description: "Visit the meal planning section to organize your schedule"
+    });
+  };
+
+  const filteredRecipes = recipes.filter(recipe => {
+    const matchesSearch = recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      recipe.ingredients.some((ingredient: string) => 
+        ingredient.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    
+    const matchesMealType = mealTypeFilter === "all" || recipe.meal_type === mealTypeFilter;
+    
+    const matchesFavorites = !showFavorites || favoriteRecipes.some(favId => {
+      const favIndex = parseInt(favId);
+      return recipes[favIndex] === recipe;
+    });
+
+    return matchesSearch && matchesMealType && matchesFavorites;
+  });
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm">
@@ -147,104 +199,159 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
           </Button>
         </div>
 
-        {/* Recipe Search */}
+        {/* Progress Bar */}
+        {(isLoading || searchProgress > 0) && (
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Generating recipes...</span>
+              <span>{searchProgress}%</span>
+            </div>
+            <Progress value={searchProgress} className="w-full" />
+          </div>
+        )}
+
+        {/* Search and Filters */}
         {recipes.length > 0 && (
-          <div className="flex items-center gap-2">
-            <Search className="h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search recipes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1"
-            />
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search recipes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1"
+              />
+            </div>
+
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-gray-500" />
+                <span className="text-sm font-medium">Filter by:</span>
+              </div>
+              
+              <Select value={mealTypeFilter} onValueChange={setMealTypeFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Meals</SelectItem>
+                  <SelectItem value="breakfast">Breakfast</SelectItem>
+                  <SelectItem value="lunch">Lunch</SelectItem>
+                  <SelectItem value="dinner">Dinner</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant={showFavorites ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowFavorites(!showFavorites)}
+              >
+                <Heart className={`h-4 w-4 mr-2 ${showFavorites ? 'fill-current' : ''}`} />
+                Favorites ({favoriteRecipes.length})
+              </Button>
+            </div>
           </div>
         )}
 
         {/* Recipe Results */}
         <ScrollArea className="h-[600px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredRecipes.map((recipe, index) => (
-              <Card key={index} className="p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-semibold text-lg">{recipe.name}</h3>
-                      <Badge 
-                        variant="outline" 
-                        className={`flex items-center gap-1 ${getMealTypeColor(recipe.meal_type || '')}`}
+            {filteredRecipes.map((recipe, index) => {
+              const originalIndex = recipes.findIndex(r => r === recipe);
+              return (
+                <Card key={originalIndex} className="p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-lg">{recipe.name}</h3>
+                        <Badge 
+                          variant="outline" 
+                          className={`flex items-center gap-1 ${getMealTypeColor(recipe.meal_type || '')}`}
+                        >
+                          {getMealTypeIcon(recipe.meal_type || '')}
+                          <span className="capitalize">{recipe.meal_type}</span>
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => addToMealPlan(recipe)}
+                        title="Add to meal planner"
                       >
-                        {getMealTypeIcon(recipe.meal_type || '')}
-                        <span className="capitalize">{recipe.meal_type}</span>
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleFavorite(originalIndex.toString())}
+                        title="Add to favorites"
+                      >
+                        <Heart 
+                          className={`h-4 w-4 ${
+                            favoriteRecipes.includes(originalIndex.toString()) 
+                              ? 'fill-red-500 text-red-500' 
+                              : 'text-gray-400'
+                          }`} 
+                        />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 text-sm">
+                    <div>
+                      <h4 className="font-medium text-gray-700 mb-2">Ingredients:</h4>
+                      <ul className="list-disc list-inside text-gray-600 space-y-1">
+                        {recipe.ingredients.map((ingredient: string, idx: number) => (
+                          <li key={idx} className="leading-relaxed">{ingredient}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium text-gray-700 mb-2">Instructions:</h4>
+                      <ol className="list-decimal list-inside text-gray-600 space-y-1">
+                        {recipe.instructions.map((instruction: string, idx: number) => (
+                          <li key={idx} className="leading-relaxed">{instruction}</li>
+                        ))}
+                      </ol>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 pt-3 border-t border-gray-100">
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <h4 className="font-medium text-xs text-gray-700 mb-1 uppercase tracking-wide">
+                          Nutritional Benefits
+                        </h4>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          {recipe.nutritional_benefits}
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-blue-50 p-2 rounded">
+                          <h4 className="font-medium text-xs text-blue-700 mb-1">Serving Size</h4>
+                          <p className="text-xs text-blue-600">{recipe.serving_size}</p>
+                        </div>
+                        <div className="bg-green-50 p-2 rounded">
+                          <h4 className="font-medium text-xs text-green-700 mb-1">Storage</h4>
+                          <p className="text-xs text-green-600">{recipe.storage}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1 pt-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {petType} recipe
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        {breed}
                       </Badge>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleFavorite(index.toString())}
-                  >
-                    <Heart 
-                      className={`h-4 w-4 ${
-                        favoriteRecipes.includes(index.toString()) 
-                          ? 'fill-red-500 text-red-500' 
-                          : 'text-gray-400'
-                      }`} 
-                    />
-                  </Button>
-                </div>
-
-                <div className="space-y-4 text-sm">
-                  <div>
-                    <h4 className="font-medium text-gray-700 mb-2">Ingredients:</h4>
-                    <ul className="list-disc list-inside text-gray-600 space-y-1">
-                      {recipe.ingredients.map((ingredient: string, idx: number) => (
-                        <li key={idx} className="leading-relaxed">{ingredient}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h4 className="font-medium text-gray-700 mb-2">Instructions:</h4>
-                    <ol className="list-decimal list-inside text-gray-600 space-y-1">
-                      {recipe.instructions.map((instruction: string, idx: number) => (
-                        <li key={idx} className="leading-relaxed">{instruction}</li>
-                      ))}
-                    </ol>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-3 pt-3 border-t border-gray-100">
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <h4 className="font-medium text-xs text-gray-700 mb-1 uppercase tracking-wide">
-                        Nutritional Benefits
-                      </h4>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        {recipe.nutritional_benefits}
-                      </p>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-blue-50 p-2 rounded">
-                        <h4 className="font-medium text-xs text-blue-700 mb-1">Serving Size</h4>
-                        <p className="text-xs text-blue-600">{recipe.serving_size}</p>
-                      </div>
-                      <div className="bg-green-50 p-2 rounded">
-                        <h4 className="font-medium text-xs text-green-700 mb-1">Storage</h4>
-                        <p className="text-xs text-green-600">{recipe.storage}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1 pt-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {petType} recipe
-                    </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      {breed}
-                    </Badge>
-                  </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              );
+            })}
           </div>
         </ScrollArea>
 
@@ -253,6 +360,14 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
             <Utensils className="h-12 w-12 mx-auto mb-4 text-gray-300" />
             <h3 className="text-lg font-medium mb-2">No Recipes Yet</h3>
             <p>Select your pet's breed and click "Find Recipes" to discover healthy homemade meals!</p>
+          </div>
+        )}
+
+        {showFavorites && favoriteRecipes.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            <Heart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <h3 className="text-lg font-medium mb-2">No Favorite Recipes</h3>
+            <p>Click the heart icon on recipes to add them to your favorites!</p>
           </div>
         )}
       </CardContent>

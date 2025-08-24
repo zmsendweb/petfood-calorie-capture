@@ -1,5 +1,4 @@
 
-import { AppNavigation } from "@/components/AppNavigation";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,6 @@ export function MealPlanning() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50">
-      <AppNavigation />
       <div className="container mx-auto px-4 py-8">
         <PageHeader 
           title="Smart Meal Planning" 

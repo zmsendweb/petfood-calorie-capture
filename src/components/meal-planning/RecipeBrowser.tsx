@@ -4,14 +4,51 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Search, Heart } from "lucide-react";
+import { X, Search, Heart, Coffee, Sun, Moon } from "lucide-react";
 import { useRecipeGenerator } from "@/hooks/use-recipe-generator";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getAllDogBreedNames, getAllCatBreedNames } from "@/utils/breedNames";
 
 interface RecipeBrowserProps {
   onClose: () => void;
 }
+
+interface Recipe {
+  name: string;
+  ingredients: string[];
+  instructions: string[];
+  nutritional_benefits: string;
+  serving_size: string;
+  storage: string;
+  meal_type?: "breakfast" | "lunch" | "dinner";
+}
+
+const getMealTypeIcon = (mealType: string) => {
+  switch (mealType?.toLowerCase()) {
+    case 'breakfast': return <Coffee className="h-4 w-4" />;
+    case 'lunch': return <Sun className="h-4 w-4" />;
+    case 'dinner': return <Moon className="h-4 w-4" />;
+    default: return <Sun className="h-4 w-4" />;
+  }
+};
+
+const getMealTypeColor = (mealType: string) => {
+  switch (mealType?.toLowerCase()) {
+    case 'breakfast': return 'bg-amber-100 text-amber-800 border-amber-200';
+    case 'lunch': return 'bg-blue-100 text-blue-800 border-blue-200';
+    case 'dinner': return 'bg-purple-100 text-purple-800 border-purple-200';
+    default: return 'bg-gray-100 text-gray-800 border-gray-200';
+  }
+};
+
+const assignMealTypes = (recipes: Recipe[]): Recipe[] => {
+  const mealTypes = ['breakfast', 'lunch', 'dinner'] as const;
+  return recipes.map((recipe, index) => ({
+    ...recipe,
+    meal_type: mealTypes[index % 3]
+  }));
+};
 
 export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
   const [petType, setPetType] = useState<"dog" | "cat">("dog");
@@ -21,7 +58,12 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
   const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
   
   const { generateRecipes, isLoading } = useRecipeGenerator();
-  const [recipes, setRecipes] = useState<any[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+
+  // Get breed names from database
+  const dogBreeds = getAllDogBreedNames();
+  const catBreeds = getAllCatBreedNames();
+  const availableBreeds = petType === "dog" ? dogBreeds : catBreeds;
 
   const handleSearch = async () => {
     if (!breed.trim()) {
@@ -35,7 +77,8 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
     });
 
     if (result?.recipes) {
-      setRecipes(result.recipes);
+      const recipesWithMealTypes = assignMealTypes(result.recipes);
+      setRecipes(recipesWithMealTypes);
     }
   };
 
@@ -67,7 +110,10 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
       <CardContent className="space-y-6">
         {/* Search Controls */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Select value={petType} onValueChange={(value: "dog" | "cat") => setPetType(value)}>
+          <Select value={petType} onValueChange={(value: "dog" | "cat") => {
+            setPetType(value);
+            setBreed("");
+          }}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -77,11 +123,18 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
             </SelectContent>
           </Select>
 
-          <Input
-            placeholder="Enter breed"
-            value={breed}
-            onChange={(e) => setBreed(e.target.value)}
-          />
+          <Select value={breed} onValueChange={setBreed}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select breed" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableBreeds.slice(0, 50).map((breedName) => (
+                <SelectItem key={breedName} value={breedName}>
+                  {breedName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           <Input
             placeholder="Dietary needs (optional)"
@@ -111,9 +164,20 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
         <ScrollArea className="h-[600px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredRecipes.map((recipe, index) => (
-              <Card key={index} className="p-4">
+              <Card key={index} className="p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-semibold text-lg">{recipe.name}</h3>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-lg">{recipe.name}</h3>
+                      <Badge 
+                        variant="outline" 
+                        className={`flex items-center gap-1 ${getMealTypeColor(recipe.meal_type || '')}`}
+                      >
+                        {getMealTypeIcon(recipe.meal_type || '')}
+                        <span className="capitalize">{recipe.meal_type}</span>
+                      </Badge>
+                    </div>
+                  </div>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -129,45 +193,55 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
                   </Button>
                 </div>
 
-                <div className="space-y-3 text-sm">
+                <div className="space-y-4 text-sm">
                   <div>
-                    <h4 className="font-medium text-gray-700">Ingredients:</h4>
+                    <h4 className="font-medium text-gray-700 mb-2">Ingredients:</h4>
                     <ul className="list-disc list-inside text-gray-600 space-y-1">
-                      {recipe.ingredients.slice(0, 5).map((ingredient: string, idx: number) => (
-                        <li key={idx}>{ingredient}</li>
+                      {recipe.ingredients.map((ingredient: string, idx: number) => (
+                        <li key={idx} className="leading-relaxed">{ingredient}</li>
                       ))}
-                      {recipe.ingredients.length > 5 && (
-                        <li className="text-gray-400">...and {recipe.ingredients.length - 5} more</li>
-                      )}
                     </ul>
                   </div>
 
                   <div>
-                    <h4 className="font-medium text-gray-700">Instructions:</h4>
+                    <h4 className="font-medium text-gray-700 mb-2">Instructions:</h4>
                     <ol className="list-decimal list-inside text-gray-600 space-y-1">
-                      {recipe.instructions.slice(0, 3).map((instruction: string, idx: number) => (
-                        <li key={idx}>{instruction}</li>
+                      {recipe.instructions.map((instruction: string, idx: number) => (
+                        <li key={idx} className="leading-relaxed">{instruction}</li>
                       ))}
-                      {recipe.instructions.length > 3 && (
-                        <li className="text-gray-400">...{recipe.instructions.length - 3} more steps</li>
-                      )}
                     </ol>
                   </div>
 
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="secondary" className="text-xs">
-                      {recipe.serving_size}
-                    </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      {petType} recipe
-                    </Badge>
+                  <div className="grid grid-cols-1 gap-3 pt-3 border-t border-gray-100">
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-xs text-gray-700 mb-1 uppercase tracking-wide">
+                        Nutritional Benefits
+                      </h4>
+                      <p className="text-xs text-gray-600 leading-relaxed">
+                        {recipe.nutritional_benefits}
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-blue-50 p-2 rounded">
+                        <h4 className="font-medium text-xs text-blue-700 mb-1">Serving Size</h4>
+                        <p className="text-xs text-blue-600">{recipe.serving_size}</p>
+                      </div>
+                      <div className="bg-green-50 p-2 rounded">
+                        <h4 className="font-medium text-xs text-green-700 mb-1">Storage</h4>
+                        <p className="text-xs text-green-600">{recipe.storage}</p>
+                      </div>
+                    </div>
                   </div>
 
-                  {recipe.nutritional_benefits && (
-                    <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
-                      <strong>Benefits:</strong> {recipe.nutritional_benefits.slice(0, 100)}...
-                    </p>
-                  )}
+                  <div className="flex flex-wrap gap-1 pt-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {petType} recipe
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {breed}
+                    </Badge>
+                  </div>
                 </div>
               </Card>
             ))}
@@ -176,7 +250,9 @@ export function RecipeBrowser({ onClose }: RecipeBrowserProps) {
 
         {recipes.length === 0 && !isLoading && (
           <div className="text-center py-8 text-gray-500">
-            Enter your pet's breed and click "Find Recipes" to discover healthy homemade meals!
+            <Utensils className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <h3 className="text-lg font-medium mb-2">No Recipes Yet</h3>
+            <p>Select your pet's breed and click "Find Recipes" to discover healthy homemade meals!</p>
           </div>
         )}
       </CardContent>

@@ -4,8 +4,19 @@ import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Utensils, Calendar, ShoppingCart, Clock } from "lucide-react";
+import { useState } from "react";
+import { MealPlanGenerator } from "@/components/meal-planning/MealPlanGenerator";
+import { RecipeBrowser } from "@/components/meal-planning/RecipeBrowser";
+import { ShoppingListGenerator } from "@/components/meal-planning/ShoppingListGenerator";
+import { FeedingReminders } from "@/components/meal-planning/FeedingReminders";
 
 export function MealPlanning() {
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  const handleSectionToggle = (section: string) => {
+    setActiveSection(activeSection === section ? null : section);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50">
       <AppNavigation />
@@ -27,7 +38,10 @@ export function MealPlanning() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">
+              <Button 
+                className="w-full" 
+                onClick={() => handleSectionToggle('meal-plan')}
+              >
                 Create Meal Plan
               </Button>
             </CardContent>
@@ -44,7 +58,11 @@ export function MealPlanning() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
+              <Button 
+                className="w-full" 
+                variant="outline"
+                onClick={() => handleSectionToggle('recipe-browser')}
+              >
                 Browse Recipes
               </Button>
             </CardContent>
@@ -63,7 +81,7 @@ export function MealPlanning() {
               <p className="text-gray-600 mb-4">
                 Automatically generate shopping lists based on your meal plans and portion sizes.
               </p>
-              <Button>
+              <Button onClick={() => handleSectionToggle('shopping-list')}>
                 Generate List
               </Button>
             </CardContent>
@@ -80,12 +98,40 @@ export function MealPlanning() {
               <p className="text-gray-600 mb-4">
                 Set up automatic reminders for feeding times and meal preparation.
               </p>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => handleSectionToggle('reminders')}
+              >
                 Set Reminders
               </Button>
             </CardContent>
           </Card>
         </div>
+
+        {/* Dynamic content sections */}
+        {activeSection === 'meal-plan' && (
+          <div className="mt-8">
+            <MealPlanGenerator onClose={() => setActiveSection(null)} />
+          </div>
+        )}
+
+        {activeSection === 'recipe-browser' && (
+          <div className="mt-8">
+            <RecipeBrowser onClose={() => setActiveSection(null)} />
+          </div>
+        )}
+
+        {activeSection === 'shopping-list' && (
+          <div className="mt-8">
+            <ShoppingListGenerator onClose={() => setActiveSection(null)} />
+          </div>
+        )}
+
+        {activeSection === 'reminders' && (
+          <div className="mt-8">
+            <FeedingReminders onClose={() => setActiveSection(null)} />
+          </div>
+        )}
       </div>
     </div>
   );

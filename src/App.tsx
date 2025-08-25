@@ -1,5 +1,4 @@
 
-
 import {
   Routes,
   Route,
@@ -26,6 +25,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { ImageRecognition } from "@/pages/ImageRecognition";
 import { ProgressTracking } from "@/pages/ProgressTracking";
 import { MealPlanning } from "@/pages/MealPlanning";
+import { CatStandards } from "@/pages/CatStandards";
 
 const queryClient = new QueryClient();
 
@@ -44,9 +44,11 @@ function App() {
           <Route path="/progress-tracking" element={<ProgressTracking />} />
           <Route path="/meal-planning" element={<MealPlanning />} />
           <Route path="/pet-recipes" element={<PetRecipes />} />
+          <Route path="/planning" element={<PlanningDashboard />} />
           <Route path="/planning-dashboard" element={<PlanningDashboard />} />
           <Route path="/pet-profiles" element={<PetProfiles />} />
           <Route path="/standards" element={<Standards />} />
+          <Route path="/cat-standards" element={<CatStandards />} />
           <Route path="/show-breeds" element={<ShowBreeds />} />
           <Route path="/contact" element={<Contact />} />
           <Route 

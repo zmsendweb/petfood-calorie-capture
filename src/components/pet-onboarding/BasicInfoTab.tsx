@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "../ui/textarea";
 import { CameraComponent } from "../Camera";
 import { PetProfile } from "@/data/types/petTypes";
+import { Upload, Camera } from "lucide-react";
 
 interface BasicInfoTabProps {
   formData: Partial<PetProfile>;
@@ -23,6 +24,8 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
   onShowCameraToggle,
   onCapture
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     onFormDataChange({ [name]: value });
@@ -35,6 +38,22 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     onFormDataChange({ [name]: parseFloat(value) || 0 });
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        onFormDataChange({ photo: result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -190,13 +209,33 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                 />
               </div>
             )}
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={onShowCameraToggle}
-            >
-              {formData.photo ? "Change Photo" : "Take Photo"}
-            </Button>
+            <div className="flex gap-2 flex-wrap justify-center">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={onShowCameraToggle}
+                className="flex items-center gap-2"
+              >
+                <Camera className="h-4 w-4" />
+                {formData.photo ? "Take New Photo" : "Take Photo"}
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={triggerFileUpload}
+                className="flex items-center gap-2"
+              >
+                <Upload className="h-4 w-4" />
+                {formData.photo ? "Upload New Photo" : "Upload Photo"}
+              </Button>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
           </div>
         )}
       </div>

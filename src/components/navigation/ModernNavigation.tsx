@@ -83,9 +83,9 @@ export function ModernNavigation() {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center">
             <img 
-              src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
-              alt="logo" 
-              className="h-12 w-auto max-w-[200px]"
+              src="/lovable-uploads/adb5d1d0-22ce-469b-944d-8ca6d003ce52.png" 
+              alt="My Pet Cal Logo" 
+              className="h-auto w-[120px]"
             />
           </div>
           <div className="text-sm text-muted-foreground">Loading...</div>
@@ -100,9 +100,9 @@ export function ModernNavigation() {
         {/* Logo - Fixed positioning and responsive sizing */}
         <Link to="/" className="flex items-center flex-shrink-0">
           <img 
-            src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
-            alt="logo" 
-            className="h-12 w-auto max-w-[200px] sm:max-w-[250px] md:max-w-[300px]"
+            src="/lovable-uploads/adb5d1d0-22ce-469b-944d-8ca6d003ce52.png" 
+            alt="My Pet Cal Logo" 
+            className="h-auto w-[120px]"
           />
         </Link>
 
@@ -254,9 +254,9 @@ export function ModernNavigation() {
               <div className="flex flex-col space-y-4 mt-4">
                 <div className="flex items-center pb-4 border-b">
                   <img 
-                    src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
-                    alt="logo" 
-                    className="h-10 w-auto max-w-[180px]"
+                    src="/lovable-uploads/adb5d1d0-22ce-469b-944d-8ca6d003ce52.png" 
+                    alt="My Pet Cal Logo" 
+                    className="h-auto w-[120px]"
                   />
                 </div>
                 

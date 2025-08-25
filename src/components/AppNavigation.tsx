@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Sheet,
@@ -78,14 +77,18 @@ export function AppNavigation() {
               </Button>
             </SheetTrigger>
             <Link to="/" className="mr-6 flex items-center font-semibold">
-              Pawsitive
+              <img 
+                src="/lovable-uploads/adb5d1d0-22ce-469b-944d-8ca6d003ce52.png" 
+                alt="My Pet Cal Logo" 
+                className="h-auto w-[120px]"
+              />
             </Link>
           </div>
           <SheetContent side="left" className="pr-0">
             <SheetHeader className="text-left">
               <SheetTitle>Menu</SheetTitle>
               <SheetDescription>
-                Explore Pawsitive and manage your account.
+                Explore My Pet Cal and manage your account.
               </SheetDescription>
             </SheetHeader>
             <div className="grid gap-4 py-4">

@@ -1,5 +1,4 @@
 
-import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Utensils, Calendar, ShoppingCart, Clock } from "lucide-react";
@@ -8,6 +7,7 @@ import { MealPlanGenerator } from "@/components/meal-planning/MealPlanGenerator"
 import { RecipeBrowser } from "@/components/meal-planning/RecipeBrowser";
 import { ShoppingListGenerator } from "@/components/meal-planning/ShoppingListGenerator";
 import { FeedingReminders } from "@/components/meal-planning/FeedingReminders";
+import { ModernNavigation } from "@/components/navigation/ModernNavigation";
 
 export function MealPlanning() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -18,11 +18,12 @@ export function MealPlanning() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50">
+      <ModernNavigation />
       <div className="container mx-auto px-4 py-8">
-        <PageHeader 
-          title="Smart Meal Planning" 
-          description="Create custom meal plans with nutritional balance and feeding schedules tailored to your pet"
-        />
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Smart Meal Planning</h1>
+          <p className="text-muted-foreground">Create custom meal plans with nutritional balance and feeding schedules tailored to your pet</p>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
           <Card>

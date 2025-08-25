@@ -13,9 +13,9 @@ export const DashboardHeader = () => {
       </Link>
       <div className="flex items-center gap-3">
         <img 
-          src="/lovable-uploads/4b1f088b-a45c-451e-910a-581d714f877a.png" 
-          alt="mypetcal logo" 
-          className="h-8 w-auto hidden sm:block" 
+          src="/lovable-uploads/adb5d1d0-22ce-469b-944d-8ca6d003ce52.png" 
+          alt="My Pet Cal Logo" 
+          className="h-auto w-[120px] hidden sm:block" 
         />
         <h1 className="text-3xl font-bold">Planning Dashboard</h1>
       </div>

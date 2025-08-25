@@ -26,7 +26,12 @@ import {
   User,
   Trophy,
   ChevronDown,
-  Settings
+  Settings,
+  Calculator,
+  Camera,
+  BarChart3,
+  Utensils,
+  Users
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -51,7 +56,18 @@ const navigationItems = [
       { name: "Pet Recipes", href: "/pet-recipes", icon: ChefHat },
     ]
   },
-  { name: "Features", href: "/features", icon: Sparkles },
+  { 
+    name: "Features", 
+    icon: Sparkles,
+    dropdown: [
+      { name: "All Features", href: "/features", icon: Sparkles },
+      { name: "Calorie Calculator", href: "/calorie-calculator", icon: Calculator },
+      { name: "AI Breed Identification", href: "/image-recognition", icon: Camera },
+      { name: "Health Progress Tracking", href: "/progress-tracking", icon: BarChart3 },
+      { name: "Smart Meal Planning", href: "/meal-planning", icon: Utensils },
+      { name: "Pet Care Community", href: "/features/community", icon: Users },
+    ]
+  },
 ];
 
 export function ModernNavigation() {

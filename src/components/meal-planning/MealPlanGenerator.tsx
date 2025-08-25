@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { X, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useFatSecretAPI, FoodItem } from "@/hooks/use-fatsecret-api";
 import { FoodSearch } from "@/components/food-search";
+import { usePetData } from "@/hooks/use-pet-data";
+import { PetProfile } from "@/data/types/petTypes";
 
 interface MealPlanGeneratorProps {
   onClose: () => void;
@@ -25,15 +26,21 @@ interface MealPlanItem {
 }
 
 export function MealPlanGenerator({ onClose }: MealPlanGeneratorProps) {
-  const [petName, setPetName] = useState("");
-  const [petWeight, setPetWeight] = useState("");
-  const [activityLevel, setActivityLevel] = useState("");
+  const { pets, isLoading: isPetsLoading } = usePetData();
+  const [selectedPetId, setSelectedPetId] = useState("");
+  const [selectedPet, setSelectedPet] = useState<PetProfile | null>(null);
   const [mealPlan, setMealPlan] = useState<MealPlanItem[]>([]);
   const [showFoodSearch, setShowFoodSearch] = useState(false);
   const [selectedMealIndex, setSelectedMealIndex] = useState<number | null>(null);
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"];
+
+  const handlePetSelection = (petId: string) => {
+    setSelectedPetId(petId);
+    const pet = pets.find(p => p.id === petId) || null;
+    setSelectedPet(pet);
+  };
 
   const addMealPlanItem = () => {
     const newItem: MealPlanItem = {
@@ -75,12 +82,16 @@ export function MealPlanGenerator({ onClose }: MealPlanGeneratorProps) {
       updateMealPlanItem(item.id, 'calories', calories);
       setShowFoodSearch(false);
       setSelectedMealIndex(null);
+      
+      toast.success("Food added to meal plan", {
+        description: `${food.food_name} (${calories} cal) added successfully`
+      });
     }
   };
 
   const generateMealPlan = () => {
-    if (!petName || !petWeight || !activityLevel) {
-      toast.error("Please fill in all pet information");
+    if (!selectedPet) {
+      toast.error("Please select a pet from your account");
       return;
     }
 
@@ -90,11 +101,22 @@ export function MealPlanGenerator({ onClose }: MealPlanGeneratorProps) {
     }
 
     const totalCalories = mealPlan.reduce((sum, item) => sum + item.calories, 0);
+    const targetCalories = selectedPet.dailyCalorieTarget || 0;
     
     toast.success("Meal plan generated successfully!", {
-      description: `Weekly plan for ${petName} with ${totalCalories} total calories`
+      description: `Weekly plan for ${selectedPet.name}: ${totalCalories} total calories (Target: ${targetCalories * 7}/week)`
     });
   };
+
+  if (isPetsLoading) {
+    return (
+      <Card className="bg-white/80 backdrop-blur-sm">
+        <CardContent className="p-6">
+          <div className="text-center">Loading your pets...</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm">
@@ -107,53 +129,66 @@ export function MealPlanGenerator({ onClose }: MealPlanGeneratorProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Pet Information */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="petName">Pet Name</Label>
-            <Input
-              id="petName"
-              value={petName}
-              onChange={(e) => setPetName(e.target.value)}
-              placeholder="Enter pet name"
-            />
-          </div>
-          <div>
-            <Label htmlFor="petWeight">Weight (lbs)</Label>
-            <Input
-              id="petWeight"
-              type="number"
-              value={petWeight}
-              onChange={(e) => setPetWeight(e.target.value)}
-              placeholder="Enter weight"
-            />
-          </div>
-          <div>
-            <Label htmlFor="activityLevel">Activity Level</Label>
-            <Select value={activityLevel} onValueChange={setActivityLevel}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select activity level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low">Low - Indoor/Senior</SelectItem>
-                <SelectItem value="moderate">Moderate - Regular walks</SelectItem>
-                <SelectItem value="high">High - Very active</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        {/* Pet Selection */}
+        <div>
+          <Label htmlFor="petSelect">Select Pet from Your Account</Label>
+          <Select value={selectedPetId} onValueChange={handlePetSelection}>
+            <SelectTrigger>
+              <SelectValue placeholder="Choose a pet to create meal plan for" />
+            </SelectTrigger>
+            <SelectContent>
+              {pets.map((pet) => (
+                <SelectItem key={pet.id} value={pet.id}>
+                  {pet.name} ({pet.type} - {pet.breed}) - Target: {pet.dailyCalorieTarget || 'Not set'} cal/day
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {pets.length === 0 && (
+            <p className="text-sm text-gray-500 mt-2">
+              No pets found. Please add pets to your account first.
+            </p>
+          )}
         </div>
+
+        {/* Pet Information Display */}
+        {selectedPet && (
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="font-semibold mb-2">Pet Information</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div>
+                <span className="text-gray-600">Name:</span> {selectedPet.name}
+              </div>
+              <div>
+                <span className="text-gray-600">Weight:</span> {selectedPet.weight} {selectedPet.weightUnit}
+              </div>
+              <div>
+                <span className="text-gray-600">Activity:</span> {selectedPet.activityLevel}
+              </div>
+              <div>
+                <span className="text-gray-600">Daily Calories:</span> {selectedPet.dailyCalorieTarget || 'Not set'}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Meal Plan Items */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label className="text-lg font-semibold">Meal Plan</Label>
-            <Button onClick={addMealPlanItem} size="sm">
+            <Button onClick={addMealPlanItem} size="sm" disabled={!selectedPet}>
               <Plus className="h-4 w-4 mr-2" />
               Add Meal
             </Button>
           </div>
 
-          {mealPlan.map((item, index) => (
+          {!selectedPet && (
+            <div className="text-center py-4 text-gray-500">
+              Please select a pet to start creating meal plan
+            </div>
+          )}
+
+          {selectedPet && mealPlan.map((item, index) => (
             <Card key={item.id} className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                 <div>
@@ -191,7 +226,7 @@ export function MealPlanGenerator({ onClose }: MealPlanGeneratorProps) {
                 </div>
 
                 <div>
-                  <Label>Food</Label>
+                  <Label>Food (FatSecret Database)</Label>
                   <Button 
                     variant="outline" 
                     className="w-full"
@@ -200,7 +235,7 @@ export function MealPlanGenerator({ onClose }: MealPlanGeneratorProps) {
                       setShowFoodSearch(true);
                     }}
                   >
-                    {item.food ? item.food.food_name.slice(0, 15) + '...' : 'Select Food'}
+                    {item.food ? item.food.food_name.slice(0, 15) + '...' : 'Search Food'}
                   </Button>
                 </div>
 
@@ -242,7 +277,7 @@ export function MealPlanGenerator({ onClose }: MealPlanGeneratorProps) {
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Search Food</h3>
+                  <h3 className="text-lg font-semibold">Search Food (FatSecret US Database)</h3>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -260,8 +295,8 @@ export function MealPlanGenerator({ onClose }: MealPlanGeneratorProps) {
           </div>
         )}
 
-        <Button onClick={generateMealPlan} className="w-full">
-          Generate Complete Meal Plan
+        <Button onClick={generateMealPlan} className="w-full" disabled={!selectedPet}>
+          Generate Complete Meal Plan for {selectedPet?.name || 'Selected Pet'}
         </Button>
       </CardContent>
     </Card>

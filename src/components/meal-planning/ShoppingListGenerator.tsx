@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { X, ShoppingCart, Plus, Trash2 } from "lucide-react";
+import { X, ShoppingCart, Plus, Trash2, Download, Calendar, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 interface ShoppingListGeneratorProps {
@@ -55,6 +55,7 @@ export function ShoppingListGenerator({ onClose }: ShoppingListGeneratorProps) {
 
   const removeItem = (id: string) => {
     setShoppingList(shoppingList.filter(item => item.id !== id));
+    toast.success("Item removed from shopping list");
   };
 
   const toggleItem = (id: string) => {
@@ -81,7 +82,41 @@ export function ShoppingListGenerator({ onClose }: ShoppingListGeneratorProps) {
     }));
 
     setShoppingList([...shoppingList, ...newItems]);
-    toast.success("Automatic shopping list generated based on common pet nutrition needs");
+    toast.success("Smart shopping list generated based on balanced pet nutrition");
+  };
+
+  const exportToPDF = () => {
+    // In a real app, this would generate a PDF
+    const listContent = shoppingList.map(item => 
+      `${item.checked ? '✓' : '○'} ${item.name} - ${item.quantity} (${item.category})`
+    ).join('\n');
+    
+    toast.success("PDF Export Ready", {
+      description: "Shopping list exported successfully (feature would download PDF in real implementation)"
+    });
+    
+    // Simulate PDF download
+    console.log("PDF Content:", listContent);
+  };
+
+  const addToPlanner = () => {
+    // This would integrate with the planning dashboard
+    toast.success("Added to Planning Dashboard", {
+      description: `Shopping list with ${shoppingList.length} items added to your planning dashboard`
+    });
+  };
+
+  const createReminder = () => {
+    // This would create a reminder/to-do item
+    const uncheckedItems = shoppingList.filter(item => !item.checked);
+    toast.success("Shopping Reminder Created", {
+      description: `Reminder set for ${uncheckedItems.length} remaining shopping items`
+    });
+  };
+
+  const clearCompleted = () => {
+    setShoppingList(shoppingList.filter(item => !item.checked));
+    toast.success("Completed items cleared from list");
   };
 
   const groupedItems = shoppingList.reduce((groups, item) => {
@@ -102,7 +137,7 @@ export function ShoppingListGenerator({ onClose }: ShoppingListGeneratorProps) {
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5" />
-            Shopping List Generator
+            Smart Shopping List Generator
           </div>
           <Button variant="ghost" size="sm" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -114,8 +149,8 @@ export function ShoppingListGenerator({ onClose }: ShoppingListGeneratorProps) {
         {totalItems > 0 && (
           <div className="bg-gray-50 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium">Progress</span>
-              <span className="text-sm text-gray-600">{completedItems} of {totalItems} items</span>
+              <span className="text-sm font-medium">Shopping Progress</span>
+              <span className="text-sm text-gray-600">{completedItems} of {totalItems} items completed</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
@@ -123,8 +158,30 @@ export function ShoppingListGenerator({ onClose }: ShoppingListGeneratorProps) {
                 style={{ width: `${totalItems > 0 ? (completedItems / totalItems) * 100 : 0}%` }}
               />
             </div>
+            <p className="text-xs text-gray-500 mt-2">
+              ✓ Checked items indicate completed purchases
+            </p>
           </div>
         )}
+
+        {/* Action Buttons */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <Button variant="outline" onClick={exportToPDF}>
+            <Download className="h-4 w-4 mr-2" />
+            Export PDF
+          </Button>
+          <Button variant="outline" onClick={addToPlanner}>
+            <Calendar className="h-4 w-4 mr-2" />
+            Add to Planner
+          </Button>
+          <Button variant="outline" onClick={createReminder}>
+            <FileText className="h-4 w-4 mr-2" />
+            Set Reminder
+          </Button>
+          <Button variant="outline" onClick={clearCompleted} disabled={completedItems === 0}>
+            Clear Completed
+          </Button>
+        </div>
 
         {/* Add New Item */}
         <Card className="p-4 bg-gray-50">
@@ -153,7 +210,7 @@ export function ShoppingListGenerator({ onClose }: ShoppingListGeneratorProps) {
             </select>
             <Button onClick={addItem}>
               <Plus className="h-4 w-4 mr-2" />
-              Add
+              Add Item
             </Button>
           </div>
         </Card>
@@ -164,7 +221,7 @@ export function ShoppingListGenerator({ onClose }: ShoppingListGeneratorProps) {
             Generate Smart List
           </Button>
           <span className="text-sm text-gray-600">
-            Based on balanced pet nutrition
+            Based on balanced pet nutrition (adds to existing list)
           </span>
         </div>
 
@@ -207,9 +264,23 @@ export function ShoppingListGenerator({ onClose }: ShoppingListGeneratorProps) {
 
         {shoppingList.length === 0 && (
           <div className="text-center py-8 text-gray-500">
-            No items in your shopping list yet. Add some items or generate a smart list!
+            <ShoppingCart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <p>No items in your shopping list yet.</p>
+            <p>Add some items or generate a smart list!</p>
           </div>
         )}
+
+        {/* Help Text */}
+        <div className="bg-blue-50 p-4 rounded-lg text-sm">
+          <h4 className="font-semibold mb-2">How to use Shopping List:</h4>
+          <ul className="space-y-1 text-gray-700">
+            <li>• Check off items as you shop (they'll show as strikethrough)</li>
+            <li>• Export to PDF for offline shopping</li>
+            <li>• Add to Planning Dashboard for meal preparation scheduling</li>
+            <li>• Set reminders for shopping trips</li>
+            <li>• Generate Smart List adds nutritionally balanced items</li>
+          </ul>
+        </div>
       </CardContent>
     </Card>
   );

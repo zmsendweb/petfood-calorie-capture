@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Sheet,
@@ -21,7 +22,23 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
-import { Menu, User, Home, Book, ListChecks, Flame, Settings, LogOut } from "lucide-react";
+import { 
+  Menu, 
+  User, 
+  Home, 
+  Book, 
+  ListChecks, 
+  Flame, 
+  Settings, 
+  LogOut, 
+  Sparkles, 
+  Calculator, 
+  Camera, 
+  BarChart3, 
+  Utensils, 
+  Users,
+  Trophy
+} from "lucide-react";
 
 export function AppNavigation() {
   const { signOut, user, isAdmin } = useAuth();
@@ -61,7 +78,11 @@ export function AppNavigation() {
       href: "/features",
       submenu: [
         { name: "All Features", href: "/features" },
-        { name: "Calorie Calculator", href: "/calorie-calculator" }
+        { name: "Calorie Calculator", href: "/calorie-calculator" },
+        { name: "AI Breed Identification", href: "/image-recognition" },
+        { name: "Health Progress Tracking", href: "/progress-tracking" },
+        { name: "Smart Meal Planning", href: "/meal-planning" },
+        { name: "Pet Care Community", href: "/features/community" }
       ]
     }
   ];
